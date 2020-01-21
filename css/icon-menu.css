@@ -1,0 +1,208 @@
+/*Icon made by [https://www.flaticon.com/authors/freepik] from www.flaticon.com */
+.icon-home {
+    -webkit-mask-image: url('../icons/home.svg');
+    mask-position: center center;
+    mask-repeat: no-repeat;
+
+    width: 50px;
+    height: 50px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-user {
+    -webkit-mask-image: url('../pic/user.svg');
+    mask-position: center center;
+    mask-repeat: no-repeat;
+
+    width: 50px;
+    height: 50px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-down-arrow {
+    -webkit-mask-image: url('../pic/down-arrow.svg');
+    mask-position: center center;
+    mask-repeat: no-repeat;
+
+    width: 50px;
+    height: 50px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-cog {
+    -webkit-mask-image: url('../pic/cog.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-a {
+    -webkit-mask-image: url('../pic/@.svg');
+
+    width: 26px;
+    height: 26px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-logout {
+    -webkit-mask-image: url('../pic/logout.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-home {
+    -webkit-mask-image: url('../pic/home.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-mail {
+    -webkit-mask-image: url('../pic/mail.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-check {
+    -webkit-mask-image: url('../pic/check.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-clipboard {
+    -webkit-mask-image: url('../pic/clipboard.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-bag {
+    -webkit-mask-image: url('../pic/bag.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-student-cap {
+    -webkit-mask-image: url('../pic/students-cap.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-table {
+    -webkit-mask-image: url('../pic/table.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-backpack {
+    -webkit-mask-image: url('../pic/backpack.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-pencil {
+    -webkit-mask-image: url('../pic/pencil.png');
+
+    width: 100%;
+    height: 100%;
+
+    background-color: currentColor;
+}
+
+.iconv-2-cart {
+    -webkit-mask-image: url('../pic/cart.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
+.iconv-2-export-csv {
+    -webkit-mask-image: url('../pic/export-csv.png');
+
+    width: 30px;
+    height: 30px;
+
+    background-color: currentColor;
+}
+
+/* Icon Size */
+
+.icon-size-1 {
+    width: 70px;
+    height: 70px;
+}
+
+.icon-size-2 {
+    width: 60px;
+    height: 60px;
+}
+
+.icon-size-3 {
+    width: 50px;
+    height: 50px;
+}
+
+.icon-size-4 {
+    width: 40px;
+    height: 40px;
+}
+
+.iconv-2-size-5 {
+    width: 30px;
+    height: 30px;
+}
+
+.iconv-2-size-6 {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-size-7 {
+    width: 10px;
+    height: 10px;
+}
+
+/* ICON INPUT */
+
+.input-icon-search {
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    background-image: url('https://www.w3schools.com/css/searchicon.png');
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+  }

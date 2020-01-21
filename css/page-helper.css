@@ -1,0 +1,809 @@
+body{
+  background-color: #d6d6d3;
+}
+/*===============[subcontent div]===================*/
+
+.subcontent-main-div {
+    margin: 0 auto;
+}
+
+
+/*===============[column]===================*/
+
+.set-flex{
+  display: flex;
+}
+
+.set-none{
+  display: none;
+}
+
+.columns {
+    display: flex;
+    align-items: center;
+}
+
+.column {
+    width: 100%;
+}
+
+.column.is-2 {
+  flex: none;
+  width: 25%;
+}
+
+.column.is-3 {
+  flex: none;
+  width: 37.5%;
+}
+
+.column.is-4 {
+  flex: none;
+  width: 50%;
+}
+
+.column.is-5 {
+  flex: none;
+  width: 62.5%;
+}
+
+.column.is-6 {
+  flex: none;
+  width: 75%;
+}
+
+.column.is-7 {
+  flex: none;
+  width: 87.5%;
+}
+
+.column.is-8 {
+  flex: none;
+  width: 100%;
+}
+
+.column.is-9 {
+  flex: none;
+  width: 66%;
+}
+
+.column.is-10 {
+  flex: none;
+  width: 34%;
+}
+
+.column.is-11 {
+  flex: none;
+  width: 15%;
+}
+
+.two-tone-one{
+    position: relative;
+    padding-left: 27%;
+    padding-top: 15%;
+    top: 0;
+    right: 0;
+    height: auto;
+    min-height: 100%;
+    
+}
+.two-tone-two{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: auto;
+    min-height: 100%;
+    padding: 4% 6.5% 10% ;
+    background: #ffffff;
+}
+
+
+.columns.is-center {
+    justify-content: center;
+}
+
+/*===============[text helper]===================*/
+
+.text-center {
+    text-align: center;
+}
+
+.is-rounded{
+    border-radius: 25px;
+}
+.is-pulled-right {
+    float: right !important;
+}
+
+.is-pulled-left {
+    float: left !important;
+}
+
+/*===============[model]===================*/
+
+.text-topic{
+  align: center;
+}
+
+input[type=textRegis] {
+  float: right !important;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+div.button-zone{
+    margin: 0% 0% 5% 0%;
+}
+
+div.button-course-zone{
+  margin: 0% 0% 3% 0%;
+}
+
+button.register {
+  margin: 8px 0;
+  width: 30%;
+  background-color: dodgerblue;
+  color: white;
+  padding: 15px 10px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  margin: 0% 0% 0% 10%;
+}
+
+button.register-cancle {
+  margin: 0% 0% 0% 19.5%;
+}
+
+button.course-cancle {
+  margin: 0% 0% 0% 18.9%;
+}
+
+button.message {
+  width: 100%;
+  background-color: dodgerblue;
+  color: white;
+  padding: 15px 10px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button.message-no-click {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #666;
+  padding: 15px 10px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button.small {
+  width: 8%;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #666;
+  padding: 1px 1px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button.small-v2 {
+  margin-top: 1%;
+  width: 6%;
+  height: 6%;
+  background: #fff;
+  border: 1px solid rgb(141, 140, 140);
+  color: #666;
+  padding: 1px 1px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+button.small-v3 {
+  margin-top: 1%;
+  width: 14%;
+  height: 6%;
+  background: #fff;
+  border: 1px solid rgb(141, 140, 140);
+  color: #666;
+  padding: 1px 1px;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+
+button.cancel {
+  width: 30%;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  padding: 15px 10px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  margin-left: 36%;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: dodgerblue;
+}
+
+.container {
+  padding: 16px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+}
+
+.sizeText{
+  font-size: 120%;
+}
+
+.maginLeft-check{
+  margin-left: 20%
+}
+
+.maginName{
+  margin: 1.5% 22.3% 1.5% 0%;
+}
+
+.maginEmail{
+  margin: 2% 25% 2% 0%;
+}
+
+.maginUser{
+  margin: 2% 17.9% 2% 0%;
+}
+
+.maginPass{
+  margin: 2.5% 18.3% 2.5% 0%;
+}
+
+.maginConPass{
+  margin: 2% 1% 2% 0%;
+}
+
+.maginNewPass{
+  margin: 2% 9.4% 2% 0%;
+}
+
+.maginCurPass{
+  margin: 2% 3.4% 2% 0%;
+}
+
+.maginRepPass{
+  margin: 2% 4.4% 2% 0%;
+}
+
+.maginTextNavbar-dropdown{
+  margin: 1% 3%;
+}
+
+.maginChangEmail{
+  margin: 2% 1% 2% 0%;
+}
+
+.maginSelectYearText{
+  margin-right: 3%;
+}
+
+.maginNumCourse{
+  margin: 2% 26.2% 2% 0%;
+}
+
+.maginNameCourse{
+  margin: 2% 28.1% 2% 0%;
+}
+
+.maginGroupCourse{
+  margin: 2% 24.1% 2% 0%;
+}
+
+.maginTypeCourse{
+  margin: 2% 1.2% 2% 0%;
+}
+
+.maginTimeLateCourse{
+  margin: 2% 9.3% 2% 0%;
+}
+
+.maginRoomCourse{
+  margin: 2% 24.5% 2% 0%;
+}
+
+.maginDayCourse{
+  margin: 2% 25.3% 2% 0%;
+}
+
+.maginTimeCourse{
+  margin: 2% 21.9% 2% 0%;
+}
+
+.maginRoomCourse-2{
+  margin: 2% 6.7% 2% 0%;
+}
+
+.maginDayCourse-2{
+  margin: 2% 7.5% 2% 0%;
+}
+
+.maginTimeCourse-2{
+  margin: 2% 4.1% 2% 0%;
+}
+
+.maginRoomCourse-3{
+  margin: 2% 13.8% 2% 0%;
+}
+
+.maginDayCourse-3{
+  margin: 2% 14.6% 2% 0%;
+}
+
+.maginTimeCourse-3{
+  margin: 2% 11.2% 2% 0%;
+}
+
+.maginStudentCourse{
+  margin: 2% 20.7% 2% 0%;
+}
+
+.maginTextarea{
+  margin: 0% 2% 2% 0%;
+}
+
+.maginVacationDay{
+  margin: 2% 6% 2% 0%;
+}
+
+.maginVacationNumStudent{
+  margin: 2% 5.2% 2% 0%;
+}
+
+.maginVacationNameStudent{
+  margin: 2% 7.2% 2% 0%;
+}
+
+.maginVacationDays{
+  margin: 2% 8.6% 2% 0%;
+}
+
+.maginNumStudent{
+  margin: 2% 1% 2% 0%;
+}
+
+.maginNameStudent{
+  margin: 2% 3% 2% 0%;
+}
+
+.magirBanchStudent{
+  margin: 2% 6.8% 2% 0%;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+  padding-top: 60px;
+}
+
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 0% auto 0% auto; 
+  border: 1px solid #888;
+  width: 40%;
+}
+
+
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+
+
+.input-container {
+  display: -ms-flexbox; 
+  display: flex;
+  width: 80%;
+  margin: 0% 10% 5% 10%;
+}
+
+.input-textRegis {
+  display: -ms-flexbox; 
+  display: flex;
+  width: 80%;
+  margin: 0% 10% 5% 10%;
+}
+
+.input-textRegis-v2 {
+  display: -ms-flexbox; 
+  display: flex;
+  width: 80%;
+  margin: 0% 10% 1% 10%;
+}
+
+.input-textCourse {
+  display: -ms-flexbox; 
+  display: flex;
+  width: 80%;
+  margin: 0% 10% 1.5% 10%;
+}
+
+.input-textVacation {
+  display: -ms-flexbox; 
+  display: flex;
+  width: 80%;
+  margin: 0% 10% 3% 10%;
+}
+
+.icon {
+  padding: 10px;
+  background: dodgerblue;
+  color: white;
+  min-width: 50px;
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v1 {
+  width: 61%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v1-5 {
+  width: 60.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v2 {
+  width: 85%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v2-5 {
+  width: 84.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v3{
+  width: 56.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v4{
+  width: 75.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v5{
+  width: 56.5%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v5-2{
+  width: 25%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v6{
+  width: 81.3%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v7{
+  width: 83%;
+  height: 45px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v8{
+  width: 15%;
+  height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v9{
+  width: 36%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v10{
+  width: 26.5%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+
+.input-field:focus {
+  border: 2px solid dodgerblue;
+}
+
+button.register:hover {
+  opacity: 1;
+}
+
+/*===============[new]===================*/
+
+body {font-family: Arial, Helvetica, sans-serif;}
+/*form {border: 3px solid #f1f1f1;}*/
+
+.input-login{
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding-right: 0;
+  padding-left: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center bottom,center calc(100% - 1px);
+  background-size: 0 2px,100% 1px;
+  border-bottom: 2px solid #3366ff;
+}
+
+  .fontAwesome{ 
+    font-family: FontAwesome;
+    font-weight: normal;
+    overflow: visible;
+    vertical-align: top;
+    display: inline-block !important;
+    padding-left: 5px;
+    padding-top: 2px;
+    }
+    
+
+.form-material {
+    position: relative;
+}
+
+.form-material.form{
+    margin-top: 40px;
+}
+
+button[type=login], button[type=register] {
+  background-color: #3366ff;
+  color: white;
+  padding: 8px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 5px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.cancelbtn {
+  width: auto;
+  padding: 10px 18px;
+  background-color: #f44336;
+}
+
+.imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+span.psw {
+  float: right;
+  padding-top: 16px;
+  margin-bottom: 20px;
+}
+
+h3.psw{
+    margin-bottom: 30px;
+}
+
+.floating-label {
+    top: 2.6rem;
+    transition: .3s ease all;
+    position: absolute;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 100%) {
+  span.psw {
+     display: block;
+     float: none;
+  }
+  .cancelbtn {
+     width: 100%;
+  }
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+.page-login::before{
+  background-image: url(../pic/login-backg.png);
+  z-index: 0 !important;
+}
+
+.widthImage-login:before {
+  width: 80% !important;
+}
+
+.layout-full::before {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  content: "";
+  background-position: center top;
+  background-size: cover;
+}
+
+.layout-full::after {
+  position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    content: "";
+}
+
+.page::before{
+    z-index: 0 !important;
+    width: 80% !important;
+    height: auto;
+    min-height: 100%;
+}
+
+.logo{
+    padding-left: 35px;
+}
+.logo-name{
+    padding-left: 8px;
+}
+
+.dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-color-1 {
+  background-color: rgb(255, 0, 0);
+}
+
+.dot-color-2 {
+  background-color: rgb(1, 5, 253);
+}
+
+.dot-color-3 {
+  background-color: rgb(238, 255, 0);
+}
+
+.magin-clicle{
+  margin: 5% 0% 5% 2%;
+}
+
+
+
+
+
+
