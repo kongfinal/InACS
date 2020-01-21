@@ -29,6 +29,16 @@ include('h.php');
 <body>
 <style>
 
+.input-field-v8-2{
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
 
 </style>
 
@@ -135,20 +145,26 @@ include('h.php');
                         <div class="set-flex" style="margin-top: 2%;">
                             <form name="Check" action="FCheckNameStudent.php" method="post" style="margin-right: 1.5%;  margin-bottom: 0%; width: 83%;">
                                 <input class="is-pulled-right" name="CheckName" style="text-align: center; font-size: 24px; width: 100%; height: 100%" type="textRegis" value="" 
-                                autocomplete=off>
+                                autocomplete=off autofocus>
                             </form>
                         <form name="SaveCheck" action="FCheckNameStudent.php" method="post" >
                             <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();">
                                 <i class="material-icons" style="font-size: 40px;">save</i>
                             </button>
+                        </form>
                         </div>
                         <div class="set-flex" style="margin-bottom: 1%;">
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>หักคะแนน (เครื่องแต่งกาย/ลืมบัตรนิสิต) :</b></div>
-                            <input class="is-pulled-right input-field-v8" type="textRegis" name="scoreDeducted" value="" style="margin-top: 1.5%; margin-right: 6.6%;">
+
+                            <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%"></form>
+
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
-                            <input class="is-pulled-right input-field-v8" type="textRegis" name="scoreExtra" value="" style="margin-top: 1.5%;">
+
+                            <form name="SaveScoreExtra" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; width: 15%; height: 35px;" >
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%"></form>
+
                         </div>
-                        </form>
                         <div class="set-flex" >
                             <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 12.2%;"><b>รหัสนิสิต :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
