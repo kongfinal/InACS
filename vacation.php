@@ -10,6 +10,9 @@ $_SESSION["PaginationSelectStudent"] = 1;
 $_SESSION["IDTermCheck"] = $_SESSION["IDTermFirstCheck"];
 $_SESSION["PaginationSelectCheck"] = 1;
 
+$_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
+$_SESSION["PaginationSelectResult"] = 1;
+
 $_SESSION["NumberCheckStudent"] = "";
 $_SESSION["IDCheckStudent"] = "";
 $_SESSION["NameCheckStudent"] = "";

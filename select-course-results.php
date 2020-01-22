@@ -1,6 +1,6 @@
 <?php session_start();
 
-
+include('condb.php');
 $_SESSION["IDTerm"] = $_SESSION["IDTermFirst"];
 $_SESSION["Pagination"] = 1;
 
@@ -24,10 +24,115 @@ $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
 
+$name = $_SESSION['Name'];
+$email = $_SESSION['Email'];
+$username = $_SESSION['Username'];
+$password = $_SESSION['Password'];
+
+
+$queryTerm = "SELECT * FROM `inacs_term`";
+$termSelect = mysqli_query($con,$queryTerm);
+
+$optionsTerm = "";
+$dataTerm = array();
+
+while($rowTerm = mysqli_fetch_array($termSelect)){
+    array_push($dataTerm,array($rowTerm[2],$rowTerm[1],$rowTerm[0]));
+}
+
+sort($dataTerm);
+
+$_SESSION["IDTermFirstResult"] = $dataTerm[count($dataTerm)-1][2];
+
+for ($x = count($dataTerm)-1; $x >= 0; $x-=1) {
+    $idTerm = $dataTerm[$x][2];
+    $NumTerm = $dataTerm[$x][1];
+    $YearTerm = $dataTerm[$x][0];
+    if($_SESSION["IDTermResult"] == $idTerm){
+        $optionsTerm  = $optionsTerm."<option value=$idTerm selected>$NumTerm/$YearTerm</option>";
+    }else{
+        $optionsTerm  = $optionsTerm."<option value=$idTerm>$NumTerm/$YearTerm</option>";
+    } 
+}
+
+addCoursetoTable($_SESSION["IDTermResult"]);
 
 ?>
 <?php
 include('h.php');
+include('condb.php');
+
+function addCoursetoTable($IdTermSearch){
+    include('condb.php');
+    $queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='$IdTermSearch' AND NameTeacher='".$_SESSION["Name"]."'";
+    $CourseTable = mysqli_query($con,$queryCourse);
+    $tableCourse = "";
+    $dataCourse = array();
+
+    if(mysqli_num_rows($CourseTable) > 0){
+        while ($row = mysqli_fetch_assoc($CourseTable)) {
+            array_push($dataCourse,array($row['Number'],$row['GroupCourse'],$row['ID'],$row['Name'],$row['Type'],$row['Room'],$row['TimeLate']));
+
+        }
+    }
+
+    sort($dataCourse);
+
+    if(mysqli_num_rows($CourseTable) > 0){
+    for ($x = 0; $x < 5; $x+=1) {
+        $page = ($_SESSION["PaginationSelectResult"]-1) * 5;
+
+        $rowNumber=$dataCourse[$x+$page][0];
+        $rowName=$dataCourse[$x+$page][3];
+        $rowGroupCourse=$dataCourse[$x+$page][1];
+        $rowType=$dataCourse[$x+$page][4];
+        $rowID=$dataCourse[$x+$page][2];
+
+        $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FResultCheckNameStudent.php?idCourse=$rowID' title=ดับเบิลคลิกเพื่อไปหน้าผลการเช็คชื่อนิสิตของรายวิชานี้>";
+        $tableCourse  = $tableCourse."<td>$rowNumber</td>";
+        $tableCourse  = $tableCourse."<td>$rowName</td>";
+        $tableCourse  = $tableCourse."<td>$rowGroupCourse</td>";
+        $tableCourse  = $tableCourse."</tr>";
+
+        if($x+$page >= count($dataCourse)-1){
+            break;
+        }
+    }
+    }
+
+    CreatePagination(mysqli_num_rows($CourseTable));
+    return $_SESSION["CourseTableInResult"] = $tableCourse;
+}
+
+
+function CreatePagination($CourseNum){
+
+    $lastPage = 0;
+    if($_SESSION["PaginationSelectResult"] == 1){
+        $Pagination = $Pagination."<input type=submit name=Pagination value=&laquo; disabled></input>";
+    }else{
+        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อย้อนกลับไปตารางก่อนหน้า value=&laquo; ></input>";
+    }
+    
+    for ($x = 0; $x*5 < $CourseNum;) {
+        $x+=1;
+        if($_SESSION["PaginationSelectResult"] == $x){
+            $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x class=active value=$x ></input>";
+        }else{
+            $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x value=$x ></input>";
+        }
+        $lastPage = $x;
+    }
+
+    if($_SESSION["PaginationSelectResult"] == $lastPage || ($_SESSION["PaginationSelectResult"] == 1 && $lastPage == 0)){
+        $Pagination = $Pagination."<input type=submit name=Pagination value=&raquo; disabled></input>";
+    }else{
+        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางถัดไป value=&raquo; ></input>";
+    }
+    
+    return $_SESSION["PaginationCourseTableInResult"] = $Pagination;
+}
+
 ?>
 
 <body>
@@ -36,40 +141,6 @@ include('h.php');
 
 </style>
 
-<?php
-
-if(isset($_POST['changePass'])){
-  if (empty($_POST["new-password"])) {
-    echo "<script type='text/javascript'>alert('New Password is required');</script>";
-  } else if (empty($_POST["curr-password"])) {
-    echo "<script type='text/javascript'>alert('Current Password is required');</script>";
-  } else if (empty($_POST["rep-password"])) {
-    echo "<script type='text/javascript'>alert('Repeat Password is required');</script>";
-  } else{
-    $new = trim(htmlspecialchars($_POST['new-password']));
-    $current = trim(htmlspecialchars($_POST['curr-password']));
-    $repeat = trim(htmlspecialchars($_POST['rep-password']));
-    if ($new !== $repeat) {
-      echo "<script type='text/javascript'>alert('New Password not same Repeat Password');</script>";
-    }else if($current === $new) {
-      echo "<script type='text/javascript'>alert('New Password same Current Password');</script>";
-    }
-  }
-}
-
-if(isset($_POST['changeEmail'])){
-  if (empty($_POST["email"])) {
-    echo "<script type='text/javascript'>alert('Email is required');</script>";
-  }else {
-    $email = trim(htmlspecialchars($_POST['email']));
-    $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-    if ($email === false) {
-      echo "<script type='text/javascript'>alert('Invalid Email');</script>";
-    }
-  }
-}
-
-?>
 
 <div class="navbar-div">
         <nav class="navbarv-2 is-dodgerblue" aria-label="main navigation">
@@ -78,10 +149,10 @@ if(isset($_POST['changeEmail'])){
                     <span class="navbar-banner-text">InACS</span>
                 </div>
             </a>
-            <button id="navbar-user" class="navbar-item user" onclick="switchNavBarDropDown()">
-                <div class="user-container">
+            <button id="navbar-user" class="navbar-item user" onclick="if (document.getElementById('navbar-dropdown').classList.contains('is-active'))  return document.getElementById('navbar-dropdown').classList.remove('is-active'); else return document.getElementById('navbar-dropdown').classList.add('is-active');">
+                <div class="user-container" title="คลิกเพื่อแสดง/ปิด navbar">
                     <svg class="navbar-user-iconv-2 iconv-2-user iconv-2-size-5"></svg>
-                    <span class="navbar-user-text">Teacher Name</span>
+                    <span class="navbar-user-text"><?php echo $name; ?></span>
                     <svg class="navbar-user-iconv-2 iconv-2-down-arrow iconv-2-size-6"></svg>
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
@@ -166,14 +237,17 @@ if(isset($_POST['changeEmail'])){
                         <br>
                         <div class="set-flex" >
                             <div style="margin-top: 1.5%; font-size: 18px;">ภาคเรียน :&nbsp</div>
-                            <div class="select-margin-v1 select-input " style="width:13%; margin-right: 66%;">
-                                <select style="width:100%; height: auto; padding: 5px 2px; ">
-                                <option >Select :</option>
-                                </select>
+                            <div class="select-margin-v1 select-input " style="width:13%; margin-right: 66%;">                             
+                            <form name="changeTerm" action="FResultCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
+                                    <select name="terms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกภาคเรียน">
+                                        <?php echo $optionsTerm;?>
+                                    </select>
+                            </form>
+
                             </div>
 
-                            <button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_left</i></button>
-                            <button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_right</i></button>
+                            <!--<button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_left</i></button>
+                            <button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_right</i></button>-->
                         </div>
                         <br>
                         <table id="table-starter">
@@ -182,32 +256,19 @@ if(isset($_POST['changeEmail'])){
                                 <th>ชื่อวิชา</th>
                                 <th>กลุ่มเรียน</th>
                             </tr>
-                            <tr ondblclick="document.location.href='name-check-result.php'">
-                                <td>88624359</td>
-                                <td>Web Programming</td>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                                <td>&nbsp</td>
-                            </tr>
+                            <?php
+                                echo $_SESSION["CourseTableInResult"] ;
+                            ?>
                         </table>
+                        <div class="pagination" style="width: 100%; text-align: center;">
+                            <div style="display: inline-block;">
+                            <form name="changePagination" action="FResultCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
+                                <?php
+                                    echo $_SESSION["PaginationCourseTableInResult"] ;
+                                ?>
+                            </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -217,23 +278,23 @@ if(isset($_POST['changeEmail'])){
 
 <div id="ChangePassFormv.2" class="modal">
   
-  <form class="modal-content animate" method="post">
+  <form class="modal-content animate" action="FChangePassword.php" method="post">
 
     <h2 class="text-topic" align="center" style="margin-bottom:3%;margin-top:3%;">เปลี่ยนรหัสผ่าน</h2> 
     
   <div class="input-textRegis">
         <div class="sizeText maginNewPass"><b>New Password :</b></div>
-        <input class="is-pulled-right input-field-v1-5" type="textRegis" name="new-password" value="" >
+        <input class="is-pulled-right input-field-v1-5" type="textRegis" name="new-password" value="" autocomplete=off>
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginCurPass"><b>Current Password :</b></div>
-        <input class="is-pulled-right input-field-v1-5" type="password" name="curr-password" value="" >
+        <input class="is-pulled-right input-field-v1-5" type="password" name="curr-password" value="<?php echo $password; ?>" >
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginRepPass"><b>Repeat Password :</b></div>
-        <input class="is-pulled-right input-field-v1-5"  type="password" name="rep-password" value="">
+        <input class="is-pulled-right input-field-v1-5"  type="password" name="rep-password" value="" autocomplete=off>
   </div>
 
   <div class="button-zone">
@@ -246,13 +307,13 @@ if(isset($_POST['changeEmail'])){
 
   <div id="ChangeEmail" class="modal">
   
-  <form class="modal-content animate" method="post">
+  <form class="modal-content animate" action="FChangeEmail.php" method="post">
 
     <h2 class="text-topic" align="center" style="margin-bottom:3%;margin-top:3%;">เปลี่ยนอีเมล</h2> 
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>E-mail :</b></div>
-        <input class="is-pulled-right input-field-v2-5" type="textRegis" name="email" value="" >
+        <input class="is-pulled-right input-field-v2-5" type="textRegis" name="email" value="<?php echo $email; ?>" autocomplete=off>
   </div>
 
   <div class="button-zone">
@@ -263,27 +324,6 @@ if(isset($_POST['changeEmail'])){
 </div>
 
 
-<script>
-var modalChangePass = document.getElementById('ChangePassFormv.2');
-var modalChangeEmail = document.getElementById('ChangeEmail');
-
-window.onclick = function(event) {
-    if(event.target == modalChangePass) {
-        modalChangePass.style.display = "none";
-    }else if(event.target == modalChangeEmail) {
-        modalChangeEmail.style.display = "none";
-    }
-}
-
-function switchNavBarDropDown() {
-    var dropdown = document.getElementById('navbar-dropdown');
-    if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active');
-    } else {
-        dropdown.classList.add('is-active');
-    }
-}
-</script>
 
 </body>
 </html>

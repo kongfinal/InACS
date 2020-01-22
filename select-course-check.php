@@ -20,6 +20,9 @@ $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
+$_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
+$_SESSION["PaginationSelectResult"] = 1;
+
 
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];
@@ -248,7 +251,7 @@ function CreatePagination($CourseNum){
                                     <select name="terms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกภาคเรียน">
                                         <?php echo $optionsTerm;?>
                                     </select>
-                                </form>
+                            </form>
                             </div>
 
                             <!--<button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_left</i></button>

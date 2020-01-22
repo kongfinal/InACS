@@ -13,6 +13,9 @@ $_SESSION["PaginationVacation"] = 1;
 $_SESSION["IDTermCheck"] = $_SESSION["IDTermFirstCheck"];
 $_SESSION["PaginationSelectCheck"] = 1;
 
+$_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
+$_SESSION["PaginationSelectResult"] = 1;
+
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];
 $username = $_SESSION['Username'];
@@ -148,7 +151,7 @@ include('h.php');
                                 autocomplete=off autofocus>
                             </form>
                         <form name="SaveCheck" action="FCheckNameStudent.php" method="post" >
-                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();">
+                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อบันทึกข้อมูลการเช็คชื่อ">
                                 <i class="material-icons" style="font-size: 40px;">save</i>
                             </button>
                         </form>
