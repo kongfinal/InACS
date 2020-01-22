@@ -13,6 +13,14 @@ $_SESSION["PaginationVacation"] = 1;
 $_SESSION["IDTermCheck"] = $_SESSION["IDTermFirstCheck"];
 $_SESSION["PaginationSelectCheck"] = 1;
 
+$_SESSION["NumberCheckStudent"] = "";
+$_SESSION["IDCheckStudent"] = "";
+$_SESSION["NameCheckStudent"] = "";
+$_SESSION["TimeCheckStudent"] = ""; 
+$_SESSION["StatusCheckStudent"] = "";
+$_SESSION["NumberAbsentCheckStudent"] = "";
+$_SESSION["NumberLateStudent"] = "";
+$_SESSION["ScoreDeductedCheckStudent"] = "";
 
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];
