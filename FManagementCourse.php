@@ -88,6 +88,7 @@ session_start();
                     if(! empty($_POST["CheckBoxType"])){
                         for($i=0;$i<count($_POST["CheckBoxType"]);$i++){
                             if(trim($_POST["CheckBoxType"][$i]) != ""){
+
                                 $typeCourse = $_POST['CheckBoxType'][$i];
                                 include("condb.php");
         
@@ -98,298 +99,487 @@ session_start();
         
                                 if($typeCourse=="Lecture"){
 
-                                    $checkDataTimeLec = array();
-                                    array_push($checkDataTimeLec,$_POST["TimeCourseLec-1"]);
-                                    array_push($checkDataTimeLec,$_POST["TimeCourseLec-2"]);
-                                    sort($checkDataTimeLec);
 
-                                    $time_days = array('08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00');
+    
+                                    if(! empty($_POST["CheckBoxMergeLac"])){
 
-                                    $DurationTimeCourseLec1 = false;
-                                    $DurationTimeCourseLec2 = false;
-                                    for($x = 0; $x < count($time_days);$x+=1){
-                                        if($time_days[$x] == $_POST["TimeCourseLec-1"]){
-                                            $DurationTimeCourseLec1 = true;
-                                        }else if($time_days[$x] == $_POST["TimeCourseLec-2"]){
-                                            $DurationTimeCourseLec2 = true;
-                                        }
-                                    }
 
-                                    $searchDaySQL="SELECT * FROM inacs_course WHERE IDTerm='$term' AND NameTeacher='".$_SESSION["Name"]."' AND Day='".$_POST['DayCourseLec']."' ";
-                                    $resultDay = mysqli_query($con,$searchDaySQL);
-                                    while ($row = mysqli_fetch_assoc($resultDay)) {
-                                            for($x = 0; $x < count($time_days)-1;){
-                                                if($time_days[$x]==$row['TimeStart']){
-                                                    $duration = 0;
-                                                    for($z = 1; $time_days[$x+$z] != $row['TimeEnd']; $z+=1){
-                                                        $time_days[$x+$z]="full";
-                                                        $duration+=1;
+                                        if(empty($_POST["GroupCourseMergeLec"])) {
+                                            echo "<script>";
+                                                echo "alert(\" โปรดใส่ข้อมูลกลุ่มที่จะรวมของ Lecture\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else{
+                                            
+
+                                            $searchSQL="SELECT * FROM inacs_course 
+                                            WHERE IDTerm='$term' 
+                                            AND Number='$numberCourse' 
+                                            AND NameTeacher='".$_SESSION["Name"]."'
+                                            AND Name='$nameCourse'
+                                            AND GroupCourse='$groupCourse' 
+                                            AND Type='$typeCourse' ";
+                                            
+                                            $result = mysqli_query($con,$searchSQL);
+
+                                    
+                                            
+                                            if(mysqli_num_rows($result) == 0){
+
+                                                $groupCourseMerge = $_POST['GroupCourseMergeLec'];
+
+                                                $searchCourseMergeSQL="SELECT * FROM inacs_course 
+                                                WHERE IDTerm='$term' 
+                                                AND Number='$numberCourse' 
+                                                AND NameTeacher='".$_SESSION["Name"]."'
+                                                AND Name='$nameCourse'
+                                                AND GroupCourse='$groupCourseMerge' 
+                                                AND Type='$typeCourse' ";
+
+                                                $resultCourseMerge = mysqli_query($con,$searchCourseMergeSQL);
+                                                if(mysqli_num_rows($resultCourseMerge) == 1){
+                                                    while ($row = mysqli_fetch_assoc($resultCourseMerge)) {
+                                                        $courseID = $row['ID'];
+                                                        $GroupCourseArray = explode("+", $row['GroupCourse']);
+                                                        $GroupCourseNew = "";
+
+                                                        array_push($GroupCourseArray,$groupCourse);
+                                                        sort($GroupCourseArray);
+
+                                                        for($x = 0;$x < count($GroupCourseArray);$x+=1){
+                                                            if($x != count($GroupCourseArray)-1){
+                                                                $GroupCourseNew = $GroupCourseNew."$GroupCourseArray[$x]+";
+                                                            }else{
+                                                                $GroupCourseNew = $GroupCourseNew."$GroupCourseArray[$x]";
+                                                            }
+                                                        }
+
+                                                        $strSQL = "UPDATE inacs_course SET GroupCourse='$GroupCourseNew' 
+                                                        WHERE ID='$courseID' ";
+                                                        $objQuery = mysqli_query($con,$strSQL);
+                                                        if($objQuery){
+                                                            echo "<script>";
+                                                                echo "alert(\" Merge Course Complete\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }else{
+                                                            echo "<script>";
+                                                                echo "alert(\" Merge Course Error\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }
                                                     }
-                                                    $x+=$duration;
+
                                                 }else{
-                                                    $x+=1;
+                                                    echo "<script>";
+                                                    echo "alert(\" ข้อมูลรายวิชาที่จะรวมไม่มีในระบบ\");";
+                                                    echo "window.history.back()";
+                                                    echo "</script>";
+                                                }
+
+                                            }else{
+                                                echo "<script>";
+                                                echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");"; 
+                                                echo "window.history.back()";
+                                                echo "</script>";
+                                            }
+
+
+                                        }
+
+
+                                    }else{
+                                        $checkDataTimeLec = array();
+                                        array_push($checkDataTimeLec,$_POST["TimeCourseLec-1"]);
+                                        array_push($checkDataTimeLec,$_POST["TimeCourseLec-2"]);
+                                        sort($checkDataTimeLec);
+    
+                                        $time_days = array('08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00');
+    
+                                        $DurationTimeCourseLec1 = false;
+                                        $DurationTimeCourseLec2 = false;
+                                        for($x = 0; $x < count($time_days);$x+=1){
+                                            if($time_days[$x] == $_POST["TimeCourseLec-1"]){
+                                                $DurationTimeCourseLec1 = true;
+                                            }else if($time_days[$x] == $_POST["TimeCourseLec-2"]){
+                                                $DurationTimeCourseLec2 = true;
+                                            }
+                                        }
+    
+                                        $searchDaySQL="SELECT * FROM inacs_course WHERE IDTerm='$term' AND NameTeacher='".$_SESSION["Name"]."' AND Day='".$_POST['DayCourseLec']."' ";
+                                        $resultDay = mysqli_query($con,$searchDaySQL);
+                                        while ($row = mysqli_fetch_assoc($resultDay)) {
+                                                for($x = 0; $x < count($time_days)-1;){
+                                                    if($time_days[$x]==$row['TimeStart']){
+                                                        $duration = 0;
+                                                        for($z = 1; $time_days[$x+$z] != $row['TimeEnd']; $z+=1){
+                                                            $time_days[$x+$z]="full";
+                                                            $duration+=1;
+                                                        }
+                                                        $x+=$duration;
+                                                    }else{
+                                                        $x+=1;
+                                                    }
+                                                }
+                                        }
+    
+                                        $TimeCourseLec1 = false;
+                                        $TimeCourseLec2 = false;
+                                        for($x = 0; $x < count($time_days);$x+=1){
+                                            if($time_days[$x]==$_POST["TimeCourseLec-1"]){
+                                                $TimeCourseLec1 = true;
+                                            }else if($TimeCourseLec1){
+                                                if($time_days[$x]==$_POST["TimeCourseLec-2"]){
+                                                    $TimeCourseLec2 = true;
+                                                }else if($time_days[$x] != "full"){
+                                                    continue;
+                                                }else{
+                                                    break;
                                                 }
                                             }
-                                    }
+                                        }
+    
+    
+    
+                                        if (empty($_POST["RoomCourseLec"]) or empty($_POST["TimeCourseLec-1"]) or empty($_POST["TimeCourseLec-2"])) {
+                                            echo "<script>";
+                                                echo "alert(\" โปรดใส่ข้อมูลประเภท Lecture ให้ครบ\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($checkDataTimeLec[0] != $_POST["TimeCourseLec-1"] && $checkDataTimeLec[1] != $_POST["TimeCourseLec-2"]){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเริ่มเรียน Lecture มากกว่าเวลาเลิกเรียน\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($_POST["TimeCourseLec-1"] ==  $_POST["TimeCourseLec-2"]){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเริ่มเรียน Lecture เท่ากับเวลาเลิกเรียน\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($DurationTimeCourseLec1 == false || $DurationTimeCourseLec2 == false){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเรียน Lecture มีนาที หรือ ไม่ได้อยู่ในช่วง 08:00-21:00 \");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($TimeCourseLec1 == false || $TimeCourseLec2 == false){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเรียน Lecture ทับกับเวลาเรียนของรายวิชาอื่นในระบบ\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else{
+                                            $roomCourse = $_POST['RoomCourseLec'];
+                                            $TimeCourse1 = $_POST['TimeCourseLec-1'];
+                                            $TimeCourse2 = $_POST['TimeCourseLec-2'];
+                                            $dayCourse = $_POST['DayCourseLec'];
+        
+                                            $searchSQL="SELECT * FROM inacs_course 
+                                            WHERE IDTerm='$term' 
+                                            AND Number='".$numberCourse."' 
+                                            AND NameTeacher='".$_SESSION["Name"]."'
+                                            AND Name='".$nameCourse."' 
+                                            AND GroupCourse='$groupCourse' 
+                                            AND Type='".$typeCourse."' 
+                                            ";
+                                            $result = mysqli_query($con,$searchSQL);
 
-                                    $TimeCourseLec1 = false;
-                                    $TimeCourseLec2 = false;
-                                    for($x = 0; $x < count($time_days);$x+=1){
-                                        if($time_days[$x]==$_POST["TimeCourseLec-1"]){
-                                            $TimeCourseLec1 = true;
-                                        }else if($TimeCourseLec1){
-                                            if($time_days[$x]==$_POST["TimeCourseLec-2"]){
-                                                $TimeCourseLec2 = true;
-                                            }else if($time_days[$x] != "full"){
-                                                continue;
+
+
+                                            if(mysqli_num_rows($result) == 0){
+                        
+                                                $strSQL = "INSERT INTO inacs_course ";
+                                                $strSQL .="(ID,NameTeacher,IDTerm,Number,Name,GroupCourse,Type,Room,TimeLate, TimeStart,TimeEnd,Day) ";
+                                                $strSQL .="VALUES ";
+                                                $strSQL .="(NULL,'".$_SESSION["Name"]."','$term','$numberCourse','".$nameCourse."','$groupCourse','".$typeCourse."','".$roomCourse."','$timeLateCourse','".$TimeCourse1."','".$TimeCourse2."','".$dayCourse."'
+                                                        ) ";
+                                                $objQuery = mysqli_query($con,$strSQL);
+    
+                                                if($objQuery){
+    
+                                                    $searchCourseSQL="SELECT * FROM inacs_course 
+                                                    WHERE NameTeacher='".$_SESSION["Name"]."' 
+                                                    AND IDTerm='$term' 
+                                                    AND Number='$numberCourse' 
+                                                    AND Name='$nameCourse' 
+                                                    AND GroupCourse='$groupCourse' 
+                                                    AND Type='$typeCourse'  ";
+                                                    $resultCourse = mysqli_query($con,$searchCourseSQL);
+                        
+                                                    if(mysqli_num_rows($resultCourse)==1){
+                        
+                                                        while($row = mysqli_fetch_assoc($resultCourse)){
+                                                            $_SESSION["IDCourseToCreateCheck"] = $row['ID'];
+                                                        }
+                        
+                                                        $strSQL = "INSERT INTO inacs_check ";
+                                                        $strSQL .="(ID,IDCourse,NumberCheck) ";
+                                                        $strSQL .="VALUES ";
+                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','0' ) ";                 
+                                                        $objQuery = mysqli_query($con,$strSQL);
+                        
+                                                        if($objQuery){
+                                                            echo "<script>";
+                                                                echo "alert(\" Add Course Complete\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }
+                                                    }
+    
+                                                }else{
+                                                    echo "<script>";
+                                                        echo "alert(\" Add Course Error\");"; 
+                                                        echo "window.history.back()";
+                                                    echo "</script>";
+                                                }
+                                                    
                                             }else{
-                                                break;
+                                                echo "<script>";
+                                                    echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");";
+                                                    echo "window.history.back()";
+                                                echo "</script>";
                                             }
+
                                         }
                                     }
 
 
+                                    
+                                }else{
 
-                                    if (empty($_POST["RoomCourseLec"]) or empty($_POST["TimeCourseLec-1"]) or empty($_POST["TimeCourseLec-2"])) {
-                                        echo "<script>";
-                                            echo "alert(\" โปรดใส่ข้อมูลประเภท Lecture ให้ครบ\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($checkDataTimeLec[0] != $_POST["TimeCourseLec-1"] && $checkDataTimeLec[1] != $_POST["TimeCourseLec-2"]){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเริ่มเรียน Lecture มากกว่าเวลาเลิกเรียน\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($_POST["TimeCourseLec-1"] ==  $_POST["TimeCourseLec-2"]){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเริ่มเรียน Lecture เท่ากับเวลาเลิกเรียน\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($DurationTimeCourseLec1 == false || $DurationTimeCourseLec2 == false){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเรียน Lecture มีนาที หรือ ไม่ได้อยู่ในช่วง 08:00-21:00 \");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($TimeCourseLec1 == false || $TimeCourseLec2 == false){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเรียน Lecture ทับกับเวลาเรียนของรายวิชาอื่นในระบบ\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
+                                    if(! empty($_POST["CheckBoxMergeLab"])){
+
+                                        if(empty($_POST["GroupCourseMergeLab"])) {
+                                            echo "<script>";
+                                                echo "alert(\" โปรดใส่ข้อมูลกลุ่มที่จะรวมของ Lab\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else{
+                                            
+
+                                            $searchSQL="SELECT * FROM inacs_course 
+                                            WHERE IDTerm='$term' 
+                                            AND Number='$numberCourse' 
+                                            AND NameTeacher='".$_SESSION["Name"]."'
+                                            AND Name='$nameCourse'
+                                            AND GroupCourse='$groupCourse' 
+                                            AND Type='$typeCourse' ";
+                                            
+                                            $result = mysqli_query($con,$searchSQL);
+
+
+                                            if(mysqli_num_rows($result) == 0){
+
+                                                $groupCourseMerge = $_POST['GroupCourseMergeLab'];
+
+                                                $searchCourseMergeSQL="SELECT * FROM inacs_course 
+                                                WHERE IDTerm='$term' 
+                                                AND Number='$numberCourse' 
+                                                AND NameTeacher='".$_SESSION["Name"]."'
+                                                AND Name='$nameCourse'
+                                                AND GroupCourse='$groupCourseMerge' 
+                                                AND Type='$typeCourse' ";
+
+                                                $resultCourseMerge = mysqli_query($con,$searchCourseMergeSQL);
+                                                if(mysqli_num_rows($resultCourseMerge) == 1){
+                                                    while ($row = mysqli_fetch_assoc($resultCourseMerge)) {
+                                                        $courseID = $row['ID'];
+                                                        $GroupCourseArray = explode("+", $row['GroupCourse']);
+                                                        $GroupCourseNew = "";
+
+                                                        array_push($GroupCourseArray,$groupCourse);
+                                                        sort($GroupCourseArray);
+
+                                                        for($x = 0;$x < count($GroupCourseArray);$x+=1){
+                                                            if($x != count($GroupCourseArray)-1){
+                                                                $GroupCourseNew = $GroupCourseNew."$GroupCourseArray[$x]+";
+                                                            }else{
+                                                                $GroupCourseNew = $GroupCourseNew."$GroupCourseArray[$x]";
+                                                            }
+                                                        }
+
+                                                        $strSQL = "UPDATE inacs_course SET GroupCourse='$GroupCourseNew' 
+                                                        WHERE ID='$courseID' ";
+                                                        $objQuery = mysqli_query($con,$strSQL);
+                                                        if($objQuery){
+                                                            echo "<script>";
+                                                                echo "alert(\" Merge Course Complete\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }else{
+                                                            echo "<script>";
+                                                                echo "alert(\" Merge Course Error\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }
+                                                    }
+
+                                                }else{
+                                                    echo "<script>";
+                                                    echo "alert(\" ข้อมูลรายวิชาที่จะรวมไม่มีในระบบ\");";
+                                                    echo "window.history.back()";
+                                                    echo "</script>";
+                                                }
+
+                                            }else{
+                                                echo "<script>";
+                                                echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");"; 
+                                                echo "window.history.back()";
+                                                echo "</script>";
+                                            }
+
+
+                                        }
+
                                     }else{
-                                        $roomCourse = $_POST['RoomCourseLec'];
-                                        $TimeCourse1 = $_POST['TimeCourseLec-1'];
-                                        $TimeCourse2 = $_POST['TimeCourseLec-2'];
-                                        $dayCourse = $_POST['DayCourseLec'];
-    
-                                        $searchSQL="SELECT * FROM inacs_course 
-                                        WHERE IDTerm='$term' 
-                                        AND Number='".$numberCourse."' 
-                                        AND NameTeacher='".$_SESSION["Name"]."'
-                                        AND Name='".$nameCourse."' 
-                                        AND GroupCourse='".$groupCourse."' 
-                                        AND Type='".$typeCourse."' 
-                                        ";
+                                        $checkDataTimeLab = array();
+                                        array_push($checkDataTimeLab,$_POST["TimeCourseLab-1"]);
+                                        array_push($checkDataTimeLab,$_POST["TimeCourseLab-2"]);
+                                        sort($checkDataTimeLab);
+
+                                        $time_days = array('08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00');
+
+                                        $DurationTimeCourseLab1 = false;
+                                        $DurationTimeCourseLab2 = false;
+                                        for($x = 0; $x < count($time_days);$x+=1){
+                                            if($time_days[$x] == $_POST["TimeCourseLab-1"]){
+                                                $DurationTimeCourseLab1 = true;
+                                            }else if($time_days[$x] == $_POST["TimeCourseLab-2"]){
+                                                $DurationTimeCourseLab2 = true;
+                                            }
+                                        }
+
+                                        $searchDaySQL="SELECT * FROM inacs_course WHERE IDTerm='$term' AND NameTeacher='".$_SESSION["Name"]."' AND Day='".$_POST['DayCourseLab']."' ";
+                                        $resultDay = mysqli_query($con,$searchDaySQL);
+                                        while ($row = mysqli_fetch_assoc($resultDay)) {
+                                                for($x = 0; $x < count($time_days)-1;){
+                                                    if($time_days[$x]==$row['TimeStart']){
+                                                        $duration = 0;
+                                                        for($z = 1; $time_days[$x+$z] != $row['TimeEnd']; $z+=1){
+                                                            $time_days[$x+$z]="full";
+                                                            $duration+=1;
+                                                        }
+                                                        $x+=$duration;
+                                                    }else{
+                                                        $x+=1;
+                                                    }
+                                                }
+                                        }
+
+                                        $TimeCourseLab1 = false;
+                                        $TimeCourseLab2 = false;
+                                        for($x = 0; $x < count($time_days);$x+=1){
+                                            if($time_days[$x]==$_POST["TimeCourseLab-1"]){
+                                                $TimeCourseLab1 = true;
+                                            }else if($TimeCourseLab1){
+                                                if($time_days[$x]==$_POST["TimeCourseLab-2"]){
+                                                    $TimeCourseLab2 = true;
+                                                }else if($time_days[$x] != "full"){
+                                                    continue;
+                                                }else{
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (empty($_POST["RoomCourseLab"]) or empty($_POST["TimeCourseLab-1"]) or empty($_POST["TimeCourseLab-2"])) {
+                                            echo "<script>";
+                                                echo "alert(\" โปรดใส่ข้อมูลประเภท Lab ให้ครบ\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($_POST["TimeCourseLab-1"] ==  $_POST["TimeCourseLab-2"]){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเริ่มเรียน Lab เท่ากับเวลาเลิกเรียน\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($checkDataTimeLab[0] != $_POST["TimeCourseLab-1"] && $checkDataTimeLab[1] != $_POST["TimeCourseLab-2"]){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเริ่มเรียน Lab มากกว่าเวลาเลิกเรียน\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($DurationTimeCourseLab1 == false || $DurationTimeCourseLab2 == false){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเรียน Lab มีนาที หรือ ไม่ได้อยู่ในช่วง 08:00-21:00\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else if($TimeCourseLab1 == false || $TimeCourseLab2 == false){
+                                            echo "<script>";
+                                                echo "alert(\" เวลาเรียน Lab ทับกับเวลาเรียนของรายวิชาอื่นในระบบ\");"; 
+                                                echo "window.history.back()";
+                                            echo "</script>";
+                                        }else{
+                                            $roomCourse = $_POST['RoomCourseLab'];
+                                            $TimeCourse1 = $_POST['TimeCourseLab-1'];
+                                            $TimeCourse2 = $_POST['TimeCourseLab-2'];
+                                            $dayCourse = $_POST['DayCourseLab'];
+                                            $searchSQL="SELECT * FROM inacs_course 
+        
+                                            WHERE IDTerm='$term' 
+                                            AND Number='".$numberCourse."' 
+                                            AND NameTeacher='".$_SESSION["Name"]."'
+                                            AND Name='".$nameCourse."' 
+                                            AND GroupCourse='$groupCourse' 
+                                            AND Type='".$typeCourse."' 
+                                            ";
                                         $result = mysqli_query($con,$searchSQL);
-                                        if(mysqli_num_rows($result)==0){
-                    
+
+
+                                            
+                                        if(mysqli_num_rows($result) == 0){
+                
                                             $strSQL = "INSERT INTO inacs_course ";
                                             $strSQL .="(ID,NameTeacher,IDTerm,Number,Name,GroupCourse,Type,Room,TimeLate, TimeStart,TimeEnd,Day) ";
                                             $strSQL .="VALUES ";
                                             $strSQL .="(NULL,'".$_SESSION["Name"]."','$term','$numberCourse','".$nameCourse."','$groupCourse','".$typeCourse."','".$roomCourse."','$timeLateCourse','".$TimeCourse1."','".$TimeCourse2."','".$dayCourse."'
-                                                    ) ";
+                                                ) ";
                                             $objQuery = mysqli_query($con,$strSQL);
 
-                                            if($objQuery){
+                                                if($objQuery){
 
-                                                $searchCourseSQL="SELECT * FROM inacs_course 
-                                                WHERE NameTeacher='".$_SESSION["Name"]."' 
-                                                AND IDTerm='$term' 
-                                                AND Number='$numberCourse' 
-                                                AND Name='$nameCourse' 
-                                                AND GroupCourse='$groupCourse' 
-                                                AND Type='$typeCourse'  ";
-                                                $resultCourse = mysqli_query($con,$searchCourseSQL);
-                    
-                                                if(mysqli_num_rows($resultCourse)==1){
-                    
-                                                    while($row = mysqli_fetch_assoc($resultCourse)){
-                                                        $_SESSION["IDCourseToCreateCheck"] = $row['ID'];
+                                                    $searchCourseSQL="SELECT * FROM inacs_course 
+                                                    WHERE NameTeacher='".$_SESSION["Name"]."' 
+                                                    AND IDTerm='$term' 
+                                                    AND Number='$numberCourse' 
+                                                    AND Name='$nameCourse' 
+                                                    AND GroupCourse='$groupCourse' 
+                                                    AND Type='$typeCourse'  ";
+                                                    $resultCourse = mysqli_query($con,$searchCourseSQL);
+                        
+                                                    if(mysqli_num_rows($resultCourse)==1){
+                        
+                                                        while($row = mysqli_fetch_assoc($resultCourse)){
+                                                            $_SESSION["IDCourseToCreateCheck"] = $row['ID'];
+                                                        }
+                        
+                                                        $strSQL = "INSERT INTO inacs_check ";
+                                                        $strSQL .="(ID,IDCourse,NumberCheck) ";
+                                                        $strSQL .="VALUES ";
+                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','0' ) ";                 
+                                                        $objQuery = mysqli_query($con,$strSQL);
+                        
+                                                        if($objQuery){
+                                                            echo "<script>";
+                                                                echo "alert(\" Add Course Complete\");"; 
+                                                                echo "window.history.back()";
+                                                            echo "</script>";
+                                                        }
                                                     }
-                    
-                                                    $strSQL = "INSERT INTO inacs_check ";
-                                                    $strSQL .="(ID,IDCourse,NumberCheck) ";
-                                                    $strSQL .="VALUES ";
-                                                    $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','0' ) ";                 
-                                                    $objQuery = mysqli_query($con,$strSQL);
-                    
-                                                    if($objQuery){
-                                                        echo "<script>";
-                                                            echo "alert(\" Add Course Complete\");"; 
-                                                            echo "window.history.back()";
-                                                        echo "</script>";
-                                                    }
-                                                }
 
-                                            }else{
-                                                echo "<script>";
-                                                    echo "alert(\" Add Course Error\");"; 
-                                                    echo "window.history.back()";
-                                                echo "</script>";
-                                            }
-                                                
-                                        }else{
-                                            echo "<script>";
-                                                echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");"; 
-                                                echo "window.history.back()";
-                                            echo "</script>";
-                                        }
-                                    }
-                                }else{
-
-                                    $checkDataTimeLab = array();
-                                    array_push($checkDataTimeLab,$_POST["TimeCourseLab-1"]);
-                                    array_push($checkDataTimeLab,$_POST["TimeCourseLab-2"]);
-                                    sort($checkDataTimeLab);
-
-                                    $time_days = array('08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00');
-
-                                    $DurationTimeCourseLab1 = false;
-                                    $DurationTimeCourseLab2 = false;
-                                    for($x = 0; $x < count($time_days);$x+=1){
-                                        if($time_days[$x] == $_POST["TimeCourseLab-1"]){
-                                            $DurationTimeCourseLab1 = true;
-                                        }else if($time_days[$x] == $_POST["TimeCourseLab-2"]){
-                                            $DurationTimeCourseLab2 = true;
-                                        }
-                                    }
-
-                                    $searchDaySQL="SELECT * FROM inacs_course WHERE IDTerm='$term' AND NameTeacher='".$_SESSION["Name"]."' AND Day='".$_POST['DayCourseLab']."' ";
-                                    $resultDay = mysqli_query($con,$searchDaySQL);
-                                    while ($row = mysqli_fetch_assoc($resultDay)) {
-                                            for($x = 0; $x < count($time_days)-1;){
-                                                if($time_days[$x]==$row['TimeStart']){
-                                                    $duration = 0;
-                                                    for($z = 1; $time_days[$x+$z] != $row['TimeEnd']; $z+=1){
-                                                        $time_days[$x+$z]="full";
-                                                        $duration+=1;
-                                                    }
-                                                    $x+=$duration;
                                                 }else{
-                                                    $x+=1;
+                                                    echo "<script>";
+                                                        echo "alert(\" Add Course Error\");"; 
+                                                        echo "window.history.back()";
+                                                    echo "</script>";
                                                 }
-                                            }
-                                    }
-
-                                    $TimeCourseLab1 = false;
-                                    $TimeCourseLab2 = false;
-                                    for($x = 0; $x < count($time_days);$x+=1){
-                                        if($time_days[$x]==$_POST["TimeCourseLab-1"]){
-                                            $TimeCourseLab1 = true;
-                                        }else if($TimeCourseLab1){
-                                            if($time_days[$x]==$_POST["TimeCourseLab-2"]){
-                                                $TimeCourseLab2 = true;
-                                            }else if($time_days[$x] != "full"){
-                                                continue;
-                                            }else{
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (empty($_POST["RoomCourseLab"]) or empty($_POST["TimeCourseLab-1"]) or empty($_POST["TimeCourseLab-2"])) {
-                                        echo "<script>";
-                                            echo "alert(\" โปรดใส่ข้อมูลประเภท Lab ให้ครบ\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($_POST["TimeCourseLab-1"] ==  $_POST["TimeCourseLab-2"]){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเริ่มเรียน Lab เท่ากับเวลาเลิกเรียน\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($checkDataTimeLab[0] != $_POST["TimeCourseLab-1"] && $checkDataTimeLab[1] != $_POST["TimeCourseLab-2"]){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเริ่มเรียน Lab มากกว่าเวลาเลิกเรียน\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($DurationTimeCourseLab1 == false || $DurationTimeCourseLab2 == false){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเรียน Lab มีนาที หรือ ไม่ได้อยู่ในช่วง 08:00-21:00\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else if($TimeCourseLab1 == false || $TimeCourseLab2 == false){
-                                        echo "<script>";
-                                            echo "alert(\" เวลาเรียน Lab ทับกับเวลาเรียนของรายวิชาอื่นในระบบ\");"; 
-                                            echo "window.history.back()";
-                                        echo "</script>";
-                                    }else{
-                                        $roomCourse = $_POST['RoomCourseLab'];
-                                        $TimeCourse1 = $_POST['TimeCourseLab-1'];
-                                        $TimeCourse2 = $_POST['TimeCourseLab-2'];
-                                        $dayCourse = $_POST['DayCourseLab'];
-                                        $searchSQL="SELECT * FROM inacs_course 
-    
-                                        WHERE IDTerm='$term' 
-                                        AND Number='".$numberCourse."' 
-                                        AND NameTeacher='".$_SESSION["Name"]."'
-                                        AND Name='".$nameCourse."' 
-                                        AND GroupCourse='".$groupCourse."' 
-                                        AND Type='".$typeCourse."' 
-                                        ";
-                                $result = mysqli_query($con,$searchSQL);
-                                    if(mysqli_num_rows($result)==0){
-            
-                                        $strSQL = "INSERT INTO inacs_course ";
-                                        $strSQL .="(ID,NameTeacher,IDTerm,Number,Name,GroupCourse,Type,Room,TimeLate, TimeStart,TimeEnd,Day) ";
-                                        $strSQL .="VALUES ";
-                                        $strSQL .="(NULL,'".$_SESSION["Name"]."','$term','$numberCourse','".$nameCourse."','$groupCourse','".$typeCourse."','".$roomCourse."','$timeLateCourse','".$TimeCourse1."','".$TimeCourse2."','".$dayCourse."'
-                                            ) ";
-                                        $objQuery = mysqli_query($con,$strSQL);
-
-                                            if($objQuery){
-
-                                                $searchCourseSQL="SELECT * FROM inacs_course 
-                                                WHERE NameTeacher='".$_SESSION["Name"]."' 
-                                                AND IDTerm='$term' 
-                                                AND Number='$numberCourse' 
-                                                AND Name='$nameCourse' 
-                                                AND GroupCourse='$groupCourse' 
-                                                AND Type='$typeCourse'  ";
-                                                $resultCourse = mysqli_query($con,$searchCourseSQL);
-                    
-                                                if(mysqli_num_rows($resultCourse)==1){
-                    
-                                                    while($row = mysqli_fetch_assoc($resultCourse)){
-                                                        $_SESSION["IDCourseToCreateCheck"] = $row['ID'];
-                                                    }
-                    
-                                                    $strSQL = "INSERT INTO inacs_check ";
-                                                    $strSQL .="(ID,IDCourse,NumberCheck) ";
-                                                    $strSQL .="VALUES ";
-                                                    $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','0' ) ";                 
-                                                    $objQuery = mysqli_query($con,$strSQL);
-                    
-                                                    if($objQuery){
-                                                        echo "<script>";
-                                                            echo "alert(\" Add Course Complete\");"; 
-                                                            echo "window.history.back()";
-                                                        echo "</script>";
-                                                    }
-                                                }
-
+                                            
                                             }else{
                                                 echo "<script>";
-                                                    echo "alert(\" Add Course Error\");"; 
+                                                    echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");"; 
                                                     echo "window.history.back()";
                                                 echo "</script>";
                                             }
-                                        
-                                        }else{
-                                            echo "<script>";
-                                                echo "alert(\" ข้อมูลรายวิชาที่ใส่ซ้ำกับในระบบ\");"; 
-                                                echo "window.history.back()";
-                                            echo "</script>";
                                         }
                                     }
+
+                                    
                                 }
                             }
                         }
@@ -523,6 +713,22 @@ session_start();
                     
                     $result = mysqli_query($con,$searchSQL);
                     $DataCourseCheck = mysqli_fetch_assoc($result);
+
+
+
+                    $searchNoGroupSQL="SELECT * FROM inacs_course 
+                    WHERE IDTerm='$term' 
+                    AND Number='".$_POST["NumCourse"]."' 
+                    AND NameTeacher='".$_SESSION["Name"]."'
+                    AND Name='".$_POST["NameCourse"]."'
+                    AND GroupCourse='".$_POST["GroupCourse"]."' 
+                    AND Type='".$_POST["TypeCourse"]."'
+                    ";
+                    
+                    $resultNoGroup = mysqli_query($con,$searchNoGroupSQL);
+
+
+                    
                     if((mysqli_num_rows($result) == 0) || (mysqli_num_rows($result) == 1 && $DataCourseCheck['ID'] == $_SESSION['IDEdit'])){
 
                         $strSQL = "UPDATE inacs_course SET Number='".$_POST["NumCourse"]."' 
@@ -558,6 +764,9 @@ session_start();
                 }
             }
         }
+
+
+
 
         if(isset($_POST['deleteCourse'])){
             include("condb.php");

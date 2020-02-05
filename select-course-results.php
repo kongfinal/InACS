@@ -14,6 +14,8 @@ $_SESSION["PaginationVacation"] = 1;
 $_SESSION["IDTermCheck"] = $_SESSION["IDTermFirstCheck"];
 $_SESSION["PaginationSelectCheck"] = 1;
 
+$_SESSION["TypeResult"] = "All";
+
 $_SESSION["NumberCheckStudent"] = "";
 $_SESSION["IDCheckStudent"] = "";
 $_SESSION["NameCheckStudent"] = "";
@@ -22,6 +24,10 @@ $_SESSION["StatusCheckStudent"] = "";
 $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
+
+$_SESSION["NumberAbsentCheckStudentAll"] = "";
+$_SESSION["NumberLateStudentAll"] = "";
+$_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
 
 $name = $_SESSION['Name'];
@@ -68,27 +74,66 @@ function addCoursetoTable($IdTermSearch){
     $CourseTable = mysqli_query($con,$queryCourse);
     $tableCourse = "";
     $dataCourse = array();
+    $dataCourseCheck = array();
 
     if(mysqli_num_rows($CourseTable) > 0){
         while ($row = mysqli_fetch_assoc($CourseTable)) {
-            array_push($dataCourse,array($row['Number'],$row['GroupCourse'],$row['ID'],$row['Name'],$row['Type'],$row['Room'],$row['TimeLate']));
 
+            $CheckUnique = false;
+            for($x = 0;$x < count($dataCourse);$x+=1){
+                if($dataCourse[$x][0]==$row['Number'] && $dataCourse[$x][1]==$row['GroupCourse'] && $dataCourse[$x][2]==$row['Name']){
+                    $CheckUnique = true;
+                    break;
+                }
+            }
+            if(!$CheckUnique){
+                array_push($dataCourse,array($row['Number'],$row['GroupCourse'],$row['Name']));
+                array_push($dataCourseCheck,array($row['Number'],$row['GroupCourse'],$row['Name']));
+            }
+
+        }
+    }
+
+    for($x = 0;$x < count($dataCourseCheck);$x+=1){
+        $CheckGroup = false;
+
+        if(strpos($dataCourseCheck[$x][1],"+")){
+            $array = explode("+", $dataCourseCheck[$x][1]);
+
+            for($y = 0;$y < count($array);$y+=1){
+                $dataCourseNew = array($dataCourseCheck[$x][0],$array[$y],$dataCourseCheck[$x][2]);
+                if(array_search($dataCourseNew,$dataCourseCheck,true)){
+                    $CheckGroup = true;
+                    break;
+                }
+            }
+        }
+
+        if($CheckGroup){
+            $dataCourse[$x][1] = "Delete";
+        }
+    }
+    
+    for($x = 0;$x < count($dataCourse);){
+        if($dataCourse[$x][1] == "Delete"){
+            array_splice($dataCourse, $x, 1);
+        }else{
+            $x+=1;
         }
     }
 
     sort($dataCourse);
 
-    if(mysqli_num_rows($CourseTable) > 0){
+    if(count($dataCourse) > 0){
     for ($x = 0; $x < 5; $x+=1) {
         $page = ($_SESSION["PaginationSelectResult"]-1) * 5;
 
         $rowNumber=$dataCourse[$x+$page][0];
-        $rowName=$dataCourse[$x+$page][3];
+        $rowName=$dataCourse[$x+$page][2];
         $rowGroupCourse=$dataCourse[$x+$page][1];
-        $rowType=$dataCourse[$x+$page][4];
-        $rowID=$dataCourse[$x+$page][2];
 
-        $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FResultCheckNameStudent.php?idCourse=$rowID' title=ดับเบิลคลิกเพื่อไปหน้าผลการเช็คชื่อนิสิตของรายวิชานี้>";
+
+        $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FResultCheckNameStudent.php?dataCourse=$rowNumber/$rowGroupCourse' title=ดับเบิลคลิกเพื่อไปหน้าผลการเช็คชื่อนิสิตของรายวิชานี้>";
         $tableCourse  = $tableCourse."<td>$rowNumber</td>";
         $tableCourse  = $tableCourse."<td>$rowName</td>";
         $tableCourse  = $tableCourse."<td>$rowGroupCourse</td>";
@@ -100,7 +145,7 @@ function addCoursetoTable($IdTermSearch){
     }
     }
 
-    CreatePagination(mysqli_num_rows($CourseTable));
+    CreatePagination(count($dataCourse));
     return $_SESSION["CourseTableInResult"] = $tableCourse;
 }
 

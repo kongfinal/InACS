@@ -142,7 +142,7 @@ include('h.php');
                         <div class="set-flex" style="margin-bottom: 1%;">
                             <div style="font-size: 18px; margin-top: 0.5%; margin-right: 1%;"><b><?php echo $_SESSION["NumCourseInCheckStudent"]; ?> :</b></div>
                             <div style="font-size: 18px; margin-top: 0.5%; width: 49.5%;"><b><?php echo $_SESSION["NameCourseInCheckStudent"]; ?></b></div>
-                            <div style="font-size: 18px; margin-top: 0.5%; width: 24%;"><b>กลุ่มเรียน :</b> <?php echo $_SESSION["TypeCourseInCheckStudent"] ?></div>
+                            <div style="font-size: 18px; margin-top: 0.5%; width: 24%;"><b>กลุ่มเรียน :</b> <?php echo $_SESSION["GroupCourseInCheckStudent"] ?></div>
                             <div style="font-size: 18px; margin-top: 0.5%; margin-right: 2%;"><b>ครั้งที่ :</b><?php echo $_SESSION["NumberCheckCourseInCheckStudent"]; ?></div>
                         </div>
                         <div class="set-flex" style="margin-top: 2%;">
@@ -160,12 +160,12 @@ include('h.php');
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>หักคะแนน (เครื่องแต่งกาย/ลืมบัตรนิสิต) :</b></div>
 
                             <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%"></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน"></form>
 
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
 
                             <form name="SaveScoreExtra" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%"></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน"></form>
 
                         </div>
                         <div class="set-flex" >
@@ -195,19 +195,19 @@ include('h.php');
                         <div class="set-flex">
                             <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 1%;"><b>จำนวนครั้งที่ขาดเรียน :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
-                                <b><?php echo $_SESSION["NumberAbsentCheckStudent"]; ?></b>
+                                <b><?php echo $_SESSION["NumberAbsentCheckStudentAll"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
                             <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 3.1%;"><b>จำนวนครั้งที่มาสาย :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
-                                <b><?php echo $_SESSION["NumberLateStudent"]; ?></b>
+                                <b><?php echo $_SESSION["NumberLateStudentAll"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
                             <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 3.6%; "><b>จำนวนคะแนนที่หัก :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
-                                <b><?php echo $_SESSION["ScoreDeductedCheckStudent"]; ?></b>
+                                <b><?php echo $_SESSION["ScoreDeductedCheckStudentAll"]; ?></b>
                             </div>
                         </div>
                     </div>

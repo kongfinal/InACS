@@ -28,6 +28,10 @@ $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
+$_SESSION["NumberAbsentCheckStudentAll"] = "";
+$_SESSION["NumberLateStudentAll"] = "";
+$_SESSION["ScoreDeductedCheckStudentAll"] = "";
+
 
 $queryTerm = "SELECT * FROM `inacs_term`";
 $termSelect = mysqli_query($con,$queryTerm);
@@ -224,20 +228,40 @@ function CreateEditFormDay(){
 <body>
 <style>
 
-.pagination input {
-  color: black;
-  float: left;
-  padding: 8px 16px;
-  text-decoration: none;
-  transition: background-color .3s;
+
+
+.maginGroupCourseMergeLec-2{
+  margin: 2% 5% 2% 0%;
 }
 
-.pagination input.active {
-  background-color: dodgerblue;
-  color: white;
+.maginGroupCourseMergeLab-2{
+  margin: 2% 5% 2% 0%;
 }
 
-.pagination input:hover:not(.active) {background-color: #ddd;}
+.input-field-v5-3{
+  width: 40.8%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v5-4{
+  width: 48%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
 
 </style>
 
@@ -493,14 +517,25 @@ function CreateEditFormDay(){
 
 
   <div id="CategoryLec" style="display:block">
+  <!--<div class="input-textCourse">
+        <input id="CheckMergeLac" type="checkbox" class="myinput large" style="margin-top:2.5%;" name="CheckBoxMergeLac" value="Lecture"  onclick="ClickCheckMergeLac()"/>
+        <div class="sizeText maginGroupCourseMergeLec-2" style="margin-left:2%;"><b>ต้องการรวมกลุ่ม (Lecture)</b></div>
+            <input id="InputMergeLec" class="is-pulled-right input-field-v5-3" type="textRegis" name="GroupCourseMergeLec" value="" autocomplete=off placeholder="ช่องใส่กลุ่มที่จะรวม" disabled>
+  </div>-->
+
+  <!--<div class="input-textCourse">
+  <div class="sizeText maginGroupCourseMergeLec"><b>กลุ่มที่จะรวม (Lecture) :</b></div>
+        <input class="is-pulled-right input-field-v5" type="textRegis" name="GroupCourseMergeLec" value="" autocomplete=off >
+  </div>-->
+
   <div class="input-textCourse">
         <div class="sizeText maginRoomCourse-2"><b>ห้องเรียน (Lecture) :</b></div>
-        <input class="is-pulled-right input-field-v5" type="textRegis" name="RoomCourseLec" value="" autocomplete=off >
+        <input id="RoomCourseLec" class="is-pulled-right input-field-v5" type="textRegis" name="RoomCourseLec" value="" autocomplete=off >
   </div>
 
   <div class="input-textCourse">
         <div class="sizeText maginDayCourse-2"><b>วันที่สอน (Lecture) :</b></div>
-        <select style="width:56.5%; border: 1px solid #ccc; padding-left: 10px; padding-right: 10px; " name="DayCourseLec">
+        <select id="DayCourseLec" style="width:56.5%; border: 1px solid #ccc; padding-left: 10px; padding-right: 10px; " name="DayCourseLec">
             <option value="Mo">จันทร์</option>
             <option value="Tu">อังคาร</option>
             <option value="We">พุธ</option>
@@ -513,22 +548,34 @@ function CreateEditFormDay(){
   
   <div class="input-textCourse">
         <div class="sizeText maginTimeCourse-2"><b>เวลาที่สอน (Lecture) :</b></div>
-        <input class="is-pulled-right input-field-v10" type="time" name="TimeCourseLec-1" value="" autocomplete=off >
+        <input id="TimeCourseLec-1" class="is-pulled-right input-field-v10" type="time" name="TimeCourseLec-1" value="" autocomplete=off >
         <div class="sizeText" style="margin: 1.8% 1.1% 0% 1.1%"><b> - </b></div>
-        <input class="is-pulled-right input-field-v10" type="time" name="TimeCourseLec-2" value="" autocomplete=off >
+        <input id="TimeCourseLec-2" class="is-pulled-right input-field-v10" type="time" name="TimeCourseLec-2" value="" autocomplete=off>
   </div>
+  
   </div>
 
 
   <div id="CategoryLab" style="display:none">
+  <!--<div class="input-textCourse">
+        <input id="CheckMergeLab" type="checkbox" class="myinput large" style="margin-top:2.5%;" name="CheckBoxMergeLab" value="Lab"  onclick="ClickCheckMergeLab()"/>
+        <div class="sizeText maginGroupCourseMergeLab-2" style="margin-left:2%;"><b>ต้องการรวมกลุ่ม (Lab)</b></div>
+            <input id="InputMergeLab" class="is-pulled-right input-field-v5-4" type="textRegis" name="GroupCourseMergeLab" value="" autocomplete=off placeholder="ช่องใส่กลุ่มที่จะรวม" disabled>
+  </div>-->
+
+  <!--<div class="input-textCourse">
+  <div class="sizeText maginGroupCourseMergeLab"><b>กลุ่มที่จะรวม (Lab) :</b></div>
+        <input class="is-pulled-right input-field-v5" type="textRegis" name="GroupCourseMergeLec" value="" autocomplete=off >
+  </div>-->
+
   <div class="input-textCourse">
         <div class="sizeText maginRoomCourse-3"><b>ห้องเรียน (Lab) :</b></div>
-        <input class="is-pulled-right input-field-v5" type="textRegis" name="RoomCourseLab" value="" autocomplete=off >
+        <input id="RoomCourseLab" class="is-pulled-right input-field-v5" type="textRegis" name="RoomCourseLab" value="" autocomplete=off >
   </div>
 
   <div class="input-textCourse">
         <div class="sizeText maginDayCourse-3"><b>วันที่สอน (Lab) :</b></div>
-        <select style="width:56.5%; border: 1px solid #ccc; padding-left: 10px; padding-right: 10px; " name="DayCourseLab" autocomplete=off >
+        <select id="DayCourseLab" style="width:56.5%; border: 1px solid #ccc; padding-left: 10px; padding-right: 10px; " name="DayCourseLab" autocomplete=off >
             <option value="Mo">จันทร์</option>
             <option value="Tu">อังคาร</option>
             <option value="We">พุธ</option>
@@ -541,9 +588,9 @@ function CreateEditFormDay(){
   
   <div class="input-textCourse" style="margin-bottom: 3%">
         <div class="sizeText maginTimeCourse-3"><b>เวลาที่สอน (Lab) :</b></div>
-        <input class="is-pulled-right input-field-v10" type="time" name="TimeCourseLab-1" value="" autocomplete=off >
+        <input id="TimeCourseLab-1" class="is-pulled-right input-field-v10" type="time" name="TimeCourseLab-1" value="" autocomplete=off >
         <div class="sizeText" style="margin: 1.8% 1.1% 0% 1.1%"><b> - </b></div>
-        <input class="is-pulled-right input-field-v10" type="time" name="TimeCourseLab-2" value="" autocomplete=off >
+        <input id="TimeCourseLab-2" class="is-pulled-right input-field-v10" type="time" name="TimeCourseLab-2" value="" autocomplete=off >
   </div>
   </div>
   <!--<div class="input-textCourse">
@@ -795,7 +842,41 @@ $_SESSION['CheckOpenModalDelete'] = false;
   </form>
 </div>
 
+<script>
 
+function ClickCheckMergeLac() {
+    if (document.getElementById('CheckMergeLac').checked == true) { 			 
+            document.getElementById('InputMergeLec').disabled = false; 
+            document.getElementById('RoomCourseLec').disabled = true;
+            document.getElementById('DayCourseLec').disabled = true;
+            document.getElementById('TimeCourseLec-1').disabled = true;
+            document.getElementById('TimeCourseLec-2').disabled = true;
+    }else{
+            document.getElementById('InputMergeLec').disabled = true;
+            document.getElementById('RoomCourseLec').disabled = false;
+            document.getElementById('DayCourseLec').disabled = false;
+            document.getElementById('TimeCourseLec-1').disabled = false;
+            document.getElementById('TimeCourseLec-2').disabled = false;
+    }
+}
+
+function ClickCheckMergeLab() {
+    if (document.getElementById('CheckMergeLab').checked == true) { 			 
+            document.getElementById('InputMergeLab').disabled = false; 
+            document.getElementById('RoomCourseLab').disabled = true;
+            document.getElementById('DayCourseLab').disabled = true;
+            document.getElementById('TimeCourseLab-1').disabled = true;
+            document.getElementById('TimeCourseLab-2').disabled = true;
+    }else{
+            document.getElementById('InputMergeLab').disabled = true;
+            document.getElementById('RoomCourseLab').disabled = false;
+            document.getElementById('DayCourseLab').disabled = false;
+            document.getElementById('TimeCourseLab-1').disabled = false;
+            document.getElementById('TimeCourseLab-2').disabled = false;
+    }
+}
+
+</script>
 
 
 </body>

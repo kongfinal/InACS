@@ -31,6 +31,10 @@ $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
+$_SESSION["NumberAbsentCheckStudentAll"] = "";
+$_SESSION["NumberLateStudentAll"] = "";
+$_SESSION["ScoreDeductedCheckStudentAll"] = "";
+
 
 $queryStudent= "SELECT * FROM `inacs_student` WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."'";
 $StudentTable = mysqli_query($con,$queryStudent);

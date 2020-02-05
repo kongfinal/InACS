@@ -20,6 +20,10 @@ $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
+$_SESSION["NumberAbsentCheckStudentAll"] = "";
+$_SESSION["NumberLateStudentAll"] = "";
+$_SESSION["ScoreDeductedCheckStudentAll"] = "";
+
 $_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
 $_SESSION["PaginationSelectResult"] = 1;
 
@@ -82,33 +86,37 @@ function addCoursetoTable($IdTermSearch){
     sort($dataCourse);
 
     if(mysqli_num_rows($CourseTable) > 0){
-    for ($x = 0; $x < 5; $x+=1) {
-        $page = ($_SESSION["PaginationSelectCheck"]-1) * 5;
+    for ($x = 0; $x < count($dataCourse); $x+=1) {
+//    for ($x = 0; $x < 5; $x+=1) {
+ //       $page = ($_SESSION["PaginationSelectCheck"]-1) * 5;
 
         $rowNumber=$dataCourse[$x+$page][0];
         $rowName=$dataCourse[$x+$page][3];
         $rowGroupCourse=$dataCourse[$x+$page][1];
         $rowType=$dataCourse[$x+$page][4];
         $rowID=$dataCourse[$x+$page][2];
+        $classMyinputLarge="myinput&nbsp;large";
 
-        $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FCheckNameStudent.php?idCourse=$rowID' title=ดับเบิลคลิกเพื่อไปหน้าเช็คชื่อนิสิตของรายวิชานี้>";
+        $tableCourse  = $tableCourse."<tr>";
         $tableCourse  = $tableCourse."<td>$rowNumber</td>";
         $tableCourse  = $tableCourse."<td>$rowName</td>";
         $tableCourse  = $tableCourse."<td>$rowGroupCourse</td>";
         $tableCourse  = $tableCourse."<td>$rowType</td>";
+        $tableCourse  = $tableCourse."<td><input id=CheckName type=checkbox class='myinput large' 
+         style=margin-top:2.5%; name=CheckBoxCourseID[] value=$rowID /></td>";
         $tableCourse  = $tableCourse."</tr>";
 
-        if($x+$page >= count($dataCourse)-1){
-            break;
-        }
+//        if($x+$page >= count($dataCourse)-1){
+//            break;
+//        }
     }
     }
 
-    CreatePagination(mysqli_num_rows($CourseTable));
+//    CreatePagination(mysqli_num_rows($CourseTable));
     return $_SESSION["CourseTableInCheck"] = $tableCourse;
 }
 
-
+/*
 function CreatePagination($CourseNum){
 
     $lastPage = 0;
@@ -136,7 +144,7 @@ function CreatePagination($CourseNum){
     
     return $_SESSION["PaginationCourseTableInCheck"] = $Pagination;
 }
-
+*/
 
 ?>
 
@@ -254,30 +262,38 @@ function CreatePagination($CourseNum){
                             </form>
                             </div>
 
+                            <form name="GoCheckName" action="FCheckNameStudent.php" method="post" style="width: 12%; height: 2%; margin-bottom: 0%; margin-top: 0.45%;">
+                            <button class="small-v3" name="GoToCheckName" style="margin-right: 0.5%; width: 100%; height: 100%;" title="คลิกเพื่อไปหน้าเช็คชื่อนิสิตของรายวิชาที่เลือก"
+                            onclick="document.GoCheckName.submit();"><i class="material-icons" style="margin-top: 4%; margin-bottom: 4%; font-size: 30px;" >check_box</i></button>
+                            
+
                             <!--<button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_left</i></button>
                             <button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_right</i></button>-->
                         </div>
                         <br>
-                        <table id="table-starter">
+                        <table id="table-no-click">
                             <tr>
                                 <th>รหัสวิชา</th>
                                 <th>ชื่อวิชา</th>
                                 <th>กลุ่มเรียน</th>
                                 <th>ประเภท</th>
+                                <th>รายวิชาที่จะเช็คชื่อ</th>
                             </tr>
+                            
                             <?php
                                 echo $_SESSION["CourseTableInCheck"] ;
                             ?>
                         </table>
-                        <div class="pagination" style="width: 100%; text-align: center;">
+                        </form>
+                        <!--<div class="pagination" style="width: 100%; text-align: center;">
                             <div style="display: inline-block;">
                             <form name="changePagination" action="FCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
                                 <?php
-                                    echo $_SESSION["PaginationCourseTableInCheck"] ;
+                                    // echo $_SESSION["PaginationCourseTableInCheck"] ;
                                 ?>
                             </form>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 </div>

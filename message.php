@@ -25,6 +25,13 @@ $_SESSION["StatusCheckStudent"] = "";
 $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
+
+$_SESSION["NumberAbsentCheckStudentAll"] = "";
+$_SESSION["NumberLateStudentAll"] = "";
+$_SESSION["ScoreDeductedCheckStudentAll"] = "";
+
+
+
 ?>
 <?php
 include('h.php');

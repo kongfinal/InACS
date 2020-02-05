@@ -385,6 +385,22 @@ span.psw {
   margin: 2% 6.8% 2% 0%;
 }
 
+.maginGroupCourseMergeLec{
+  margin: 2% 1% 2% 0%;
+}
+
+.maginGroupCourseMergeLab{
+  margin: 2% 8.1% 2% 0%;
+}
+
+.maginGroupCourseMergeLec-2{
+  margin: 2% 5% 2% 0%;
+}
+
+.maginGroupCourseMergeLab-2{
+  margin: 2% 5% 2% 0%;
+}
+
 /* The Modal (background) */
 .modal {
   display: none; 
@@ -538,6 +554,30 @@ span.psw {
 
 .input-field-v5-2{
   width: 25%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v5-3{
+  width: 40.8%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v5-4{
+  width: 48%;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 1px;

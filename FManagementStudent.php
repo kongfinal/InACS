@@ -101,14 +101,10 @@ include('condb.php');
                 $student_array = array_unique($array);
                 $strSQL = "";
                 for($x = 0; $x < count($student_array); $x+=1){         
-                    $dataStudent =  explode(" ", $student_array[$x]);
+                    $dataStudent =  explode("	", $student_array[$x]);
 
-                    $nameStudent = "";
-                    $nameStudent = $nameStudent."$dataStudent[1] ";
-                    $nameStudent = $nameStudent."$dataStudent[2] ";
-                    $nameStudent = $nameStudent."$dataStudent[3]";
 
-                    if(! (empty($dataStudent[0]) || empty($dataStudent[1]) || empty($dataStudent[2]) || empty($dataStudent[3]) || empty($dataStudent[4]))){
+                    if(! (empty($dataStudent[0]) || empty($dataStudent[1]) || empty($dataStudent[3]) )){
                         $searchSQL="SELECT * FROM inacs_student 
                         WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."' 
                         AND Number='$dataStudent[0]' ";
@@ -117,7 +113,7 @@ include('condb.php');
                         if(mysqli_num_rows($result)==0){
     
                             $strSQL ="INSERT INTO inacs_student (ID,IDCourse,Number,Name,Branch) VALUES 
-                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$nameStudent','$dataStudent[4]' );";
+                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$dataStudent[1]','$dataStudent[3]' );";
                             $objQuery = mysqli_query($con,$strSQL); 
 
                             $searchStudentSQL="SELECT * FROM inacs_student 
@@ -132,7 +128,7 @@ include('condb.php');
                                 }
 
                                 $strSQL = "INSERT INTO inacs_result ";
-                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberAbsent,NumberLate) ";
+                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate) ";
                                 $strSQL .="VALUES ";
                                 $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0' ) ";
                                 
@@ -150,7 +146,7 @@ include('condb.php');
                         echo "</script>";
                     }else{
                         echo "<script>";
-                            echo "alert(\" Add Student Error\");"; 
+                            echo "alert(\" Add Student Error\");";
                             echo "window.history.back()";
                         echo "</script>";
                     }
@@ -197,7 +193,7 @@ include('condb.php');
                                 }
 
                                 $strSQL = "INSERT INTO inacs_result ";
-                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberAbsent,NumberLate) ";
+                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate) ";
                                 $strSQL .="VALUES ";
                                 $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0' ) ";                 
                                 $objQuery = mysqli_query($con,$strSQL);
@@ -207,6 +203,11 @@ include('condb.php');
                                         echo "alert(\" Add Student Complete\");"; 
                                         echo "window.history.back()";
                                     echo "</script>";
+                                }else{
+                                    echo "<script>";
+                                    echo "alert(\" Add Result Error\");"; 
+                                    echo "window.history.back()";
+                                    echo "</script>"; 
                                 }
                             }
                         }else{
