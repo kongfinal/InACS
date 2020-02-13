@@ -385,6 +385,22 @@ span.psw {
   margin: 2% 6.8% 2% 0%;
 }
 
+.maginNumStudentEdit{
+  margin: 2% 11.7% 2% 0%;
+}
+
+.maginNameStudentEdit{
+  margin: 2% 13.7% 2% 0%;
+}
+
+.magirBanchStudentEdit{
+  margin: 2% 17.5% 2% 0%;
+}
+
+.maginPhoneNumberStudentEdit{
+  margin: 2% 1% 2% 0%;
+}
+
 .maginGroupCourseMergeLec{
   margin: 2% 1% 2% 0%;
 }
@@ -522,6 +538,15 @@ span.psw {
   box-sizing: border-box;
 }
 
+.input-field-v2-6 {
+  width: 68.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
 .input-field-v3{
   width: 56.5%;
   padding: 10px;
@@ -590,6 +615,18 @@ span.psw {
 
 .input-field-v6{
   width: 81.3%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.input-field-v6-2{
+  width: 70.6%;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 1px;

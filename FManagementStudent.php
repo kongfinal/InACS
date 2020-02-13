@@ -82,6 +82,7 @@ include('condb.php');
                     $_SESSION["NumberStudentEdit"] = $row['Number'];
                     $_SESSION["NameStudentEdit"] = $row['Name'];
                     $_SESSION["BranchStudentEdit"] = $row['Branch'];
+                    $_SESSION["ParentalPhoneNumberStudentEdit"] = $row['ParentalPhoneNumber'];
                 }
             }
             $_SESSION['CheckOpenModalEditStudent'] = true;
@@ -112,8 +113,8 @@ include('condb.php');
                         $result = mysqli_query($con,$searchSQL);
                         if(mysqli_num_rows($result)==0){
     
-                            $strSQL ="INSERT INTO inacs_student (ID,IDCourse,Number,Name,Branch) VALUES 
-                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$dataStudent[1]','$dataStudent[3]' );";
+                            $strSQL ="INSERT INTO inacs_student (ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber) VALUES 
+                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$dataStudent[1]','$dataStudent[3]',NULL );";
                             $objQuery = mysqli_query($con,$strSQL); 
 
                             $searchStudentSQL="SELECT * FROM inacs_student 
@@ -128,9 +129,9 @@ include('condb.php');
                                 }
 
                                 $strSQL = "INSERT INTO inacs_result ";
-                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate) ";
+                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate,NumberAbsent,LastCheckTime) ";
                                 $strSQL .="VALUES ";
-                                $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0' ) ";
+                                $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0','0','' ) ";
                                 
                                 $objResultQuery = mysqli_query($con,$strSQL);
 
@@ -165,6 +166,7 @@ include('condb.php');
                 $numberStudent = $_POST['NumStudent'];
                 $nameStudent = $_POST['NameStudent'];
                 $branchStudent = $_POST['BranchStudent'];
+                
 
                 $searchSQL="SELECT * FROM inacs_student 
                                 WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."' 
@@ -174,9 +176,9 @@ include('condb.php');
                 if(mysqli_num_rows($result)==0){
                     
                     $strSQL = "INSERT INTO inacs_student ";
-                    $strSQL .="(ID,IDCourse,Number,Name,Branch) ";
+                    $strSQL .="(ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber) ";
                     $strSQL .="VALUES ";
-                    $strSQL .="(NULL,'".$_SESSION["IDCourseInManaStudent"]."','$numberStudent','$nameStudent','$branchStudent' ) ";
+                    $strSQL .="(NULL,'".$_SESSION["IDCourseInManaStudent"]."','$numberStudent','$nameStudent','$branchStudent',NULL ) ";
                     
                     $objQuery = mysqli_query($con,$strSQL);
                         if($objQuery){
@@ -193,9 +195,9 @@ include('condb.php');
                                 }
 
                                 $strSQL = "INSERT INTO inacs_result ";
-                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate) ";
+                                $strSQL .="(ID,IDStudent,ScoreRoom,ScoreDeducted,ScoreExtra,NumberOnTime,NumberLate,NumberAbsent,LastCheckTime) ";
                                 $strSQL .="VALUES ";
-                                $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0' ) ";                 
+                                $strSQL .="(NULL,'".$_SESSION["IDStudentToCreateResult"]."','0','0','0','0','0','0','' ) ";                 
                                 $objQuery = mysqli_query($con,$strSQL);
 
                                 if($objQuery){
@@ -236,39 +238,74 @@ include('condb.php');
                 $numberStudent = $_POST['NumStudent'];
                 $nameStudent = $_POST['NameStudent'];
                 $branchStudent = $_POST['BranchStudent'];
+                $phoneNumberStudent = $_POST['ParentalPhoneNumberStudent'];
 
-                $searchSQL="SELECT * FROM inacs_student 
-                                WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."' 
-                                AND Number='$numberStudent'
-                                 ";
-                $result = mysqli_query($con,$searchSQL);
-                $DataStudentCheck = mysqli_fetch_assoc($result);
 
-                if((mysqli_num_rows($result)==0) || (mysqli_num_rows($result) == 1 && $DataStudentCheck['ID'] == $_SESSION["IDStudentEdit"]) ){
-
-                    $strSQL = "UPDATE inacs_student SET Number='".$_POST["NumStudent"]."' 
-                    , Name='".$_POST["NameStudent"]."'
-                    , Branch='".$_POST["BranchStudent"]."'
-                    WHERE ID='".$_SESSION['IDStudentEdit']."'";
-                    
-                    $objQuery = mysqli_query($con,$strSQL);
-                    if($objQuery){
+                $checkPhoneNumber = false;
+                if($phoneNumberStudent == null){
+                    $checkPhoneNumber = true;
+                }else{
+                    if(strlen($phoneNumberStudent) != 10){
                         echo "<script>";
-                            echo "alert(\" Update Student Complete\");"; 
+                            echo "alert(\" โปรดใส่เบอร์โทรศัพท์สิบตัว\");"; 
                             echo "window.history.back()";
                         echo "</script>";
+                    }else if (!filter_var(substr($phoneNumberStudent,1,10), FILTER_VALIDATE_INT)) {
+                        echo "<script>";
+                            echo "alert(\" ข้อมูลเบอร์โทรศัพท์ไม่ได้มีแต่ตัวเลข หรือ ตัวเลขต่ำแหน่งที่ 2 เป็น 0\");"; 
+                            echo "window.history.back()";
+                        echo "</script>";
+                    }else if(substr($phoneNumberStudent,0,1) != "0"){
+                        echo "<script>";
+                            echo "alert(\" ข้อมูลเบอร์โทรศัพท์ตัวแรกไม่ได้เป็น 0\");"; 
+                            echo "window.history.back()";
+                        echo "</script>";
+                    }else{
+                        $checkPhoneNumber = true;
+                    }
+                }
+
+
+
+                if($checkPhoneNumber){
+                    $searchSQL="SELECT * FROM inacs_student 
+                    WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."' 
+                    AND Number='$numberStudent'
+                     ";
+                    $result = mysqli_query($con,$searchSQL);
+                    $DataStudentCheck = mysqli_fetch_assoc($result);
+
+                    if((mysqli_num_rows($result)==0) || (mysqli_num_rows($result) == 1 && $DataStudentCheck['ID'] == $_SESSION["IDStudentEdit"]) ){
+
+                        $strSQL = "UPDATE inacs_student SET Number='".$_POST["NumStudent"]."' 
+                        , Name='".$_POST["NameStudent"]."'
+                        , Branch='".$_POST["BranchStudent"]."'
+                        , ParentalPhoneNumber='".$_POST['ParentalPhoneNumberStudent']."'
+                        WHERE ID='".$_SESSION['IDStudentEdit']."'";
                         
+                        $objQuery = mysqli_query($con,$strSQL);
+                        if($objQuery){
+                            echo "<script>";
+                                echo "alert(\" Update Student Complete\");"; 
+                                echo "window.history.back()";
+                            echo "</script>";
+                            
+                        }else{
+                            echo "<script>";
+                                echo "alert(\" Update Student Error\");"; 
+                            echo "</script>";
+                        }
                     }else{
                         echo "<script>";
-                            echo "alert(\" Update Student Error\");"; 
+                            echo "alert(\" ข้อมูลนิสิตที่ใส่ซ้ำกับในระบบ\");"; 
+                            echo "window.history.back()";
                         echo "</script>";
                     }
-                }else{
-                    echo "<script>";
-                        echo "alert(\" ข้อมูลนิสิตที่ใส่ซ้ำกับในระบบ\");"; 
-                        echo "window.history.back()";
-                    echo "</script>";
                 }
+
+
+
+
             }
         }
 

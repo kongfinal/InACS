@@ -29,6 +29,9 @@ $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
 
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];

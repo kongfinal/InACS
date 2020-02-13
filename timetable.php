@@ -30,6 +30,9 @@ $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
 
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];
@@ -89,7 +92,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseMo[$y][2];
             $groupCourse = $dataCourseMo[$y][3];
             $roomCourse = $dataCourseMo[$y][4];
-            $timeTableCourseMo = $timeTableCourseMo."<td colspan=$duration class=is-grey ><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseMo[$y][5];
+            $timeTableCourseMo = $timeTableCourseMo."<td colspan=$duration class=is-grey ><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer; title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
 
@@ -116,7 +120,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseTu[$y][2];
             $groupCourse = $dataCourseTu[$y][3];
             $roomCourse = $dataCourseTu[$y][4];
-            $timeTableCourseTu = $timeTableCourseTu."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseTu[$y][5];
+            $timeTableCourseTu = $timeTableCourseTu."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             
@@ -143,7 +148,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseWe[$y][2];
             $groupCourse = $dataCourseWe[$y][3];
             $roomCourse = $dataCourseWe[$y][4];
-            $timeTableCourseWe = $timeTableCourseWe."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseWe[$y][5];
+            $timeTableCourseWe = $timeTableCourseWe."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             
@@ -170,7 +176,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseTh[$y][2];
             $groupCourse = $dataCourseTh[$y][3];
             $roomCourse = $dataCourseTh[$y][4];
-            $timeTableCourseTh = $timeTableCourseTh."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseTh[$y][5];
+            $timeTableCourseTh = $timeTableCourseTh."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             
@@ -197,7 +204,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseFr[$y][2];
             $groupCourse = $dataCourseFr[$y][3];
             $roomCourse = $dataCourseFr[$y][4];
-            $timeTableCourseFr = $timeTableCourseFr."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseFr[$y][5];
+            $timeTableCourseFr = $timeTableCourseFr."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             
@@ -224,7 +232,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseSa[$y][2];
             $groupCourse = $dataCourseSa[$y][3];
             $roomCourse = $dataCourseSa[$y][4];
-            $timeTableCourseSa = $timeTableCourseSa."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseSa[$y][5];
+            $timeTableCourseSa = $timeTableCourseSa."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             
@@ -251,7 +260,8 @@ for ($x = 0; $x < count($time_days)-1;) {
             $numberCourse = $dataCourseSu[$y][2];
             $groupCourse = $dataCourseSu[$y][3];
             $roomCourse = $dataCourseSu[$y][4];
-            $timeTableCourseSu = $timeTableCourseSu."<td colspan=$duration class=is-grey><a href=# class=is-black title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
+            $IDCourse = $dataCourseSu[$y][5];
+            $timeTableCourseSu = $timeTableCourseSu."<td colspan=$duration class=is-grey><a onclick=document.location.href='FTimetable.php?idCourse=$IDCourse' class=is-black style=cursor:pointer;title=คลิกเพื่อไปหน้าเช็คชื่อนิสิตของวิชานี้><b>$numberCourse <br>$groupCourse,$roomCourse</b></a></td>";
             $timeCheck = false;
             $x+=$duration;
             

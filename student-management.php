@@ -35,6 +35,9 @@ $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
 
 $queryStudent= "SELECT * FROM `inacs_student` WHERE IDCourse='".$_SESSION["IDCourseInManaStudent"]."'";
 $StudentTable = mysqli_query($con,$queryStudent);
@@ -43,7 +46,7 @@ $dataStudent = array();
 
 if(mysqli_num_rows($StudentTable) > 0){
   while ($row = mysqli_fetch_assoc($StudentTable)) {
-      array_push($dataStudent,array($row['Number'],$row['Name'],$row['Branch'],$row['ID']));
+      array_push($dataStudent,array($row['Number'],$row['Name'],$row['Branch'],$row['ID'],$row['ParentalPhoneNumber']));
   }
 }
 
@@ -56,6 +59,7 @@ if(mysqli_num_rows($StudentTable) > 0){
     $rowName=$dataStudent[$x+$page][1];
     $rowBranch=$dataStudent[$x+$page][2];
     $rowID=$dataStudent[$x+$page][3];
+    $rowPhoneNumber=$dataStudent[$x+$page][4];
 
     $SequenceStudent = $x+$page+1;
 
@@ -64,6 +68,7 @@ if(mysqli_num_rows($StudentTable) > 0){
     $tableStudent  = $tableStudent."<td>$rowNumber</td>";
     $tableStudent  = $tableStudent."<td>$rowName</td>";
     $tableStudent  = $tableStudent."<td>$rowBranch</td>";
+    $tableStudent  = $tableStudent."<td>$rowPhoneNumber</td>";
     $tableStudent  = $tableStudent."<td style=cursor:pointer; ><button name=editStudentModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลนิสิต value=$rowID>edit</button></td>";
     $tableStudent  = $tableStudent."<td style=cursor:pointer; > <button name=deleteStudentModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลนิสิต value=$rowID>remove_circle_outline</button> </td>";
     $tableStudent  = $tableStudent."</tr>";
@@ -114,6 +119,33 @@ function CreatePagination($CourseNum){
 <body>
 <style>
     
+    .input-field-v6-2{
+  width: 70.6%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.maginNumStudentEdit{
+  margin: 2% 11.7% 2% 0%;
+}
+
+.maginNameStudentEdit{
+  margin: 2% 13.7% 2% 0%;
+}
+
+.magirBanchStudentEdit{
+  margin: 2% 17.5% 2% 0%;
+}
+
+.maginPhoneNumberStudentEdit{
+  margin: 2% 1% 2% 0%;
+}
 
 </style>
 
@@ -241,6 +273,7 @@ function CreatePagination($CourseNum){
                                 <th>รหัสนิสิต</th>
                                 <th>ชื่อนิสิต</th>
                                 <th>สาขา</th>
+                                <th>เบอร์ผู้ปกครอง</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -381,18 +414,23 @@ $_SESSION['CheckOpenModalAddStudent'] = false;
     <h3 class="text-topic" align="center" style="margin-bottom:3%;margin-top:3%;">แก้ไขข้อมูลนิสิต</h3>
 
     <div class="input-textRegis">
-            <div class="sizeText maginNumStudent"><b>รหัสนิสิต :</b></div>
-            <input class="is-pulled-right input-field-v6" type="textRegis" name="NumStudent" value="<?php echo $_SESSION['NumberStudentEdit']; ?>" >
+            <div class="sizeText maginNumStudentEdit"><b>รหัสนิสิต :</b></div>
+            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="NumStudent" value="<?php echo $_SESSION['NumberStudentEdit']; ?>" >
     </div>
 
     <div class="input-textRegis">
-            <div class="sizeText maginNameStudent"><b>ชื่อนิสิต :</b></div>
-            <input class="is-pulled-right input-field-v6" type="textRegis" name="NameStudent" value="<?php echo $_SESSION['NameStudentEdit']; ?>" >
+            <div class="sizeText maginNameStudentEdit"><b>ชื่อนิสิต :</b></div>
+            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="NameStudent" value="<?php echo $_SESSION['NameStudentEdit']; ?>" >
     </div>
 
     <div class="input-textRegis">
-            <div class="sizeText magirBanchStudent"><b>สาขา :</b></div>
-            <input class="is-pulled-right input-field-v6" type="textRegis" name="BranchStudent" value="<?php echo $_SESSION['BranchStudentEdit']; ?>" >
+            <div class="sizeText magirBanchStudentEdit"><b>สาขา :</b></div>
+            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="BranchStudent" value="<?php echo $_SESSION['BranchStudentEdit']; ?>" >
+    </div>
+
+    <div class="input-textRegis">
+            <div class="sizeText maginPhoneNumberStudentEdit"><b>เบอร์ผู้ปกครอง :</b></div>
+            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="ParentalPhoneNumberStudent" value="<?php echo $_SESSION['ParentalPhoneNumberStudentEdit']; ?>" >
     </div>
 
   <div class="button-course-zone">

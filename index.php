@@ -35,11 +35,61 @@ $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
+
+
+$queryTerm = "SELECT * FROM `inacs_term`";
+$termSelect = mysqli_query($con,$queryTerm);
+
+$dataTerm = array();
+
+while($rowTerm = mysqli_fetch_array($termSelect)){
+    array_push($dataTerm,array($rowTerm[2],$rowTerm[1],$rowTerm[0]));
+}
+
+sort($dataTerm);
+$_SESSION["IDTermFirst"] = $dataTerm[count($dataTerm)-1][2];
+$_SESSION["TermFirst"] = $dataTerm[count($dataTerm)-1][1]."/".$dataTerm[count($dataTerm)-1][0];
+
+$ToDay = substr(date("l"),0,2);
+
+$queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirst"]."' AND NameTeacher='".$_SESSION["Name"]."' AND Day='$ToDay' ";
+$CourseTable = mysqli_query($con,$queryCourse);
+$tableCourse = "";
+
+
+if(mysqli_num_rows($CourseTable) > 0){
+    while ($row = mysqli_fetch_assoc($CourseTable)) {
+            $IDCourseToDay = $row['ID'];
+            $numberCourseToDay = $row['Number'];
+            $nameCourseToDay = $row['Name'];
+            $groupCourseToDay = $row['GroupCourse'];
+            $typeCourseToDay = $row['Type'];
+            $roomCourseToDay = $row['Room'];
+
+            $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FIndex.php?idCourse=$IDCourseToDay'>";
+            $tableCourse  = $tableCourse."<td>$numberCourseToDay</td>";
+            $tableCourse  = $tableCourse."<td>$nameCourseToDay</td>";
+            $tableCourse  = $tableCourse."<td>$groupCourseToDay</td>";
+            $tableCourse  = $tableCourse."<td>$typeCourseToDay</td>";
+            $tableCourse  = $tableCourse."<td>$roomCourseToDay</td>";
+            $tableCourse  = $tableCourse."</tr>";
+
+    }
+}
+
+$_SESSION["TableCourseToDay"] = $tableCourse;
+
+
+
 ?>
 <?php
 include('h.php');
 ?>
 <style>
+
 
 
 </style>
@@ -56,8 +106,8 @@ include('h.php');
                     <span class="navbar-banner-text">InACS</span>
                 </div>
             </a>
-            <button id="navbar-user" class="navbar-item user" onclick="switchNavBarDropDown()">
-                <div class="user-container">
+            <button id="navbar-user" class="navbar-item user" onclick="if (document.getElementById('navbar-dropdown').classList.contains('is-active'))  return document.getElementById('navbar-dropdown').classList.remove('is-active'); else return document.getElementById('navbar-dropdown').classList.add('is-active');">
+                <div class="user-container" title="คลิกเพื่อแสดง/ปิด navbar">
                     <svg class="navbar-user-iconv-2 iconv-2-user iconv-2-size-5"></svg>
                     <span class="navbar-user-text"><?php echo $name; ?></span>
                     <svg class="navbar-user-iconv-2 iconv-2-down-arrow iconv-2-size-6"></svg>
@@ -139,6 +189,42 @@ include('h.php');
                     <svg class="menu-icon-topic iconv-2-home"></svg>หน้าหลัก
                 </div>
                 <div class="box">
+                <form name="Send" action="FIndex.php" method="post" style=" margin-bottom: 0%;">
+                <div class="columns">
+
+                    <h3>Tset Send Email : </h3>
+
+                    <button class="small-v3" name="sendMail" style="margin-left: 4%; width: 12%;"  onclick="document.Send.submit();">
+                        <b  style="margin-top: 4%; margin-bottom: 4%; font-size: 32px;" >ส่งเมล</b>
+                        <!--<svg class="menu-icon iconv-2-add-box"></svg>-->
+                    </button>
+                </div>
+                </form>
+                <form name="Add" action="FIndex.php" method="post" style=" margin-bottom: 0%;">
+                    <div class="columns">
+                    
+                        <h3 style="margin-right:1%;"><b>ภาคเรียนล่าสุด :</b></h3>
+                        <h3><?php echo $_SESSION["TermFirst"];?></h3>
+
+                        <h2 style="margin-right:4%; margin-left:4%;"><b>|</b></h2>
+
+
+                        
+                        <h3 style="margin-left:1%;"><b>ปีการศึกษา :</b></h3>
+                        <input class="input-field-v8-2" style="width: 10%; height:30px; margin-top:1%; margin-left:1%;" type="textRegis" name="Year" value="" title="ใส่ปีการศึกษาเป็น พ.ศ." autocomplete=off>
+
+                        <h3 style="margin-left:2%; margin-right:1%;"><b>เทอม :</b></h3>
+                        <input class="input-field-v8-2" style="width: 10%; height:30px; margin-top:1%;" type="textRegis" name="Term" value="" title="ใส่เทอมเป็น 1 หรือ 2 หรือ 3 (3 เป็น Summer)" autocomplete=off>
+
+                        <button class="small-v3" name="addTerm" style="margin-left: 4%; width: 12%;" title="คลิกเพื่อเพิ่มเทอม" onclick="document.Add.submit();">
+                        <i class="material-icons" style="margin-top: 4%; margin-bottom: 4%; font-size: 32px;" >add_box</i>
+                        <!--<svg class="menu-icon iconv-2-add-box"></svg>-->
+                        </button>
+                        
+
+                    </div>
+                </form>
+
                 <div class="columns">
                     <div class="column is-3">
                         <h3>วิชาที่สอนวันนี้</h3>
@@ -154,27 +240,9 @@ include('h.php');
                         <th>ประเภท (Lecture/Lab)</th>
                         <th>ห้องเรียน</th>
                     </tr>
-                    <tr>
-                        <td>88624359</td>
-                        <td>Web Programming</td>
-                        <td>1</td>
-                        <td>Lecture</td>
-                        <td>IF-6T04</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                        <td>&nbsp</td>
-                    </tr>
+                    <?php
+                        echo $_SESSION["TableCourseToDay"] ;
+                    ?>
                   
                 </table>
                 </div>
@@ -298,27 +366,7 @@ include('h.php');
 </div>
 
 
-<script>
-var modalChangePass = document.getElementById('ChangePassFormv.2');
-var modalChangeEmail = document.getElementById('ChangeEmail');
 
-window.onclick = function(event) {
-    if(event.target == modalChangePass) {
-        modalChangePass.style.display = "none";
-    }else if(event.target == modalChangeEmail) {
-        modalChangeEmail.style.display = "none";
-    }
-}
-
-function switchNavBarDropDown() {
-    var dropdown = document.getElementById('navbar-dropdown');
-    if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active');
-    } else {
-        dropdown.classList.add('is-active');
-    }
-}
-</script>
 
 </body>
 </html>

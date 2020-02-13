@@ -84,79 +84,142 @@ for($x = 0;$x < count($dataTypeArray);$x+=1){
 
 $dataResult = array();
 $dataCheckResult = array();
+$dataCheckResultAll = array();
+$dataPhoneNumber = array();
 $numberCheck = 0;
+$headerTable="";
 
 if($_SESSION["TypeResult"] == "All"){
 
-    $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
-    AND Number='".$_SESSION['NumCourseInResultStudent']."' 
-    AND Name='".$_SESSION['NameCourseInResultStudent']."'  
-    AND GroupCourse='".$_SESSION['GroupCourseInResultStudent']."'
-    ";
-    $CourseDataToResult = mysqli_query($con,$queryCourseToResult);
-    if(mysqli_num_rows($CourseDataToResult) > 0){
-        while ($rowCourse = mysqli_fetch_assoc($CourseDataToResult)) {
+    $headerTable  = $headerTable."<tr>";
+    $headerTable  = $headerTable."<th rowspan=2>รหัสนิสิต</th>";
+    $headerTable  = $headerTable."<th rowspan=2>ชื่อนิสิต</th>";
+    $headerTable  = $headerTable."<th colspan=4>บรรยาย</th>";
+    $headerTable  = $headerTable."<th colspan=4>ปฎิบัติ</th>";
+    //$headerTable  = $headerTable."<th rowspan=2>เบอร์ผู้ปกครอง</th>";
+    $headerTable  = $headerTable."<th rowspan=2>เพิ่มเบอร์</th>";
+    $headerTable  = $headerTable."</tr>";
 
-            $rowCourseID = $rowCourse['ID'];
-            $queryCheckToResult = "SELECT * FROM `inacs_check` WHERE IDCourse='$rowCourseID' ";
-            $CheckDataToResult = mysqli_query($con,$queryCheckToResult);
-            if(mysqli_num_rows($CheckDataToResult) == 1){
-                while ($rowCheck = mysqli_fetch_assoc($CheckDataToResult)) {
-                    $numberCheck = $rowCheck['NumberCheck'];
-                }
-            }
-            
+    $headerTable  = $headerTable."<tr>";
+    $headerTable  = $headerTable."<th>จำนวนที่เช็ค</th>";
+    $headerTable  = $headerTable."<th>ทันเวลา</th>";
+    $headerTable  = $headerTable."<th>สาย</th>";
+    $headerTable  = $headerTable."<th>ขาด</th>";
+    $headerTable  = $headerTable."<th>จำนวนที่เช็ค</th>";
+    $headerTable  = $headerTable."<th>ทันเวลา</th>";
+    $headerTable  = $headerTable."<th>สาย</th>";
+    $headerTable  = $headerTable."<th>ขาด</th>";
+    $headerTable  = $headerTable."</tr>";
+    $_SESSION["HeaderResultTableInResult"] = $headerTable;
 
-            $queryStudentToResult = "SELECT * FROM `inacs_student` WHERE IDCourse='$rowCourseID' ";
-            $StudentDataToResult = mysqli_query($con,$queryStudentToResult);
-            if(mysqli_num_rows($StudentDataToResult) > 0){
-                while ($rowStudent = mysqli_fetch_assoc($StudentDataToResult)) {
-                    
-                    $rowStudentID = $rowStudent['ID'];
-                    $queryResultToResult = "SELECT * FROM `inacs_result` WHERE IDStudent='$rowStudentID' ";
-                    $ResultDataToResult = mysqli_query($con,$queryResultToResult);
-                    if(mysqli_num_rows($ResultDataToResult) == 1){
-                        while ($rowResult = mysqli_fetch_assoc($ResultDataToResult)) {
+    for($y = 1;$y < count($dataTypeArray);$y+=1){
 
-                            $checkResultStudent = true;
-                            for($x = 0;$x < count($dataCheckResult);$x+=1){
-                                if($dataCheckResult[$x] == $rowStudent['Number']){
-                                    $checkResultStudent = false;
-
-                                    $dataResult[$x][3] += $numberCheck;
-                                    $dataResult[$x][4] += $rowResult['NumberOnTime'];
-                                    $dataResult[$x][5] += $rowResult['NumberLate'];
-
-
-                                    if($dataResult[$x][3] == 0){
-                                        $dataResult[$x][6] = 0;
-                                    }else{
-                                        $dataResult[$x][6] = round((($dataResult[$x][4]+($dataResult[$x][5]*0.5))/$dataResult[$x][3])*100);
-                                    }
-                                    
-                                    
-                                    $dataResult[$x][7] += $rowResult['ScoreDeducted'];
-                                    $dataResult[$x][8] += $rowResult['ScoreExtra'];
-                                }
-                            }
-
-
-                            if($checkResultStudent){
-                                array_push($dataCheckResult,$rowStudent['Number']);
-                                array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra']));
-                            }
-
-
-                        }
+        $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
+        AND Number='".$_SESSION['NumCourseInResultStudent']."' 
+        AND Name='".$_SESSION['NameCourseInResultStudent']."'  
+        AND GroupCourse='".$_SESSION['GroupCourseInResultStudent']."'
+        AND Type='$dataTypeArray[$y]'
+        ";
+    
+        $CourseDataToResult = mysqli_query($con,$queryCourseToResult);
+        if(mysqli_num_rows($CourseDataToResult) == 1){
+            while ($rowCourse = mysqli_fetch_assoc($CourseDataToResult)) {
+    
+                $rowCourseID = $rowCourse['ID'];
+                $queryCheckToResult = "SELECT * FROM `inacs_check` WHERE IDCourse='$rowCourseID' ";
+                $CheckDataToResult = mysqli_query($con,$queryCheckToResult);
+                if(mysqli_num_rows($CheckDataToResult) == 1){
+                    while ($rowCheck = mysqli_fetch_assoc($CheckDataToResult)) {
+                        $numberCheck = $rowCheck['NumberCheck']-1;
                     }
-
                 }
-            }
+                
+    
+                $queryStudentToResult = "SELECT * FROM `inacs_student` WHERE IDCourse='$rowCourseID' ";
+                $StudentDataToResult = mysqli_query($con,$queryStudentToResult);
+                if(mysqli_num_rows($StudentDataToResult) > 0){
+                    while ($rowStudent = mysqli_fetch_assoc($StudentDataToResult)) {
+                        
+                        $rowStudentID = $rowStudent['ID'];
+                        $queryResultToResult = "SELECT * FROM `inacs_result` WHERE IDStudent='$rowStudentID' ";
+                        $ResultDataToResult = mysqli_query($con,$queryResultToResult);
+                        if(mysqli_num_rows($ResultDataToResult) == 1){
+                            while ($rowResult = mysqli_fetch_assoc($ResultDataToResult)) {
+    
+                                $checkResultStudent = true;
+                                
+                                for($x = 0;$x < count($dataCheckResult);$x+=1){
+                                    if($dataCheckResult[$x] == $rowStudent['Number']){
+                                        
+                                        $checkResultStudent = false;
+                                        /*
+                                        $dataResult[$x][3] += $numberCheck;
+                                        $dataResult[$x][4] += $rowResult['NumberOnTime'];
+                                        $dataResult[$x][5] += $rowResult['NumberLate'];
+                                        */
+    
+                                        $dataResult[$x][8] += $rowResult['ScoreDeducted'];
+                                        $dataResult[$x][9] += $rowResult['ScoreExtra'];
+                                        
+                                        $dataResult[$x][10] = $numberCheck;
+                                        $dataResult[$x][11] = $rowResult['NumberOnTime'];
+                                        $dataResult[$x][12] = $rowResult['NumberLate'];
+                                        $dataResult[$x][13] = $rowResult['NumberAbsent'];
 
+                                        $numberCheckCal = $dataResult[$x][3] + $numberCheck;
+                                        $numberOnTimeCal = $dataResult[$x][4] + $rowResult['NumberOnTime'];
+                                        $numberLateCal = $dataResult[$x][5] + $rowResult['NumberLate'];
+
+                                        if($dataResult[$x][3] == 0){
+                                            $dataResult[$x][7] = 0;
+                                        }else{
+                                            $dataResult[$x][7] = round((($numberOnTimeCal+($numberLateCal*0.5))/$numberCheckCal)*100);
+                                        }
+
+    
+                                    }
+                                }
+                                
+    
+                                if($checkResultStudent){
+                                    array_push($dataCheckResult,$rowStudent['Number']);
+    
+                                    array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['NumberAbsent'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra'],0,0,0,0));
+
+                                    array_push($dataPhoneNumber,array($rowStudent['Number'],$rowStudent['ParentalPhoneNumber']));
+    
+                                    /*
+                                    array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra']));
+                                    */
+                                }
+    
+    
+                            }
+                        }
+    
+                    }
+                }
+    
+            }
         }
+
     }
 
 }else{
+
+    $headerTable  = $headerTable."<tr>";
+    $headerTable  = $headerTable."<th>รหัสนิสิต</th>";
+    $headerTable  = $headerTable."<th>ชื่อนิสิต</th>";
+    $headerTable  = $headerTable."<th>จำนวนที่เช็ค</th>";
+    $headerTable  = $headerTable."<th>ทันเวลา</th>";
+    $headerTable  = $headerTable."<th>สาย</th>";
+    $headerTable  = $headerTable."<th>ขาด</th>";
+    //$headerTable  = $headerTable."<th>เบอร์ผู้ปกครอง</th>";
+    $headerTable  = $headerTable."<th>เพิ่มเบอร์</th>";
+    $headerTable  = $headerTable."</tr>";
+
+    $_SESSION["HeaderResultTableInResult"] = $headerTable;
+
 
     $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
     AND Number='".$_SESSION['NumCourseInResultStudent']."' 
@@ -174,7 +237,7 @@ if($_SESSION["TypeResult"] == "All"){
             $CheckDataToResult = mysqli_query($con,$queryCheckToResult);
             if(mysqli_num_rows($CheckDataToResult) == 1){
                 while ($rowCheck = mysqli_fetch_assoc($CheckDataToResult)) {
-                    $numberCheck = $rowCheck['NumberCheck'];
+                    $numberCheck = $rowCheck['NumberCheck']-1;
                 }
             }
 
@@ -188,7 +251,9 @@ if($_SESSION["TypeResult"] == "All"){
                     $ResultDataToResult = mysqli_query($con,$queryResultToResult);
                     if(mysqli_num_rows($ResultDataToResult) == 1){
                         while ($rowResult = mysqli_fetch_assoc($ResultDataToResult)) {
-                            array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra']));
+                            array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['NumberAbsent'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra']));
+
+                            array_push($dataPhoneNumber,array($rowStudent['Number'],$rowStudent['ParentalPhoneNumber']));
                         }
                     }
 
@@ -202,6 +267,7 @@ if($_SESSION["TypeResult"] == "All"){
 
 
 sort($dataResult);
+sort($dataPhoneNumber);
 $tableResult = "";
 for($x = 0;$x < count($dataResult);$x+=1){
 
@@ -211,21 +277,73 @@ for($x = 0;$x < count($dataResult);$x+=1){
     $numberCheckCheck = $dataResult[$x][3];
     $numberOnTimeResult = $dataResult[$x][4];
     $numberLateResult = $dataResult[$x][5];
-    $ScoreRoomResult = $dataResult[$x][6];
-    $ScoreDeductedResult = $dataResult[$x][7];
-    $ScoreExtraResult = $dataResult[$x][8];
+    $numberAbsentResult = $dataResult[$x][6];
+    $ScoreRoomResult = $dataResult[$x][7];
+    $ScoreDeductedResult = $dataResult[$x][8];
+    $ScoreExtraResult = $dataResult[$x][9];
 
-    $tableResult  = $tableResult."<tr>";
 
-    $tableResult  = $tableResult."<td >$numberStudent</td>";  
-    $tableResult  = $tableResult."<td >$nameStudent</td>"; 
-    $tableResult  = $tableResult."<td >$branchStudent</td>"; 
-    $tableResult  = $tableResult."<td >$numberCheckCheck</td>"; 
-    $tableResult  = $tableResult."<td >$numberOnTimeResult</td>"; 
-    $tableResult  = $tableResult."<td >$numberLateResult</td>"; 
-    $tableResult  = $tableResult."<td >$ScoreRoomResult</td>"; 
-    $tableResult  = $tableResult."<td >$ScoreDeductedResult</td>";
-    $tableResult  = $tableResult."<td >$ScoreExtraResult</td>";   
+    $numberCheckCheckOther = $dataResult[$x][10];
+    $numberOnTimeResultOther = $dataResult[$x][11];
+    $numberLateResultOther = $dataResult[$x][12];
+    $numberAbsentResultOther = $dataResult[$x][13];
+
+    $numberPhoneResult = $dataPhoneNumber[$x][1];
+
+    $RiskLevel = $numberAbsentResult+$numberAbsentResultOther+(0.5*$numberLateResult)+(0.5*$numberLateResultOther);
+    if($RiskLevel < 2){
+        $tableResult  = $tableResult."<tr style=background-color:white;>";
+    }else if ($RiskLevel >= 2 && $RiskLevel < 3){
+        $tableResult  = $tableResult."<tr style=background-color:orange;>";
+    }else{
+        $tableResult  = $tableResult."<tr style=background-color:red;>";
+    }
+
+    if($RiskLevel >= 3){
+        $tableResult  = $tableResult."<td style=color:white;><b>$numberStudent</b></td>";  
+        $tableResult  = $tableResult."<td style=color:white;><b>$nameStudent</b></td>"; 
+        $tableResult  = $tableResult."<td style=color:white;><b>$numberCheckCheck</b></td>"; 
+        $tableResult  = $tableResult."<td style=color:white;><b>$numberOnTimeResult</b></td>"; 
+        $tableResult  = $tableResult."<td style=color:white;><b>$numberLateResult</b></td>";  
+        $tableResult  = $tableResult."<td style=color:white;><b>$numberAbsentResult</b></td>"; 
+    }else{
+        $tableResult  = $tableResult."<td ><b>$numberStudent</b></td>";  
+        $tableResult  = $tableResult."<td ><b>$nameStudent</b></td>"; 
+        $tableResult  = $tableResult."<td ><b>$numberCheckCheck</b></td>"; 
+        $tableResult  = $tableResult."<td ><b>$numberOnTimeResult</b></td>"; 
+        $tableResult  = $tableResult."<td ><b>$numberLateResult</b></td>";  
+        $tableResult  = $tableResult."<td ><b>$numberAbsentResult</b></td>"; 
+    }
+
+    if($_SESSION["TypeResult"] == "All"){
+        if($RiskLevel >= 3){
+            $tableResult  = $tableResult."<td style=color:white;><b>$numberCheckCheckOther</b></td>"; 
+            $tableResult  = $tableResult."<td style=color:white;><b>$numberOnTimeResultOther</b></td>";
+            $tableResult  = $tableResult."<td style=color:white;><b>$numberLateResultOther</b></td>";
+            $tableResult  = $tableResult."<td style=color:white;><b>$numberAbsentResultOther</b></td>"; 
+            //$tableResult  = $tableResult."<td style=color:white;><b>$numberPhoneResult</b></td>";
+        }else{
+            $tableResult  = $tableResult."<td><b>$numberCheckCheckOther</b></td>"; 
+            $tableResult  = $tableResult."<td><b>$numberOnTimeResultOther</b></td>";
+            $tableResult  = $tableResult."<td><b>$numberLateResultOther</b></td>";
+            $tableResult  = $tableResult."<td><b>$numberAbsentResultOther</b></td>";
+            //$tableResult  = $tableResult."<td><b>$numberPhoneResult</b></td>"; 
+        }
+    }else{
+        if($RiskLevel >= 3){
+            //$tableResult  = $tableResult."<td style=color:white;><b>$numberPhoneResult</b></td>";
+        }else{
+            //$tableResult  = $tableResult."<td><b>$numberPhoneResult</b></td>";
+        }
+    }
+
+    if($numberPhoneResult == Null || $numberPhoneResult == ""){
+        $tableResult  = $tableResult."<td style=cursor:pointer; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง value=$numberStudent>add_circle_outline</button></td>";
+    }else{
+        $tableResult  = $tableResult."<td style=cursor:pointer; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง style=background-color:#4CAF50; value=$numberStudent>add_circle_outline</button></td>";
+    }
+    
+
 
     $tableResult  = $tableResult."</tr>";
 }
@@ -253,27 +371,14 @@ include('h.php');
   width: 85%;
 }
 
-#table-no-click-result {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  #table-no-click-result td, #table-no-click-result th {
-    border: 1px solid #ddd;
-    padding: 4px;
-    text-align: center;
-  }
-  
-  #table-no-click-result tr:nth-child(even){background-color: #f2f2f2;}
-
-  
-  #table-no-click-result th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: #2c56d4;
-    color: white;
-  }
+.input-field-v2-6 {
+  width: 68.5%;
+  padding: 10px;
+  outline: none;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
 
 </style>
 
@@ -388,20 +493,15 @@ include('h.php');
 
                         </div>
                         <table id="table-no-click-result" style="margin-top: 1.5%; font-size:15px;" >
-                            <tr>
-                                <th>รหัสนิสิต</th>
-                                <th>ชื่อนิสิต</th>
-                                <th>สาขา</th>
-                                <th>จำนวนที่เช็ค</th>
-                                <th>ทันเวลา</th>
-                                <th>สาย</th>
-                                <th>คะแนนเข้าห้อง</th>
-                                <th>คะแนนที่หัก</th>
-                                <th>คะแนนพิเศษ</th>
-                            </tr>
+                            <?php
+                                echo $_SESSION["HeaderResultTableInResult"] ;
+                            ?>
+
+                            <form name="AddPhone" action="FResultCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
                             <?php
                                 echo $_SESSION["ResultTableInResult"] ;
                             ?>
+                            </form>
                             <!--<tr>
                                 <td>59160000</td>
                                 <td>นาย กกกกก ขขขขขข</td>
@@ -476,30 +576,30 @@ include('h.php');
 </div>
 
 
+<?php if($_SESSION['CheckOpenModalAddPhone'] == true){ ?>
+<div id="AddPhoneNumber" class="modal" style="display: block;">
+  
+  <form class="modal-content animate" action="FResultCheckNameStudent.php" method="post">
+
+    <h2 class="text-topic" align="center" style="margin-bottom:4%;margin-top:3%;">เบอร์โทรศัพท์ผู้ปกครอง</h2>
+
+  <div class="input-textRegis">
+        <div class="sizeText maginChangEmail"><b>Phone Number :</b></div>
+        <input class="is-pulled-right input-field-v2-6" type="textRegis" name="Phone" value="<?php echo $_SESSION['ParentalPhoneNumber']; ?>" autocomplete=off>
+  </div>
+
+  <div class="button-zone">
+  <button type="submit" class="register" name="addParentalPhoneNumber"><b>บันทึก</b></button>
+  <button type="button" onclick="document.getElementById('AddPhoneNumber').style.display='none'" class="register register-cancle is-red" style="margin: 0% 0% 0% 19%;"><b>ยกเลิก</b></button>
+  </div>
+  </form>
+</div>
+<?php 
+$_SESSION['CheckOpenModalAddPhone'] = false;
+} ?>
 
 
 
-<script>
-var modalChangePass = document.getElementById('ChangePassFormv.2');
-var modalChangeEmail = document.getElementById('ChangeEmail');
-
-window.onclick = function(event) {
-    if(event.target == modalChangePass) {
-        modalChangePass.style.display = "none";
-    }else if(event.target == modalChangeEmail) {
-        modalChangeEmail.style.display = "none";
-    }
-}
-
-function switchNavBarDropDown() {
-    var dropdown = document.getElementById('navbar-dropdown');
-    if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active');
-    } else {
-        dropdown.classList.add('is-active');
-    }
-}
-</script>
 
 </body>
 </html>

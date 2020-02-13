@@ -32,6 +32,9 @@ $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
 
 $queryTerm = "SELECT * FROM `inacs_term`";
 $termSelect = mysqli_query($con,$queryTerm);
@@ -85,6 +88,18 @@ function addCoursetoTable($IdTermSearch){
     }
 
     sort($dataCourse);
+
+
+    
+
+    $_SESSION["CountDataCourse"] = count($dataCourse);
+
+    if($_SESSION["CountDataCourse"] == ($_SESSION["Pagination"]-1)*5){
+    $_SESSION["Pagination"]-=1;
+    }
+
+
+
 
     if(mysqli_num_rows($CourseTable) > 0){
     for ($x = 0; $x < 5; $x+=1) {

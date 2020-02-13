@@ -158,6 +158,15 @@
     background-color: currentColor;
 }
 
+.iconv-2-add-box {
+    -webkit-mask-image: url('../pic/add_box-24px.svg');
+
+    width: 30px;
+    height: 30px;
+
+    background-color: currentColor;
+}
+
 /* Icon Size */
 
 .icon-size-1 {

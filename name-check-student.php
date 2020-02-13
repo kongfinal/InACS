@@ -146,13 +146,13 @@ include('h.php');
                             <div style="font-size: 18px; margin-top: 0.5%; margin-right: 2%;"><b>ครั้งที่ :</b><?php echo $_SESSION["NumberCheckCourseInCheckStudent"]; ?></div>
                         </div>
                         <div class="set-flex" style="margin-top: 2%;">
-                            <form name="Check" action="FCheckNameStudent.php" method="post" style="margin-right: 1.5%;  margin-bottom: 0%; width: 83%;">
+                            <form name="Check" action="FCheckNameStudent.php" method="post" style="margin-right: 1.5%;  margin-bottom: 0%; width: 100%; height: 45px;">
                                 <input class="is-pulled-right" name="CheckName" style="text-align: center; font-size: 24px; width: 100%; height: 100%" type="textRegis" value="" 
                                 autocomplete=off autofocus>
                             </form>
                         <form name="SaveCheck" action="FCheckNameStudent.php" method="post" >
-                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อบันทึกข้อมูลการเช็คชื่อ">
-                                <i class="material-icons" style="font-size: 40px;">save</i>
+                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อสิ้นสุดการเช็คชื่อครั้งนี้">
+                                <i class="material-icons" style="font-size: 40px;">exit_to_app</i>
                             </button>
                         </form>
                         </div>
@@ -160,12 +160,14 @@ include('h.php');
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>หักคะแนน (เครื่องแต่งกาย/ลืมบัตรนิสิต) :</b></div>
 
                             <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน"></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" autocomplete=off></form>
+
+                            <div style="margin-top: 2%; margin-right: 15.5%;"></div>
 
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
 
                             <form name="SaveScoreExtra" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน"></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน" autocomplete=off></form>
 
                         </div>
                         <div class="set-flex" >

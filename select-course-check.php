@@ -27,6 +27,9 @@ $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 $_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
 $_SESSION["PaginationSelectResult"] = 1;
 
+$_SESSION["TypeMessage"] = "all";
+$_SESSION["PaginationMessage"] = 1;
+
 
 $name = $_SESSION['Name'];
 $email = $_SESSION['Email'];

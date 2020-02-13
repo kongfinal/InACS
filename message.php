@@ -1,5 +1,5 @@
 <?php session_start();
-
+include('condb.php');
 
 $_SESSION["IDTerm"] = $_SESSION["IDTermFirst"];
 $_SESSION["Pagination"] = 1;
@@ -31,6 +31,129 @@ $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
 
 
+$name = $_SESSION['Name'];
+$email = $_SESSION['Email'];
+$username = $_SESSION['Username'];
+$password = $_SESSION['Password'];
+
+
+$optionsType = "";
+$dataTypeArray = array();
+$dataNameTypeArray = array();
+
+$tableMessage = "";
+
+array_push($dataTypeArray,"all");
+array_push($dataTypeArray,"star");
+array_push($dataTypeArray,"delete");
+
+array_push($dataNameTypeArray,"ข้อความทั้งหมด");
+array_push($dataNameTypeArray,"ติดดาว");
+array_push($dataNameTypeArray,"ถังขยะ");
+
+for($x = 0;$x < count($dataTypeArray);$x+=1){
+  if($_SESSION["TypeMessage"] == $dataTypeArray[$x]){
+      $optionsType  = $optionsType."<option value=$dataTypeArray[$x] selected>$dataNameTypeArray[$x]</option>";
+  }else{
+      $optionsType  = $optionsType."<option value=$dataTypeArray[$x] >$dataNameTypeArray[$x]</option>";
+  }
+}
+
+$optionsMessage = "";
+$dataMessageArray = array();
+$tableMessage = "";
+
+$queryMessage = "SELECT * FROM `inacs_message`";
+$MessageData = mysqli_query($con,$queryMessage);
+
+while($rowMessage = mysqli_fetch_assoc($MessageData)){
+  if($_SESSION["TypeMessage"] == "all" && ($rowMessage['Status'] == "star" || $rowMessage['Status'] == "")){
+    array_push($dataMessageArray,array($rowMessage['ID'],$rowMessage['Date'],$rowMessage['IDCourse'],$rowMessage['IDStudent'],$rowMessage['Name'],$rowMessage['Status']));
+  }else if($_SESSION["TypeMessage"] == "star" && $rowMessage['Status'] == "star"){
+    array_push($dataMessageArray,array($rowMessage['ID'],$rowMessage['Date'],$rowMessage['IDCourse'],$rowMessage['IDStudent'],$rowMessage['Name'],$rowMessage['Status']));
+  }else if($_SESSION["TypeMessage"] == "delete" && $rowMessage['Status'] == "delete"){
+    array_push($dataMessageArray,array($rowMessage['ID'],$rowMessage['Date'],$rowMessage['IDCourse'],$rowMessage['IDStudent'],$rowMessage['Name'],$rowMessage['Status']));
+  }
+}
+
+sort($dataMessageArray);
+
+
+
+$_SESSION["CountDataMessageArray"] = count($dataMessageArray);
+
+if($_SESSION["CountDataMessageArray"] == ($_SESSION["PaginationMessage"]-1)*5){
+  $_SESSION["PaginationMessage"]-=1;
+}
+
+
+
+
+if(count($dataMessageArray) > 0){
+  for ($x = 0; $x < 5; $x+=1) {
+    $page = ($_SESSION["PaginationMessage"]-1) * 5;
+
+    $rowDate=$dataMessageArray[$x+$page][1];
+    $rowName=$dataMessageArray[$x+$page][4];
+    $rowID = $dataMessageArray[$x+$page][0];
+    $rowStatus=$dataMessageArray[$x+$page][5];
+
+    $tableMessage  = $tableMessage."<tr ondblclick=document.location.href='FMessage.php?idMessage=$rowID' title=ดับเบิลคลิกเพื่อแสดงรายละเอียดของข้อความนี้>";
+    $tableMessage  = $tableMessage."<td>$rowDate</td>";
+    $tableMessage  = $tableMessage."<td>$rowName</td>";
+    
+    if($rowStatus == "star"){
+      $tableMessage  = $tableMessage."<td><button name=starred class=material-icons style=color:#4CAF50;  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+    }else{
+      $tableMessage  = $tableMessage."<td><button name=starred class=material-icons  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+    }
+
+    if($rowStatus == "delete"){
+      $tableMessage  = $tableMessage."<td><button name=trash class=material-icons style=color:#4CAF50; title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
+    }else{
+      $tableMessage  = $tableMessage."<td><button name=trash class=material-icons title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
+    }
+
+    $tableMessage  = $tableMessage."</tr>";
+
+    if($x+$page >= count($dataMessageArray)-1){
+        break;
+    }
+
+  }
+}
+
+$_SESSION["Messagetable"] = $tableMessage;
+
+
+
+
+$lastPage = 0;
+if($_SESSION["PaginationMessage"] == 1){
+    $Pagination = $Pagination."<input type=submit name=Pagination value=&laquo; disabled></input>";
+}else{
+    $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อย้อนกลับไปตารางก่อนหน้า value=&laquo; ></input>";
+}
+
+for ($x = 0; $x*5 < count($dataMessageArray);) {
+    $x+=1;
+    if($_SESSION["PaginationMessage"] == $x){
+        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x class=active value=$x ></input>";
+    }else{
+        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x value=$x ></input>";
+    }
+    $lastPage = $x;
+}
+
+if($_SESSION["PaginationMessage"] == $lastPage || ($_SESSION["PaginationMessage"] == 1 && $lastPage == 0)){
+    $Pagination = $Pagination."<input type=submit name=Pagination value=&raquo; disabled></input>";
+}else{
+    $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางถัดไป value=&raquo; ></input>";
+}
+
+$_SESSION["PaginationMessageTable"] = $Pagination;
+
+
 
 ?>
 <?php
@@ -45,36 +168,7 @@ include('h.php');
 
 <?php
 
-if(isset($_POST['changePass'])){
-  if (empty($_POST["new-password"])) {
-    echo "<script type='text/javascript'>alert('New Password is required');</script>";
-  } else if (empty($_POST["curr-password"])) {
-    echo "<script type='text/javascript'>alert('Current Password is required');</script>";
-  } else if (empty($_POST["rep-password"])) {
-    echo "<script type='text/javascript'>alert('Repeat Password is required');</script>";
-  } else{
-    $new = trim(htmlspecialchars($_POST['new-password']));
-    $current = trim(htmlspecialchars($_POST['curr-password']));
-    $repeat = trim(htmlspecialchars($_POST['rep-password']));
-    if ($new !== $repeat) {
-      echo "<script type='text/javascript'>alert('New Password not same Repeat Password');</script>";
-    }else if($current === $new) {
-      echo "<script type='text/javascript'>alert('New Password same Current Password');</script>";
-    }
-  }
-}
 
-if(isset($_POST['changeEmail'])){
-  if (empty($_POST["email"])) {
-    echo "<script type='text/javascript'>alert('Email is required');</script>";
-  }else {
-    $email = trim(htmlspecialchars($_POST['email']));
-    $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-    if ($email === false) {
-      echo "<script type='text/javascript'>alert('Invalid Email');</script>";
-    }
-  }
-}
 
 ?>
 
@@ -85,10 +179,10 @@ if(isset($_POST['changeEmail'])){
                     <span class="navbar-banner-text">InACS</span>
                 </div>
             </a>
-            <button id="navbar-user" class="navbar-item user" onclick="switchNavBarDropDown()">
-                <div class="user-container">
+            <button id="navbar-user" class="navbar-item user" onclick="if (document.getElementById('navbar-dropdown').classList.contains('is-active'))  return document.getElementById('navbar-dropdown').classList.remove('is-active'); else return document.getElementById('navbar-dropdown').classList.add('is-active');">
+                <div class="user-container" title="คลิกเพื่อแสดง/ปิด navbar">
                     <svg class="navbar-user-iconv-2 iconv-2-user iconv-2-size-5"></svg>
-                    <span class="navbar-user-text">Teacher Name</span>
+                    <span class="navbar-user-text"><?php echo $name; ?></span>
                     <svg class="navbar-user-iconv-2 iconv-2-down-arrow iconv-2-size-6"></svg>
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
@@ -169,7 +263,7 @@ if(isset($_POST['changeEmail'])){
                 </div>
                 <div class="box">
                 <div class="columns">
-                    <div class="column is-2">
+                    <!--<div class="column is-2">
                     <br>
                     <div class="div-message">
                         <button class="message" onClick="document.location.href='message.php'"><b>ข้อความทั้งหมด</b></button><br>
@@ -177,38 +271,45 @@ if(isset($_POST['changeEmail'])){
                         <button class="message-no-click" onClick="document.location.href='message-bin.php'"><b>ถังขยะ</b></button><br>
                         <br><br><br><br><br>
                     </div>
-                    </div>
-                    <div class="column is-6">
+                    </div>-->
+                    <div class="column is-8">
                     <br>
                     <div class="set-flex">
-                        <h4 style="padding-top: 0; margin-top: 1.5%; margin-left: 3%; margin-right: 40%;">ข้อความทั้งหมด</h4>
-                        <button class="small"><i class="material-icons">star</i></button>
-                        <button class="small" style="margin-right: 8.5%;"><i class="material-icons">delete</i></button>
-                        <button class="small"><i class="material-icons">chevron_left</i></button>
-                        <button class="small"><i class="material-icons">chevron_right</i></button>
+                        <h4 style="padding-top: 0; margin-top: 1.5%; margin-left: 3%; margin-right: 1%;">หมวด : </h4>
+                        <div class="select-input " style="width:15%; margin-top: 0.8%; margin-right: 59.3%;">
+                            <form name="changeType" action="FMessage.php" method="post" style="margin-bottom: 0%;">
+                            <select name="types" onchange="document.changeType.submit();" style="width:100%; height: auto; padding: 5px 2px;" title="คลิกเพื่อเลือกหมวดของข้อความที่ต้องการดู"> 
+                                <?php echo $optionsType;?>
+                            </select>
+                            </form>
+                        </div>
+                        <!--<button class="small"><i class="material-icons">star</i></button>
+                        <button class="small"><i class="material-icons">delete</i></button>-->
+                        <!--<button class="small"><i class="material-icons">chevron_left</i></button>
+                        <button class="small"><i class="material-icons">chevron_right</i></button>-->
                     </div>
                     <table class="table-message" id="table-starter" style="margin-top: 1.5%; margin-left: 3%; width:97%;">
                         <tr>
                             <th>วันที่ส่ง</th>
                             <th>เรื่อง</th>
+                            <th>ติดดาว</th>
+                            <th>ถังขยะ</th>
                         </tr>
-                        <tr ondblclick="document.getElementById('MessageDetail').style.display='block'">
-                            <td>7/12/2019</td>
-                            <td>นิสิตขาดเรียนเกิน 3 ครั้ง</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
+                        <form name="StarOrBin" action="FMessage.php" method="post" style="margin-bottom: 0%;">
+                            <?php
+                                echo $_SESSION["Messagetable"] ;
+                            ?>
+                        </form>
                     </table>
+                    <div class="pagination" style="width: 100%; text-align: center;">
+                            <div style="display: inline-block;">
+                            <form name="changePagination" action="FMessage.php" method="post" style="margin-bottom: 0%;">
+                                <?php
+                                    echo $_SESSION["PaginationMessageTable"] ;
+                                ?>
+                            </form>
+                            </div>
+                    </div>
                     </div>
                 </div>
                 </div>
@@ -218,23 +319,23 @@ if(isset($_POST['changeEmail'])){
 
 <div id="ChangePassFormv.2" class="modal">
   
-  <form class="modal-content animate" method="post">
+<form class="modal-content animate" action="FChangePassword.php" method="post">
 
     <h2 class="text-topic" align="center" style="margin-bottom:3%;margin-top:3%;">เปลี่ยนรหัสผ่าน</h2> 
 
   <div class="input-textRegis">
         <div class="sizeText maginNewPass"><b>New Password :</b></div>
-        <input class="is-pulled-right input-field-v1 " type="textRegis" name="new-password" value="" >
+        <input class="is-pulled-right input-field-v1 " style="width: 60.5%;" type="textRegis" name="new-password" value="" autocomplete=off >
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginCurPass"><b>Current Password :</b></div>
-        <input class="is-pulled-right input-field-v1 " type="password" name="curr-password" value="" >
+        <input class="is-pulled-right input-field-v1 " style="width: 60.5%;" type="password" name="curr-password" value="<?php echo $password; ?>" >
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginRepPass"><b>Repeat Password :</b></div>
-        <input class="is-pulled-right input-field-v1"  type="password" name="rep-password" value="">
+        <input class="is-pulled-right input-field-v1" style="width: 60.5%;"  type="password" name="rep-password" value="" autocomplete=off >
   </div>
 
   <div class="button-zone">
@@ -245,15 +346,16 @@ if(isset($_POST['changeEmail'])){
 </div>
 
 
+
   <div id="ChangeEmail" class="modal">
   
-  <form class="modal-content animate" method="post">
+  <form class="modal-content animate" action="FChangeEmail.php" method="post">
 
     <h2 class="text-topic" align="center" style="margin-bottom:3%;margin-top:3%;">เปลี่ยนอีเมล</h2> 
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>E-mail :</b></div>
-        <input class="is-pulled-right input-field-v2" type="textRegis" name="email" value="" >
+        <input class="is-pulled-right input-field-v2" style="width: 84.5%;" type="textRegis" name="email" value="<?php echo $email; ?>" autocomplete=off >
   </div>
 
   <div class="button-zone">
@@ -263,7 +365,10 @@ if(isset($_POST['changeEmail'])){
   </form>
 </div>
 
-<div id="MessageDetail" class="modal">
+
+
+<?php if($_SESSION['CheckOpenModalMessageDetail'] == true){ ?>
+<div id="MessageDetail" class="modal" style="display: block;">
   
   <form class="modal-content animate" action="/action_page.php" method="post">
 
@@ -273,27 +378,27 @@ if(isset($_POST['changeEmail'])){
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>วันที่ส่ง :</b></div>
-        <div class="sizeText maginChangEmail">7/12/2019</div>
+        <div class="sizeText maginChangEmail"><?php echo $_SESSION["DateMessage"]; ?></div>
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>เรื่อง :</b></div>
-        <div class="sizeText maginChangEmail">นิสิตขาดเรียนเกิน 3 ครั้ง</div>
+        <div class="sizeText maginChangEmail"><?php echo $_SESSION["NameMessage"]; ?></div>
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>ชื่อวิชา :</b></div>
-        <div class="sizeText maginChangEmail">Web Programming</div>
+        <div class="sizeText maginChangEmail"><?php echo $_SESSION["NameCourseMessage"]; ?></div>
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>รหัสนิสิต :</b></div>
-        <div class="sizeText maginChangEmail">59160000</div>
+        <div class="sizeText maginChangEmail"><?php echo $_SESSION["NumberStudentMessage"]; ?></div>
   </div>
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>ชื่อนิสิต :</b></div>
-        <div class="sizeText maginChangEmail">นาย กกกก ขขขขขข</div>
+        <div class="sizeText maginChangEmail"><?php echo $_SESSION["NameStudentMessage"]; ?></div>
   </div>
 
   <div class="button-zone">
@@ -301,32 +406,11 @@ if(isset($_POST['changeEmail'])){
   </div>
   </form>
 </div>
+<?php 
+$_SESSION['CheckOpenModalMessageDetail'] = false;
+} ?>
 
 
-<script>
-var modalChangePass = document.getElementById('ChangePassFormv.2');
-var modalChangeEmail = document.getElementById('ChangeEmail');
-var modalMessageDetail = document.getElementById('MessageDetail');
-
-window.onclick = function(event) {
-    if(event.target == modalChangePass) {
-        modalChangePass.style.display = "none";
-    }else if(event.target == modalChangeEmail) {
-        modalChangeEmail.style.display = "none";
-    }else if(event.target == modalChangeEmail) {
-        modalMessageDetail.style.display = "none";
-    }
-}
-
-function switchNavBarDropDown() {
-    var dropdown = document.getElementById('navbar-dropdown');
-    if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active');
-    } else {
-        dropdown.classList.add('is-active');
-    }
-}
-</script>
 
 </body>
 </html>
