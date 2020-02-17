@@ -97,7 +97,7 @@ if($_SESSION["TypeResult"] == "All"){
     $headerTable  = $headerTable."<th colspan=4>บรรยาย</th>";
     $headerTable  = $headerTable."<th colspan=4>ปฎิบัติ</th>";
     //$headerTable  = $headerTable."<th rowspan=2>เบอร์ผู้ปกครอง</th>";
-    $headerTable  = $headerTable."<th rowspan=2>เพิ่มเบอร์</th>";
+    $headerTable  = $headerTable."<th rowspan=2>เพิ่มเบอร์โทรศัพท์</th>";
     $headerTable  = $headerTable."</tr>";
 
     $headerTable  = $headerTable."<tr>";
@@ -215,7 +215,7 @@ if($_SESSION["TypeResult"] == "All"){
     $headerTable  = $headerTable."<th>สาย</th>";
     $headerTable  = $headerTable."<th>ขาด</th>";
     //$headerTable  = $headerTable."<th>เบอร์ผู้ปกครอง</th>";
-    $headerTable  = $headerTable."<th>เพิ่มเบอร์</th>";
+    $headerTable  = $headerTable."<th>เพิ่มเบอร์โทรศัพท์</th>";
     $headerTable  = $headerTable."</tr>";
 
     $_SESSION["HeaderResultTableInResult"] = $headerTable;
@@ -338,9 +338,9 @@ for($x = 0;$x < count($dataResult);$x+=1){
     }
 
     if($numberPhoneResult == Null || $numberPhoneResult == ""){
-        $tableResult  = $tableResult."<td style=cursor:pointer; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง value=$numberStudent>add_circle_outline</button></td>";
+        $tableResult  = $tableResult."<td style=cursor:pointer;text-align:center; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง style=width:68px; value=$numberStudent>add_circle_outline</button></td>";
     }else{
-        $tableResult  = $tableResult."<td style=cursor:pointer; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง style=background-color:#4CAF50; value=$numberStudent>add_circle_outline</button></td>";
+        $tableResult  = $tableResult."<td style=cursor:pointer;text-align:center; ><button name=addPhoneModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;เพิ่มข้อมูลเบอร์โทรศัพท์ผู้ปกครอง style=background-color:#4CAF50;width:68px; value=$numberStudent>add_circle_outline</button></td>";
     }
     
 
@@ -399,7 +399,7 @@ include('h.php');
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -457,6 +457,11 @@ include('h.php');
             <li>
                 <a href="vacation.php">
                 <svg class="menu-icon iconv-2-backpack"></svg>การลา
+                </a>
+            </li>
+            <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
                 </a>
             </li>
             <li>

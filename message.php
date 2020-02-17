@@ -76,7 +76,7 @@ while($rowMessage = mysqli_fetch_assoc($MessageData)){
   }
 }
 
-sort($dataMessageArray);
+rsort($dataMessageArray);
 
 
 
@@ -103,15 +103,15 @@ if(count($dataMessageArray) > 0){
     $tableMessage  = $tableMessage."<td>$rowName</td>";
     
     if($rowStatus == "star"){
-      $tableMessage  = $tableMessage."<td><button name=starred class=material-icons style=color:#4CAF50;  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=starred class=material-icons style=color:#4CAF50;  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
     }else{
-      $tableMessage  = $tableMessage."<td><button name=starred class=material-icons  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=starred class=material-icons  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
     }
 
     if($rowStatus == "delete"){
-      $tableMessage  = $tableMessage."<td><button name=trash class=material-icons style=color:#4CAF50; title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=trash class=material-icons style=color:#4CAF50; title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
     }else{
-      $tableMessage  = $tableMessage."<td><button name=trash class=material-icons title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=trash class=material-icons title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ  value=$rowID>delete</button></td>";
     }
 
     $tableMessage  = $tableMessage."</tr>";
@@ -187,7 +187,7 @@ include('h.php');
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -245,6 +245,11 @@ include('h.php');
             <li>
                 <a href="vacation.php">
                 <svg class="menu-icon iconv-2-backpack"></svg>การลา
+                </a>
+            </li>
+            <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
                 </a>
             </li>
             <li>

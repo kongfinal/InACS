@@ -61,7 +61,7 @@ include('h.php');
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -122,6 +122,11 @@ include('h.php');
                 </a>
             </li>
             <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
+                </a>
+            </li>
+            <li>
                 <a href="login.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
@@ -142,8 +147,8 @@ include('h.php');
                         <div class="set-flex" style="margin-bottom: 1%;">
                             <div style="font-size: 18px; margin-top: 0.5%; margin-right: 1%;"><b><?php echo $_SESSION["NumCourseInCheckStudent"]; ?> :</b></div>
                             <div style="font-size: 18px; margin-top: 0.5%; width: 49.5%;"><b><?php echo $_SESSION["NameCourseInCheckStudent"]; ?></b></div>
-                            <div style="font-size: 18px; margin-top: 0.5%; width: 24%;"><b>กลุ่มเรียน :</b> <?php echo $_SESSION["GroupCourseInCheckStudent"] ?></div>
-                            <div style="font-size: 18px; margin-top: 0.5%; margin-right: 2%;"><b>ครั้งที่ :</b><?php echo $_SESSION["NumberCheckCourseInCheckStudent"]; ?></div>
+                            <div style="font-size: 18px; margin-top: 0.5%; width: 24%;"><b>กลุ่มเรียน : </b><?php echo $_SESSION["GroupCourseInCheckStudent"] ?></div>
+                            <div style="font-size: 18px; margin-top: 0.5%; margin-right: 2%;"><b>ครั้งที่ : </b><?php echo $_SESSION["NumberCheckCourseInCheckStudent"]; ?></div>
                         </div>
                         <div class="set-flex" style="margin-top: 2%;">
                             <form name="Check" action="FCheckNameStudent.php" method="post" style="margin-right: 1.5%;  margin-bottom: 0%; width: 100%; height: 45px;">
@@ -152,7 +157,7 @@ include('h.php');
                             </form>
                         <form name="SaveCheck" action="FCheckNameStudent.php" method="post" >
                             <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อสิ้นสุดการเช็คชื่อครั้งนี้">
-                                <i class="material-icons" style="font-size: 40px;">exit_to_app</i>
+                                <b style="font-size: 16px;">สิ้นสุดการเช็คชื่อ</b>
                             </button>
                         </form>
                         </div>
@@ -162,7 +167,7 @@ include('h.php');
                             <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
                             <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" autocomplete=off></form>
 
-                            <div style="margin-top: 2%; margin-right: 15.5%;"></div>
+                            <div style="margin-top: 2%; margin-right: 17%;"></div>
 
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
 
@@ -171,43 +176,43 @@ include('h.php');
 
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 12.2%;"><b>รหัสนิสิต :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 12.2%;"><b>รหัสนิสิต :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                <b><?php echo $_SESSION["NumberCheckStudent"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 13.1%;"><b>ชื่อนิสิต :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 13.1%;"><b>ชื่อนิสิต :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                <b><?php echo $_SESSION["NameCheckStudent"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 8.2%;"><b>เวลาที่เช็คชื่อ :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 8.2%;"><b>เวลาที่เช็คชื่อ :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                <b><?php echo $_SESSION["TimeCheckStudent"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 13.9%;"><b>สถานะ :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 13.9%;"><b>สถานะ :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                <b><?php echo $_SESSION["StatusCheckStudent"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex">
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 1%;"><b>จำนวนครั้งที่ขาดเรียน :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 1%;"><b>จำนวนครั้งที่ขาดเรียน :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                 <b><?php echo $_SESSION["NumberAbsentCheckStudentAll"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 3.1%;"><b>จำนวนครั้งที่มาสาย :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 3.1%;"><b>จำนวนครั้งที่มาสาย :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                 <b><?php echo $_SESSION["NumberLateStudentAll"]; ?></b>
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check" style="font-size: 18px; margin-top: 2%; margin-right: 3.6%; "><b>จำนวนคะแนนที่หัก :</b></div>
+                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 3.6%; "><b>จำนวนคะแนนที่หัก :</b></div>
                             <div class="div-check" style="font-size: 18px; margin-top: 1%;">
                                 <b><?php echo $_SESSION["ScoreDeductedCheckStudentAll"]; ?></b>
                             </div>

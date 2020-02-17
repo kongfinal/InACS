@@ -105,8 +105,7 @@ function addCoursetoTable($IdTermSearch){
         $tableCourse  = $tableCourse."<td>$rowName</td>";
         $tableCourse  = $tableCourse."<td>$rowGroupCourse</td>";
         $tableCourse  = $tableCourse."<td>$rowType</td>";
-        $tableCourse  = $tableCourse."<td><input id=CheckName type=checkbox class='myinput large' 
-         style=margin-top:2.5%; name=CheckBoxCourseID[] value=$rowID /></td>";
+        $tableCourse  = $tableCourse."<td style=text-align:center;><input id=CheckName type=checkbox class='myinput large' style=margin-top:2.5%; name=CheckBoxCourseID[] value=$rowID /></td>";
         $tableCourse  = $tableCourse."</tr>";
 
 //        if($x+$page >= count($dataCourse)-1){
@@ -177,7 +176,7 @@ function CreatePagination($CourseNum){
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -238,9 +237,14 @@ function CreatePagination($CourseNum){
                 </a>
             </li>
             <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
+                </a>
+            </li>
+            <li>
                 <a href="login.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
-                            </a>
+                </a>
             </li>
         </ul>
     </nav>
@@ -257,7 +261,7 @@ function CreatePagination($CourseNum){
                         <br>
                         <div class="set-flex" >
                             <div style="margin-top: 1.5%; font-size: 18px;">ภาคเรียน :&nbsp</div>
-                            <div class="select-margin-v1 select-input " style="width:13%; margin-right: 66%;">
+                            <div class="select-margin-v1 select-input " style="width:13%; margin-right: 64%;">
                             <form name="changeTerm" action="FCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
                                     <select name="terms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกภาคเรียน">
                                         <?php echo $optionsTerm;?>
@@ -265,9 +269,10 @@ function CreatePagination($CourseNum){
                             </form>
                             </div>
 
-                            <form name="GoCheckName" action="FCheckNameStudent.php" method="post" style="width: 12%; height: 2%; margin-bottom: 0%; margin-top: 0.45%;">
+                            <form name="GoCheckName" action="FCheckNameStudent.php" method="post" style="width: 14%; height: 40px; margin-bottom: 0%; margin-top: 0.45%;">
                             <button class="small-v3" name="GoToCheckName" style="margin-right: 0.5%; width: 100%; height: 100%;" title="คลิกเพื่อไปหน้าเช็คชื่อนิสิตของรายวิชาที่เลือก"
-                            onclick="document.GoCheckName.submit();"><i class="material-icons" style="margin-top: 4%; margin-bottom: 4%; font-size: 30px;" >check_box</i></button>
+                            onclick="document.GoCheckName.submit();">
+                            <b style="margin-top: 4%; margin-bottom: 4%; font-size: 18px;" >ไปหน้าเช็คชื่อ</b></button>
                             
 
                             <!--<button class="small-v2"><i class="material-icons" style="margin-top: 7%;">chevron_left</i></button>

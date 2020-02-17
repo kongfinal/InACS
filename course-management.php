@@ -120,8 +120,8 @@ function addCoursetoTable($IdTermSearch){
         $tableCourse  = $tableCourse."<td>$rowType</td>";
         $tableCourse  = $tableCourse."<td>$rowRoom</td>";
         $tableCourse  = $tableCourse."<td>$rowTimeLate</td>";
-        $tableCourse  = $tableCourse."<td style=cursor:pointer; ><button name=editCourseModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลรายวิชา value=$rowID>edit</button></td>";
-        $tableCourse  = $tableCourse."<td style=cursor:pointer; > <button name=deleteCourseModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลรายวิชา value=$rowID>remove_circle_outline</button> </td>";
+        $tableCourse  = $tableCourse."<td style=cursor:pointer;text-align:center; ><button name=editCourseModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลรายวิชา value=$rowID>edit</button></td>";
+        $tableCourse  = $tableCourse."<td style=cursor:pointer;text-align:center; > <button name=deleteCourseModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลรายวิชา value=$rowID>remove_circle_outline</button> </td>";
         $tableCourse  = $tableCourse."</tr>";
 
         if($x+$page >= count($dataCourse)-1){
@@ -299,7 +299,7 @@ function CreateEditFormDay(){
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -360,9 +360,14 @@ function CreateEditFormDay(){
                 </a>
             </li>
             <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
+                </a>
+            </li>
+            <li>
                 <a href="login.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
-                            </a>
+                </a>
             </li>
         </ul>
     </nav>

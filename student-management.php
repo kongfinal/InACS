@@ -69,8 +69,8 @@ if(mysqli_num_rows($StudentTable) > 0){
     $tableStudent  = $tableStudent."<td>$rowName</td>";
     $tableStudent  = $tableStudent."<td>$rowBranch</td>";
     $tableStudent  = $tableStudent."<td>$rowPhoneNumber</td>";
-    $tableStudent  = $tableStudent."<td style=cursor:pointer; ><button name=editStudentModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลนิสิต value=$rowID>edit</button></td>";
-    $tableStudent  = $tableStudent."<td style=cursor:pointer; > <button name=deleteStudentModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลนิสิต value=$rowID>remove_circle_outline</button> </td>";
+    $tableStudent  = $tableStudent."<td style=cursor:pointer;text-align:center; ><button name=editStudentModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลนิสิต value=$rowID>edit</button></td>";
+    $tableStudent  = $tableStudent."<td style=cursor:pointer;text-align:center; > <button name=deleteStudentModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลนิสิต value=$rowID>remove_circle_outline</button> </td>";
     $tableStudent  = $tableStudent."</tr>";
 
     if($x+$page >= count($dataStudent)-1){
@@ -165,7 +165,7 @@ function CreatePagination($CourseNum){
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -223,6 +223,11 @@ function CreatePagination($CourseNum){
             <li>
                 <a href="vacation.php">
                 <svg class="menu-icon iconv-2-backpack"></svg>การลา
+                </a>
+            </li>
+            <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
                 </a>
             </li>
             <li>

@@ -143,8 +143,8 @@ function addVacationtoTable($IdCourseSearch){
         $tableVacation  = $tableVacation."<td>$rowNameStudent</td>";
         $tableVacation  = $tableVacation."<td>$rowDetail</td>";
         $tableVacation  = $tableVacation."<td>$rowTimeStart&nbsp-&nbsp$rowTimeEnd</td>";
-        $tableVacation  = $tableVacation."<td style=cursor:pointer; ><button name=editVacationModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลการลา value=$rowID>edit</button></td>";
-        $tableVacation  = $tableVacation."<td style=cursor:pointer; > <button name=deleteVacationModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลการลา value=$rowID>remove_circle_outline</button> </td>";
+        $tableVacation  = $tableVacation."<td style=cursor:pointer;text-align:center; ><button name=editVacationModal class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;แก้ไขข้อมูลการลา value=$rowID>edit</button></td>";
+        $tableVacation  = $tableVacation."<td style=cursor:pointer;text-align:center; > <button name=deleteVacationModal  class=material-icons title=คลิกเพื่อแสดงหน้า&nbsp;form&nbsp;ลบข้อมูลการลา value=$rowID>remove_circle_outline</button> </td>";
         $tableVacation  = $tableVacation."</tr>";
 
         if($x+$page >= count($dataVacation)-1){
@@ -211,7 +211,7 @@ function CreatePagination($VacationNum){
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -272,9 +272,14 @@ function CreatePagination($VacationNum){
                 </a>
             </li>
             <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
+                </a>
+            </li>
+            <li>
                 <a href="login.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
-                            </a>
+                </a>
             </li>
         </ul>
     </nav>

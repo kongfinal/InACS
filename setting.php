@@ -50,78 +50,12 @@ while($rowTerm = mysqli_fetch_array($termSelect)){
 }
 
 sort($dataTerm);
-$_SESSION["IDTermFirst"] = $dataTerm[count($dataTerm)-1][2];
 $_SESSION["TermFirst"] = $dataTerm[count($dataTerm)-1][1]."/".$dataTerm[count($dataTerm)-1][0];
 
-$ToDay = substr(date("l"),0,2);
-
-$queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirst"]."' AND NameTeacher='".$_SESSION["Name"]."' AND Day='$ToDay' ";
-$CourseTable = mysqli_query($con,$queryCourse);
-$tableCourse = "";
 
 
-if(mysqli_num_rows($CourseTable) > 0){
-    while ($row = mysqli_fetch_assoc($CourseTable)) {
-            $IDCourseToDay = $row['ID'];
-            $numberCourseToDay = $row['Number'];
-            $nameCourseToDay = $row['Name'];
-            $groupCourseToDay = $row['GroupCourse'];
-            $typeCourseToDay = $row['Type'];
-            $roomCourseToDay = $row['Room'];
-
-            $tableCourse  = $tableCourse."<tr ondblclick=document.location.href='FIndex.php?idCourse=$IDCourseToDay'>";
-            $tableCourse  = $tableCourse."<td>$numberCourseToDay</td>";
-            $tableCourse  = $tableCourse."<td>$nameCourseToDay</td>";
-            $tableCourse  = $tableCourse."<td>$groupCourseToDay</td>";
-            $tableCourse  = $tableCourse."<td>$typeCourseToDay</td>";
-            $tableCourse  = $tableCourse."<td>$roomCourseToDay</td>";
-            $tableCourse  = $tableCourse."</tr>";
-
-    }
-}
-
-$_SESSION["TableCourseToDay"] = $tableCourse;
 
 
-$queryCourseAll = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirst"]."' AND NameTeacher='".$_SESSION["Name"]."' ";
-$CourseAllData = mysqli_query($con,$queryCourseAll);
-$tableStudentRisk = "";
-
-if(mysqli_num_rows($CourseAllData) > 0){
-    while ($rowCourse = mysqli_fetch_assoc($CourseAllData)) {
-        $IDCourseRisk = $rowCourse['ID'];
-        $NameCourseRisk = $rowCourse['Name'];
-        $NumberCourseRisk = $rowCourse['Number'];
-        $GroupCourseRisk = $rowCourse['GroupCourse'];
-
-        $queryStudentAll = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourseRisk' ";
-        $StudentAllData = mysqli_query($con,$queryStudentAll);
-        if(mysqli_num_rows($StudentAllData) > 0){
-            while ($rowStudent = mysqli_fetch_assoc($StudentAllData)) {
-                if($rowStudent['Status'] != null){
-                    $NumberStudentRisk = $rowStudent['Number'];
-                    $NameStudentRisk = $rowStudent['Name'];
-                    $ParentalPhoneNumberRisk = $rowStudent['ParentalPhoneNumber'];
-                    $StatusStudentRisk = $rowStudent['Status'];
-
-                    $tableStudentRisk  = $tableStudentRisk."<tr>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$NumberCourseRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$NameCourseRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$GroupCourseRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$NumberStudentRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$NameStudentRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$ParentalPhoneNumberRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."<td>$StatusStudentRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."</tr>";
-
-                }
-            }
-        }
-
-    }
-}
-
-$_SESSION["TableStudentRisk"] = $tableStudentRisk;
 
 
 ?>
@@ -129,8 +63,6 @@ $_SESSION["TableStudentRisk"] = $tableStudentRisk;
 include('h.php');
 ?>
 <style>
-
-
 
 </style>
 <body>
@@ -175,7 +107,7 @@ include('h.php');
         <div class="menu-space"></div>
         <ul class="menu-list">
             <li>
-                <a href="index.php" class="is-black-blue">
+                <a href="index.php">
                 <svg class="menu-icon iconv-2-home"></svg>หน้าแรก
                 </a>
             </li>
@@ -215,7 +147,7 @@ include('h.php');
                 </a>
             </li>
             <li>
-                <a href="setting.php">
+                <a href="setting.php" class="is-black-blue">
                 <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
                 </a>
             </li>
@@ -231,7 +163,7 @@ include('h.php');
         <div class="subcontent-main-div index">
             <div class="box with-title is-round">
                 <div class="box-title is-dodgerblue">
-                    <svg class="menu-icon-topic iconv-2-home"></svg>หน้าหลัก
+                    <svg class="menu-icon-topic iconv-2-cog"></svg>ตั้งค่าระบบ
                 </div>
                 <div class="box">
                 <!--<form name="Send" action="FIndex.php" method="post" style=" margin-bottom: 0%;">
@@ -245,11 +177,11 @@ include('h.php');
                     </button>
                 </div>
                 </form>-->
-                <!--<form name="Add" action="FIndex.php" method="post" style=" margin-bottom: 0%;">
+                <form name="Add" action="FSetting.php" method="post" style=" margin-bottom: 0%;">
                     <div class="columns">
                     
                         <h3 style="margin-right:1%;"><b>ภาคเรียนล่าสุด :</b></h3>
-                        <h3><?php //echo $_SESSION["TermFirst"];?></h3>
+                        <h3><?php echo $_SESSION["TermFirst"];?></h3>
 
                         <h2 style="margin-right:2%; margin-left:2%;"><b>|</b></h2>
 
@@ -263,124 +195,12 @@ include('h.php');
 
                         <button class="small-v3" name="addTerm" style="margin-left: 4%; width: 16%; height: 40px;" title="คลิกเพื่อเพิ่มเทอม" onclick="document.Add.submit();">
                         <b style="padding-top: 10%; padding-bottom: 10%; font-size: 18px;" >เพิ่มปีการศึกษา</b>
-                        
+                        <!--<svg class="menu-icon iconv-2-add-box"></svg>-->
                         </button>
-                        
-
                     </div>
-                </form>-->
+                </form>
 
-                <div class="columns">
-                    <div class="column is-3">
-                        <h3>วิชาที่สอนวันนี้</h3>
-                    </div>
-                </div>
 
-                <div class="columns">
-                <table id="table-starter">
-                    <tr>
-                        <th>รหัสวิชา</th>
-                        <th>ชื่อวิชา</th>
-                        <th>กลุ่มเรียน</th>
-                        <th>ประเภท (Lecture/Lab)</th>
-                        <th>ห้องเรียน</th>
-                    </tr>
-                    <?php
-                        echo $_SESSION["TableCourseToDay"] ;
-                    ?>
-                  
-                </table>
-                </div>
-
-                <div class="columns">
-                    <div class="column is-3">
-                        <h3>นิสิตกลุ่มเสี่ยง</h3>
-                    </div>
-                </div>
-
-                <div class="columns">
-                <table id="table-no-click">
-                    <tr>
-                        <th>รหัสวิชา</th>
-                        <th>ชื่อวิชา</th>
-                        <th>กลุ่มเรียน</th>
-                        <th>รหัสนิสิต</th>
-                        <th>ชื่อนิสิต</th>
-                        <th>เบอร์โทรศัพท์ผู้ปกครอง</th>
-                        <th>สถานะ</th>
-                    </tr>
-                    <?php
-                        echo $_SESSION["TableStudentRisk"] ;
-                    ?>
-                  
-                </table>
-                </div>
-
-                <!--<div class="columns">
-                    <div class="column is-9">
-                        <h3>กราฟข้อมูลการเช็คชื่อ</h3>
-                        <div class="set-flex">
-                            <h4>ภาคเรียน :&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
-                            </div>
-                            <h4>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspเดือน :&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
-                            </div>
-                            <h4>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspรายวิชา:&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="set-flex">
-                            <div class="div-graph">
-                                <br><br><br><br><br><br>
-                            </div>
-
-                            <div class="magin-clicle">
-                                <span class="dot dot-color-1"></span><b>&nbsp&nbspมาเรียนทันเวลา</b><br>
-                                <span class="dot dot-color-2"></span><b>&nbsp&nbspมาเรียนสาย</b><br>
-                                <span class="dot dot-color-3"></span><span ><b>&nbsp&nbspขาดเรียน</b></span>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="column is-10">
-                        <h3>นิสิตกลุ่มเสี่ยง</h3>
-                        
-                        <table id="table-starter">
-                        <tr>
-                            <th>ชื่อนิสิต</th>
-                            <th>ชื่อวิชา</th>
-                        </tr>
-                        <tr>
-                            <td>นาย กกกก ขขขขขข</td>
-                            <td>Web Programming</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp</td>
-                            <td>&nbsp</td>
-                        </tr>
-                        </table>
-
-                    </div>
-                </div>-->
 
                 </div>
             </div>

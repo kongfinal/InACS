@@ -1,3 +1,4 @@
+<?php require($_SERVER['DOCUMENT_ROOT']."/BUU checking system/lib/phpmailer/PHPMailerAutoload.php");?>
 <?php 
 session_start();
 include('condb.php');
@@ -1007,6 +1008,9 @@ include('condb.php');
                     while ($rowStudent = mysqli_fetch_assoc($StudentData)) {
                         
                         $IDStudentData = $rowStudent['ID'];
+                        $NumberStudentData = $rowStudent['Number'];
+                        $NameStudentData = $rowStudent['Name'];
+                        $BranchStudentData = $rowStudent['Branch'];
                         
                         $queryResult = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudentData' ";
                         $ResultData = mysqli_query($con,$queryResult);
@@ -1030,6 +1034,313 @@ include('condb.php');
                                     , ScoreRoom='$scoreRoomNew'
                                     WHERE IDStudent='$IDStudentData' ";
                                     $StrData = mysqli_query($con,$StrResult);
+
+
+                                    //Start Email and Message
+
+                                    $queryCourse = "SELECT * FROM `inacs_course` WHERE ID='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
+                                    $CourseData = mysqli_query($con,$queryCourse);
+                                    if(mysqli_num_rows($CourseData) == 1){
+                                        while ($rowCourse = mysqli_fetch_assoc($CourseData)) {
+                                            $NumberCourse = $rowCourse['Number'];
+                                            $NameCourse = $rowCourse['Name'];
+                                            $GroupCourse = $rowCourse['GroupCourse'];
+                                        }
+                                    }
+
+                                    // หา ID Course Lec+Lab
+                                    $queryCourseLec = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lecture' ";
+                                    $CourseLecData = mysqli_query($con,$queryCourseLec);
+                                    if(mysqli_num_rows($CourseLecData) == 1){
+                                        while ($rowCourseLec = mysqli_fetch_assoc($CourseLecData)) {
+                                            $IDCourseLec = $rowCourseLec['ID'];
+                                        }
+                                    }
+
+                                    $queryCourseLab = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lab' ";
+                                    $CourseLabData = mysqli_query($con,$queryCourseLab);
+                                    if(mysqli_num_rows($CourseLabData) == 1){
+                                        while ($rowCourseLab = mysqli_fetch_assoc($CourseLabData)) {
+                                            $IDCourseLab = $rowCourseLab['ID'];
+                                        }
+                                    }
+
+
+                                    // หา ID Student Lec+Lab
+                                    $queryStudentLecGetID = "SELECT * FROM `inacs_student` WHERE IDCourse='".$IDCourseLec."' AND Number='$NumberStudentData' AND Name='$NameStudentData'";
+                                    $StudentLecDataGetID = mysqli_query($con,$queryStudentLecGetID);
+                                    if(mysqli_num_rows($StudentLecDataGetID) == 1){
+                                        while ($rowStudentLec = mysqli_fetch_assoc($StudentLecDataGetID)) {
+                                            $IDStudentLec = $rowStudentLec['ID'];
+                                        }
+                                    }
+
+                                    $queryStudentLabGetID = "SELECT * FROM `inacs_student` WHERE IDCourse='".$IDCourseLab."' AND Number='$NumberStudentData' AND Name='$NameStudentData'";
+                                    $StudentLabDataGetID = mysqli_query($con,$queryStudentLabGetID);
+                                    if(mysqli_num_rows($StudentLabDataGetID) == 1){
+                                        while ($rowStudentLab = mysqli_fetch_assoc($StudentLabDataGetID)) {
+                                            $IDStudentLab = $rowStudentLab['ID'];
+                                        }
+                                    }
+
+                                    // หา CheckNumber Lec+Lab
+                                    $NumberCheckLec = 0;
+                                    $NumberCheckLab = 0;
+
+                                    $queryCheckLecGetID = "SELECT * FROM `inacs_check` WHERE IDCourse='".$IDCourseLec."' ";
+                                    $CheckLecDataGetID = mysqli_query($con,$queryCheckLecGetID);
+                                    if(mysqli_num_rows($CheckLecDataGetID) == 1){
+                                        while ($rowCheckLec = mysqli_fetch_assoc($CheckLecDataGetID)) {
+                                            $NumberCheckLec = $rowCheckLec['NumberCheck']-1;
+                                        }
+                                    }
+
+                                    $queryCheckLabGetID = "SELECT * FROM `inacs_check` WHERE IDCourse='".$IDCourseLab."' ";
+                                    $CheckLabDataGetID = mysqli_query($con,$queryCheckLabGetID);
+                                    if(mysqli_num_rows($CheckLabDataGetID) == 1){
+                                        while ($rowCheckLab = mysqli_fetch_assoc($CheckLabDataGetID)) {
+                                            $NumberCheckLab = $rowCheckLab['NumberCheck']-1;
+                                        }
+                                    }
+
+
+                                    // หา ผลการเข้าเรียนของทั้ง Lec+Lab
+                                    $NumberOnTimeLec = 0;
+                                    $NumberLateLec = 0;
+                                    $NumberAbsentNewLec = 0;
+
+                                    $NumberOnTimeLab = 0;
+                                    $NumberLateLab = 0;
+                                    $NumberAbsentNewLab = 0;
+
+
+                                    $queryResultLec = "SELECT * FROM `inacs_result` WHERE IDStudent='".$IDStudentLec."'  ";
+                                    $ResultLecData = mysqli_query($con,$queryResultLec);
+                                    if(mysqli_num_rows($ResultLecData) == 1){
+                                        while ($rowResultLec = mysqli_fetch_assoc($ResultLecData)) {
+                                            $NumberOnTimeLec = $rowResultLec['NumberOnTime'];
+                                            $NumberLateLec = $rowResultLec['NumberLate'];
+                                            $NumberAbsentNewLec = $rowResultLec['NumberAbsent'];
+                                        }
+                                    }
+
+                                    $queryResultLab = "SELECT * FROM `inacs_result` WHERE IDStudent='".$IDStudentLab."'  ";
+                                    $ResultLabData = mysqli_query($con,$queryResultLab);
+                                    if(mysqli_num_rows($ResultLabData) == 1){
+                                        while ($rowResultLab = mysqli_fetch_assoc($ResultLabData)) {
+                                            $NumberOnTimeLab = $rowResultLab['NumberOnTime'];
+                                            $NumberLateLab = $rowResultLab['NumberLate'];
+                                            $NumberAbsentNewLab = $rowResultLab['NumberAbsent'];
+                                        }
+                                    }
+
+
+                                    $levelScore = ($NumberLateLec*0.5)+($NumberLateLab*0.5)+$NumberAbsentNewLec+$NumberAbsentNewLab;
+
+
+
+                                    if($levelScore == 2){
+                                        $subject = "นิสิตขาดเรียน 2 ครั้ง";
+                                        $level = "เกือบถึง";
+                                    }else if($levelScore == 3){
+                                        $subject = "นิสิตขาดเรียน 3 ครั้ง";
+                                        $level = "ถึง";
+
+
+                                        $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายถึงเกณฑ์' WHERE ID='$IDStudentLec' ");
+
+                                        $StrLabData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายถึงเกณฑ์' WHERE ID='$IDStudentLab' ");
+
+                                    }else if($levelScore > 3){
+                                        $subject = "นิสิตขาดเรียนเกิน 3 ครั้ง";
+                                        $level = "เกิน";
+
+                                        $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLec' ");
+
+                                        $StrLabData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLab' ");
+                                    }
+
+                                    if((($dataNumberLate*0.5)+($dataNumberAbsentNew)) >= 2){
+                                        header('Content-Type: text/html; charset=utf-8');
+ 
+                                        //start Email Student
+                                        $mail_Student = new PHPMailer;
+                                        $mail_Student->CharSet = "utf-8";
+                                        $mail_Student->isSMTP();
+                                        $mail_Student->Host = 'smtp.gmail.com';
+                                        $mail_Student->Port = 587;
+                                        $mail_Student->SMTPSecure = 'tls';
+                                        $mail_Student->SMTPAuth = true;
+                            
+                                        $gmail_username = "INACSystem@gmail.com"; // gmail ที่ใช้ส่ง
+                                        $gmail_password = "ProjectJoJo"; // รหัสผ่าน gmail
+                                         
+                                         
+                                        $sender = "INACS"; // ชื่อผู้ส่ง
+                                        $email_sender = "INACS@system.com"; // เมล์ผู้ส่ง 
+    
+    
+                                        //$email_receiver = $_SESSION['Email']; // เมล์ผู้รับ ***
+                                        $email_receiver_student = $NumberStudentData."@go.buu.ac.th";
+    
+                                        
+                                        //$subject = "นิสิตขาดเรียนเกิน 3 ครั้ง"; // หัวข้อเมล์
+                            
+    
+                                        $mail_Student->Username = $gmail_username;
+                                        $mail_Student->Password = $gmail_password;
+                                        $mail_Student->setFrom($email_sender, $sender);
+                                        $mail_Student->addAddress($email_receiver_student);
+                                        $mail_Student->Subject = $subject;
+                            
+                            
+                                        $year = date('Y');
+                                        $email_content_Student = "
+                                        <!DOCTYPE html>
+                                        <html>
+                                            <head>
+                                                <meta charset=utf-8'/>
+                                                <title>".$subject."</title>
+                                            </head>
+                                            <body>
+                                                <div style='background: #2c56d4;padding: 10px 0 20px 10px;margin-bottom:10px;font-size:30px;color:white; display: flex;'>
+                                                    <img src='https://cdn.onlinewebfonts.com/svg/img_3015.png' style='width: 80px;'>
+                                                    <div style='margin-top:26px; margin-left:15px;'><b>INACS</b></div>
+                                                </div>
+                                                <div style='padding:20px;'>
+                                                    <!--<div style='text-align:center;margin-bottom:50px;'>
+                                                        <img src='http://cdn.wccftech.com/wp-content/uploads/2017/02/Apple-logo.jpg' style='width:100%' />             
+                                                    </div>-->
+                                                    <div>             
+                                                        <h2>เรื่อง ".$subject."<strong style='color:#0000ff;'></strong></h2>
+                                                        <br>
+                                                        <h2>เรียน ".$NameStudentData."<strong style='color:#0000ff;'></strong></h2>
+                                                        <br><br>
+                                                        <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        เนื่องด้วย คุณได้ขาดเรียนและมาสายในวิชา ".$NumberCourse." ".$NameCourse." ".$level."เกณฑ์ ที่กำหนดไว้แล้ว จึงได้แจ้งให้รับทราบ<strong style='color:#0000ff;'></strong></h2>
+                                                    </div>
+                                                    <div style='margin-top:30px;'>
+                                                        <hr>
+                                                        <h2 style='text-align: right;'>ดร.พิเชษ วะยะลุน<strong style='color:#0000ff;'></strong></h2>
+                                                    </div>
+                                                </div>
+                                                <div style='background: #2c56d4;color: white;padding:30px;'>
+                                                    <div style='text-align:center'> ".$year." © Burapha University
+                                                    </div>
+                                                </div>
+                                            </body>
+                                        </html>
+                                        ";
+
+                                        //start Email Teacher
+                                        $mail_Teacher = new PHPMailer;
+                                        $mail_Teacher->CharSet = "utf-8";
+                                        $mail_Teacher->isSMTP();
+                                        $mail_Teacher->Host = 'smtp.gmail.com';
+                                        $mail_Teacher->Port = 587;
+                                        $mail_Teacher->SMTPSecure = 'tls';
+                                        $mail_Teacher->SMTPAuth = true;
+
+                                        $email_receiver_teacher = $_SESSION['Email'];
+                            
+    
+                                        $mail_Teacher->Username = $gmail_username;
+                                        $mail_Teacher->Password = $gmail_password;
+                                        $mail_Teacher->setFrom($email_sender, $sender);
+                                        $mail_Teacher->addAddress($email_receiver_teacher);
+                                        $mail_Teacher->Subject = $subject;
+
+
+                                        $email_content_Teacher = "
+                                        <!DOCTYPE html>
+
+                                            <html>
+                                                <head>
+                                                    <meta charset=utf-8'/>
+                                                    <title>".$subject."</title>
+                                                </head>
+                                                <body>
+                                                    <div style='background: #2c56d4;padding: 10px 0 20px 10px;margin-bottom:10px;font-size:30px;color:white; display: flex;'>
+                                                        <img src='https://cdn.onlinewebfonts.com/svg/img_3015.png' style='width: 80px;'>
+                                                        <div style='margin-top:26px; margin-left:15px;'><b>INACS</b></div>
+                                                    </div>
+                                                    <div style='padding:20px;'>
+                                                        <div>             
+                                                            <h2>เรียน ".$_SESSION['Name']."<strong style='color:#0000ff;'></strong></h2>
+                                                            <br><br>
+                                                            <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            เนื่องด้วย ".$NameStudentData." รหัส ".$NumberStudentData." สาขา ".$BranchStudentData." ขาดเรียนและมาสายในวิชา ".$NumberCourse." ".$NameCourse." ".$level."เกณฑ์ ที่กำหนดไว้แล้ว โดย ".$NameStudentData." มีข้อมูลการเข้าเรียนในรายวิชา ".$NameCourse." ดังนี้<strong style='color:#0000ff;'></strong></h2>
+                                                            <table style='font-family:Trebuchet MS, Arial, Helvetica, sans-serif; border-collapse: collapse; width: 100%;'>
+                                                            <tr>
+                                                                <th rowspan='2' style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '>รหัสนิสิต</th>
+                                                                <th rowspan='2' style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '>ชื่อนิสิต</th>
+                                                                <th colspan='4' style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '>บรรยาย</th>
+                                                                <th colspan='4' style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '>ปฎิบัติ</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> จำนวนที่เช็ค</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> ทันเวลา</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> สาย</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> ขาด</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> จำนวนที่เช็ค</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> ทันเวลา</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> สาย</th>
+                                                                <th style='border: 1px solid #ddd; padding: 8px; text-align: center; padding-top: 12px; padding-bottom: 12px; background-color: #2c56d4; color: white; '> ขาด</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberStudentData."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NameStudentData."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberCheckLec."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberOnTimeLec."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberLateLec."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberAbsentNewLec."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberCheckLab."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberOnTimeLab."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberLateLab."</td> 
+                                                                <td style='border: 1px solid #ddd; padding: 8px; text-align: center;'>".$NumberAbsentNewLab."</td> 
+                                                            </tr>
+                                                            
+                                                            </table>
+                                                        </div>
+                                                        <div style='margin-top:30px;'>
+                                                            <hr>
+                                                            <h2 style='text-align: right;'>ดร.พิเชษ วะยะลุน<strong style='color:#0000ff;'></strong></h2>
+                                                        </div>
+                                                    </div>
+                                                    <div style='background: #2c56d4;color: white;padding:30px;'>
+                                                        <div style='text-align:center'>".$year." © Burapha University
+                                                        </div>
+                                                    </div>
+                                                </body>
+                                            </html>
+                                        ";
+
+
+                                        //  ถ้ามี email ผู้รับ
+                                        if($email_receiver_student){
+                                            $mail_Student->msgHTML($email_content_Student);
+                                            $mail_Student->send();
+                                        }
+
+                                        if($email_receiver_teacher){
+                                            $mail_Teacher->msgHTML($email_content_Teacher);
+                                            $mail_Teacher->send();
+                                        }
+                                        //End Email
+
+                                        //Start Message
+                                        $DateTODay = date("d/m/Y");
+
+                                        $strSQL = "INSERT INTO inacs_message ";
+                                        $strSQL .="(ID,IDCourse,IDStudent,Date,Name,Status) ";
+                                        $strSQL .="VALUES ";
+                                        $strSQL .="(NULL,'".$_SESSION['IDCourseInCheckStudent'][$x]."','$IDStudentData','$DateTODay','$subject','' ) ";
+                                        
+                                        $objResultQuery = mysqli_query($con,$strSQL);
+
+
+                                    }
+                                    
 
                                 }else{
                                     $StrResult = "UPDATE `inacs_result` 

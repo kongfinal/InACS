@@ -41,6 +41,15 @@
     background-color: currentColor;
 }
 
+.iconv-2-lock {
+    -webkit-mask-image: url('../pic/lock.png');
+
+    width: 24px;
+    height: 24px;
+
+    background-color: currentColor;
+}
+
 .iconv-2-a {
     -webkit-mask-image: url('../pic/@.svg');
 

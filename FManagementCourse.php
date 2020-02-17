@@ -794,6 +794,12 @@ session_start();
                     mysqli_query($con,"DELETE FROM inacs_vacation WHERE ID=$rowVacation[0] ");
                 }
 
+                $searchMessageSQL="SELECT * FROM inacs_message WHERE IDCourse='".$_SESSION['IDDelete']."' ";
+                $resultMessageSQL = mysqli_query($con,$searchMessageSQL);
+                while($rowMessage = mysqli_fetch_array($resultMessageSQL)){
+                    mysqli_query($con,"DELETE FROM inacs_message WHERE ID=$rowMessage[0] ");
+                }
+
                 $searchCheckSQL="SELECT * FROM inacs_Check WHERE IDCourse='".$_SESSION['IDDelete']."' ";
                 $resultChecktSQL = mysqli_query($con,$searchCheckSQL);
                 while($rowCheck = mysqli_fetch_array($resultChecktSQL)){

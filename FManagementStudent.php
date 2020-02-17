@@ -113,8 +113,8 @@ include('condb.php');
                         $result = mysqli_query($con,$searchSQL);
                         if(mysqli_num_rows($result)==0){
     
-                            $strSQL ="INSERT INTO inacs_student (ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber) VALUES 
-                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$dataStudent[1]','$dataStudent[3]',NULL );";
+                            $strSQL ="INSERT INTO inacs_student (ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber,Status) VALUES 
+                            (NULL,'".$_SESSION["IDCourseInManaStudent"]."','$dataStudent[0]','$dataStudent[1]','$dataStudent[3]',NULL,NULL );";
                             $objQuery = mysqli_query($con,$strSQL); 
 
                             $searchStudentSQL="SELECT * FROM inacs_student 
@@ -176,9 +176,9 @@ include('condb.php');
                 if(mysqli_num_rows($result)==0){
                     
                     $strSQL = "INSERT INTO inacs_student ";
-                    $strSQL .="(ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber) ";
+                    $strSQL .="(ID,IDCourse,Number,Name,Branch,ParentalPhoneNumber,Status) ";
                     $strSQL .="VALUES ";
-                    $strSQL .="(NULL,'".$_SESSION["IDCourseInManaStudent"]."','$numberStudent','$nameStudent','$branchStudent',NULL ) ";
+                    $strSQL .="(NULL,'".$_SESSION["IDCourseInManaStudent"]."','$numberStudent','$nameStudent','$branchStudent',NULL,NULL ) ";
                     
                     $objQuery = mysqli_query($con,$strSQL);
                         if($objQuery){
@@ -318,6 +318,12 @@ include('condb.php');
                 $resultVacationSQL = mysqli_query($con,$searchVacationSQL);
                 while($rowVacation = mysqli_fetch_array($resultVacationSQL)){
                     mysqli_query($con,"DELETE FROM inacs_vacation WHERE ID=$rowVacation[0] ");
+                }
+
+                $searchMessageSQL="SELECT * FROM inacs_message WHERE IDStudent='".$_SESSION['IDStudentDelete']."' ";
+                $resultMessageSQL = mysqli_query($con,$searchMessageSQL);
+                while($rowMessage = mysqli_fetch_array($resultMessageSQL)){
+                    mysqli_query($con,"DELETE FROM inacs_message WHERE ID=$rowMessage[0] ");
                 }
 
                 $searchResultSQL="SELECT * FROM inacs_result WHERE IDStudent='".$_SESSION['IDStudentDelete']."' ";

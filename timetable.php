@@ -305,7 +305,7 @@ include('h.php');
                 </div>
                 <div id="navbar-dropdown" class="dropdown-items">
                     <a onclick="document.getElementById('ChangePassFormv.2').style.display='block'">
-                      <i class="iconv-2-cog"></i>
+                      <i class="iconv-2-lock"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนรหัสผ่าน</div>
                     </a>
                     <a onclick="document.getElementById('ChangeEmail').style.display='block'">
@@ -366,9 +366,14 @@ include('h.php');
                 </a>
             </li>
             <li>
+                <a href="setting.php">
+                <svg class="menu-icon iconv-2-cog"></svg>ตั้งค่าระบบ
+                </a>
+            </li>
+            <li>
                 <a href="login.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
-                            </a>
+                </a>
             </li>
         </ul>
     </nav>
