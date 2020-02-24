@@ -36,7 +36,7 @@ $_SESSION["TypeMessage"] = "all";
 $_SESSION["PaginationMessage"] = 1;
 
 
-$queryTerm = "SELECT * FROM `inacs_term`";
+$queryTerm = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
 $termSelect = mysqli_query($con,$queryTerm);
 
 $optionsTerm = "";
@@ -306,7 +306,7 @@ function CreateEditFormDay(){
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -365,7 +365,7 @@ function CreateEditFormDay(){
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -532,7 +532,7 @@ function CreateEditFormDay(){
 
   <div class="input-textCourse">
         <div class="sizeText maginTimeLateCourse"><b>เวลามาสาย (นาที) :</b></div>
-        <input class="is-pulled-right input-field-v5" type="textRegis" name="TimeLateCourse" value="" autocomplete=off >
+        <input class="is-pulled-right input-field-v5" type="textRegis" name="TimeLateCourse" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="" autocomplete=off >
   </div>
 
 
@@ -678,7 +678,7 @@ $_SESSION['CheckOpenModalAdd'] = false;
 
   <div class="input-textCourse">
         <div class="sizeText maginTimeLateCourse"><b>เวลามาสาย (นาที) :</b></div>
-        <input class="is-pulled-right input-field-v5" type="textRegis" name="TimeLateCourse" value=<?php echo $_SESSION['TimelateCourseEdit']; ?> >
+        <input class="is-pulled-right input-field-v5" type="textRegis" name="TimeLateCourse" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value=<?php echo $_SESSION['TimelateCourseEdit']; ?> >
   </div>
 
   <div class="input-textCourse">

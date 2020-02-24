@@ -65,8 +65,17 @@ session_start();
                         $_SESSION["Email"] = $email;
                         $_SESSION["Username"] = $username;
                         $_SESSION["Password"] = $password;
-    
-                        Header("Location: index.php");
+
+
+                        $strSQLSetting = "INSERT INTO inacs_setting ";
+                        $strSQLSetting .="(ID,NameTeacher,LevelOrange,LevelRed) ";
+                        $strSQLSetting .="VALUES ";
+                        $strSQLSetting .="(NULL,'".$_SESSION["Name"]."','2','3') ";
+                        $objQuerySetting = mysqli_query($con,$strSQLSetting);
+                        if($objQuerySetting){
+                            Header("Location: index.php");
+                        }
+
                     }else{
                         echo "<script>";
                             echo "alert(\" Register Error\");"; 

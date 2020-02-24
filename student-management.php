@@ -172,7 +172,7 @@ function CreatePagination($CourseNum){
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -231,7 +231,7 @@ function CreatePagination($CourseNum){
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -435,7 +435,7 @@ $_SESSION['CheckOpenModalAddStudent'] = false;
 
     <div class="input-textRegis">
             <div class="sizeText maginPhoneNumberStudentEdit"><b>เบอร์ผู้ปกครอง :</b></div>
-            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="ParentalPhoneNumberStudent" value="<?php echo $_SESSION['ParentalPhoneNumberStudentEdit']; ?>" >
+            <input class="is-pulled-right input-field-v6-2" type="textRegis" name="ParentalPhoneNumberStudent" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="<?php echo $_SESSION['ParentalPhoneNumberStudentEdit']; ?>" >
     </div>
 
   <div class="button-course-zone">

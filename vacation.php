@@ -36,7 +36,7 @@ $username = $_SESSION['Username'];
 $password = $_SESSION['Password'];
 
 
-$queryTerm = "SELECT * FROM `inacs_term`";
+$queryTerm = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
 $termSelect = mysqli_query($con,$queryTerm);
 
 $optionsTerm = "";
@@ -218,7 +218,7 @@ function CreatePagination($VacationNum){
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -277,7 +277,7 @@ function CreatePagination($VacationNum){
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>

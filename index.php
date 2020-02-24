@@ -40,9 +40,10 @@ $_SESSION["PaginationMessage"] = 1;
 
 
 
-$queryTerm = "SELECT * FROM `inacs_term`";
+$queryTerm = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
 $termSelect = mysqli_query($con,$queryTerm);
 
+$optionsTerm = "";
 $dataTerm = array();
 
 while($rowTerm = mysqli_fetch_array($termSelect)){
@@ -52,6 +53,20 @@ while($rowTerm = mysqli_fetch_array($termSelect)){
 sort($dataTerm);
 $_SESSION["IDTermFirst"] = $dataTerm[count($dataTerm)-1][2];
 $_SESSION["TermFirst"] = $dataTerm[count($dataTerm)-1][1]."/".$dataTerm[count($dataTerm)-1][0];
+
+
+for ($x = count($dataTerm)-1; $x >= 0; $x-=1) {
+    $idTerm = $dataTerm[$x][2];
+    $NumTerm = $dataTerm[$x][1];
+    $YearTerm = $dataTerm[$x][0];
+    if($_SESSION["IDTermGraphCheck"] == $idTerm){
+        $optionsTerm  = $optionsTerm."<option value=$idTerm selected>$NumTerm/$YearTerm</option>";
+    }else{
+        $optionsTerm  = $optionsTerm."<option value=$idTerm>$NumTerm/$YearTerm</option>";
+    } 
+}
+
+
 
 $ToDay = substr(date("l"),0,2);
 
@@ -87,6 +102,9 @@ $queryCourseAll = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTer
 $CourseAllData = mysqli_query($con,$queryCourseAll);
 $tableStudentRisk = "";
 
+$CourseAllArray = array();
+$CourseAllArrayCheck = array();
+
 if(mysqli_num_rows($CourseAllData) > 0){
     while ($rowCourse = mysqli_fetch_assoc($CourseAllData)) {
         $IDCourseRisk = $rowCourse['ID'];
@@ -104,7 +122,11 @@ if(mysqli_num_rows($CourseAllData) > 0){
                     $ParentalPhoneNumberRisk = $rowStudent['ParentalPhoneNumber'];
                     $StatusStudentRisk = $rowStudent['Status'];
 
-                    $tableStudentRisk  = $tableStudentRisk."<tr>";
+                    array_push($CourseAllArray,array($NumberCourseRisk,$NameCourseRisk,$GroupCourseRisk,$NumberStudentRisk,$NameStudentRisk,$ParentalPhoneNumberRisk,$StatusStudentRisk));
+
+                    array_push($CourseAllArrayCheck,array($NumberCourseRisk,$NameCourseRisk,$GroupCourseRisk,$NumberStudentRisk,$NameStudentRisk,$ParentalPhoneNumberRisk,$StatusStudentRisk));
+
+                    /*$tableStudentRisk  = $tableStudentRisk."<tr>";
                     $tableStudentRisk  = $tableStudentRisk."<td>$NumberCourseRisk</td>";
                     $tableStudentRisk  = $tableStudentRisk."<td>$NameCourseRisk</td>";
                     $tableStudentRisk  = $tableStudentRisk."<td>$GroupCourseRisk</td>";
@@ -112,7 +134,7 @@ if(mysqli_num_rows($CourseAllData) > 0){
                     $tableStudentRisk  = $tableStudentRisk."<td>$NameStudentRisk</td>";
                     $tableStudentRisk  = $tableStudentRisk."<td>$ParentalPhoneNumberRisk</td>";
                     $tableStudentRisk  = $tableStudentRisk."<td>$StatusStudentRisk</td>";
-                    $tableStudentRisk  = $tableStudentRisk."</tr>";
+                    $tableStudentRisk  = $tableStudentRisk."</tr>";*/
 
                 }
             }
@@ -121,7 +143,134 @@ if(mysqli_num_rows($CourseAllData) > 0){
     }
 }
 
+//echo count($CourseAllArray);
+//$CourseAllArray = array_unique($CourseAllArray);
+for($x = 0;$x < count($CourseAllArray);$x+=1){
+
+    for($y = $x+1;$y < count($CourseAllArray);){
+        if($CourseAllArray[$x][0] == $CourseAllArray[$y][0]
+            && $CourseAllArray[$x][2] == $CourseAllArray[$y][2]
+            && $CourseAllArray[$x][3] == $CourseAllArray[$y][3]
+        ){
+            array_splice($CourseAllArray, $y, 1);
+        }else{
+            $y+=1;
+        }
+    }
+
+}
+
+$selectStudentRisk = array();
+
+for($x = 0;$x < count($CourseAllArray);$x+=1){
+
+    $dataOne = $CourseAllArray[$x][0];
+    $dataTwo = $CourseAllArray[$x][1];
+    $dataThree = $CourseAllArray[$x][2];
+    $dataFour = $CourseAllArray[$x][3];
+    $dataFive = $CourseAllArray[$x][4];
+    $dataSix = $CourseAllArray[$x][5];
+    $dataSeven = $CourseAllArray[$x][6];
+
+    array_push($selectStudentRisk,$dataFour);
+
+    $tableStudentRisk  = $tableStudentRisk."<tr>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataOne</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataTwo</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataThree</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataFour</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataFive</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataSix</td>";
+    $tableStudentRisk  = $tableStudentRisk."<td>$dataSeven</td>";
+    $tableStudentRisk  = $tableStudentRisk."</tr>";
+}
+
 $_SESSION["TableStudentRisk"] = $tableStudentRisk;
+
+
+$selectStudentRisk = array_unique($selectStudentRisk);
+sort($selectStudentRisk);
+$optionsStudentRisk = "";
+for($x = 0;$x < count($selectStudentRisk);$x+=1){
+    
+    $NumStudentRisk = $selectStudentRisk[$x];
+    if($_SESSION["NumStudentRiskCheck"] == $NumStudentRisk){
+        $optionsStudentRisk  = $optionsStudentRisk."<option value=$NumStudentRisk selected>$NumStudentRisk</option>";
+    }else{
+        $optionsStudentRisk  = $optionsStudentRisk."<option value=$NumStudentRisk>$NumStudentRisk</option>";
+    }
+
+}
+
+$_SESSION["SelectStudentRisk"] = $optionsStudentRisk;
+
+
+
+$dataCourseRisk = array();
+$queryTermRisk = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
+$termRiskData = mysqli_query($con,$queryTermRisk);
+
+if(mysqli_num_rows($termRiskData) > 0){
+    while ($rowTermRisk = mysqli_fetch_assoc($termRiskData)) {
+
+        $IDTerm = $rowTermRisk['ID'];
+        $queryCourseRisk = "SELECT * FROM `inacs_course` WHERE IDTerm='$IDTerm' AND NameTeacher='".$_SESSION["Name"]."' ";
+        $courseRiskData = mysqli_query($con,$queryCourseRisk);
+        if(mysqli_num_rows($courseRiskData) > 0){
+            while ($rowCourseRisk = mysqli_fetch_assoc($courseRiskData)) {
+
+                $IDCourse = $rowCourseRisk['ID'];
+                $queryStudentRisk = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourse' AND Number='".$_SESSION["NumStudentRiskCheck"]."' ";
+                $studentRiskData = mysqli_query($con,$queryStudentRisk);
+                if(mysqli_num_rows($studentRiskData) == 1){
+                    while ($rowStudentRisk = mysqli_fetch_assoc($studentRiskData)) {
+
+                        array_push($dataCourseRisk,array($rowTermRisk['Year']
+                        ,$rowTermRisk['Term']
+                        ,$rowCourseRisk['Number']
+                        ,$rowCourseRisk['Name']
+                        ,$rowCourseRisk['GroupCourse']
+                        ,$rowCourseRisk['Type']
+                        ));
+
+                    }
+                }
+
+            }
+        }
+
+    }
+
+}
+
+
+sort($dataCourseRisk);
+$optionsCouresRisk = "";
+for($x = 0;$x < count($dataCourseRisk);$x+=1){
+
+    $dataRisk = $dataCourseRisk[$x][1]."/".$dataCourseRisk[$x][0]." ".$dataCourseRisk[$x][2]." ".$dataCourseRisk[$x][3]." กลุ่ม ".$dataCourseRisk[$x][4]." ประเภท ".$dataCourseRisk[$x][5] ;
+
+    $dataRiskValue = $dataCourseRisk[$x][1]."/".$dataCourseRisk[$x][0]."/".$dataCourseRisk[$x][2]."/".$dataCourseRisk[$x][4]."/".$dataCourseRisk[$x][5] ;
+
+    $optionsCouresRisk  = $optionsCouresRisk."<option value=All selected>All</option>";
+
+    if($_SESSION["DataRiskCheck"] == $dataRiskValue){
+        $optionsCouresRisk  = $optionsCouresRisk."<option value=$dataRiskValue selected>$dataRisk</option>";
+    }else{
+        $optionsCouresRisk  = $optionsCouresRisk."<option value=$dataRiskValue>$dataRisk</option>";
+    }
+
+}
+
+$_SESSION["SelectCourseRisk"] = $optionsCouresRisk;
+
+
+
+//สร้างกราฟ
+//include("lib/");
+
+
+
 
 
 ?>
@@ -161,7 +310,7 @@ include('h.php');
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -220,7 +369,7 @@ include('h.php');
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -316,28 +465,27 @@ include('h.php');
                 </table>
                 </div>
 
-                <!--<div class="columns">
-                    <div class="column is-9">
+                <div class="columns">
+                    <div class="column is-8">
                         <h3>กราฟข้อมูลการเช็คชื่อ</h3>
                         <div class="set-flex">
-                            <h4>ภาคเรียน :&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
+                            <h4 style="margin-top: 1.6%;">รหัสนิสิต :&nbsp</h4>
+                            <div class="select-margin-v1 select-input" style="width:12%;">
+                            <form name="changeStudent" action="FIndex.php" method="post" style="margin-bottom: 0%;">
+                                    <select name="Students" onchange="document.changeStudent.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรหัสนิสิต">
+                                        <?php echo $_SESSION["SelectStudentRisk"]; ?> 
+                                    </select>
+                            </form>
                             </div>
-                            <h4>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspเดือน :&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
+                            <h4 style="margin-top: 1.6%; margin-left: 3%;">รายวิชา :&nbsp</h4>
+                            <div class="select-margin-v1 select-input" style="width:54%;">
+                            <form name="changeCourse" action="FIndex.php" method="post" style="margin-bottom: 0%;">
+                                    <select name="Courses" onchange="document.changeCourse.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรายวิชา">
+                                        <?php echo $_SESSION["SelectCourseRisk"]; ?> 
+                                    </select>
+                            </form>
                             </div>
-                            <h4>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspรายวิชา:&nbsp</h4>
-                            <div class="select-margin-v1 select-input" style="width:11%;">
-                                <select>
-                                <option >Select :</option>
-                                </select>
-                            </div>
+                            
                         </div>
 
                         <div class="set-flex">
@@ -351,8 +499,9 @@ include('h.php');
                                 <span class="dot dot-color-3"></span><span ><b>&nbsp&nbspขาดเรียน</b></span>
                             </div>
                         </div>
-
+                        
                     </div>
+                    <!--
                     <div class="column is-10">
                         <h3>นิสิตกลุ่มเสี่ยง</h3>
                         
@@ -380,7 +529,7 @@ include('h.php');
                         </table>
 
                     </div>
-                </div>-->
+                -->
 
                 </div>
             </div>

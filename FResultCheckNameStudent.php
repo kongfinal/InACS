@@ -37,7 +37,7 @@ include('condb.php');
                 }
             }
 
-            $queryCourse = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' AND Number='$numberCourse' AND GroupCourse='$groupCourse' ";
+            $queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' AND NameTeacher='".$_SESSION['Name']."' AND Number='$numberCourse' AND GroupCourse='$groupCourse' ";
             $CourseData = mysqli_query($con,$queryCourse);
 
                 while ($row = mysqli_fetch_assoc($CourseData)) {
@@ -58,7 +58,7 @@ include('condb.php');
         if(isset($_POST['addPhoneModal'])){
             $_SESSION['CheckOpenModalAddPhone'] = true;
 
-            $queryCourse = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' AND Number='".$_SESSION["NumCourseInResultStudent"]."' AND GroupCourse='".$_SESSION["GroupCourseInResultStudent"]."' ";
+            $queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' AND NameTeacher='".$_SESSION['Name']."' AND Number='".$_SESSION["NumCourseInResultStudent"]."' AND GroupCourse='".$_SESSION["GroupCourseInResultStudent"]."' ";
             $CourseData = mysqli_query($con,$queryCourse);
 
             $dataCourseID = array();
@@ -125,6 +125,9 @@ include('condb.php');
             }
         }
 
+
+        
+
         if(isset($_POST['export'])){
 
             $delimiter = ",";
@@ -140,45 +143,270 @@ include('condb.php');
             fputs($f, $bom = ( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 
             $dataResultStudent = $_SESSION["ResultStudentData"];
-            if($_SESSION["TypeResult"] == "All"){
-                $fields = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา', 'จำนวนที่เช็ค(บรรยาย)', 'ทันเวลา(บรรยาย)', 'สาย(บรรยาย)', 'ขาด(บรรยาย)', 'จำนวนที่เช็ค(ปฎิบัติ)', 'ทันเวลา(ปฎิบัติ)', 'สาย(ปฎิบัติ)', 'ขาด(ปฎิบัติ)', 'คะแนนเข้าห้อง', 'คะแนนที่หัก', 'คะแนนพิเศษ');
-                fputcsv($f, $fields, $delimiter);
 
-                for($x = 0;$x < count($dataResultStudent);$x+=1){
+            $dateCreateCSV = date("j F Y").", ".date("H:i:s")." น.";
+            $data = array('วัน-เวลาที่โหลดรายงาน',$dateCreateCSV,' ',' ',' ','หมายเหตุ','0 คือ ขาดเรียน');
+            fputcsv($f, $data, $delimiter);
 
-                    /*if($dataResultStudent[$x][3] != $dataResultStudent[$x][4]+$dataResultStudent[$x][5]+ $dataResultStudent[$x][6]){
-                        echo "<script>";
-                            echo "alert(\" โปรดกดปุ่มสิ้นสุดการเช็คชื่อของรายวิชานี้ในประเภท Lecture\");"; 
-                            echo "window.history.back()";
-                        echo "</script>";
-                    }else if($dataResultStudent[$x][10] != $dataResultStudent[$x][11]+$dataResultStudent[$x][12]+ $dataResultStudent[$x][13]){
-                        echo "<script>";
-                            echo "alert(\" โปรดกดปุ่มสิ้นสุดการเช็คชื่อของรายวิชานี้ในประเภท Lab\");"; 
-                            echo "window.history.back()";
-                        echo "</script>";
-                    }else{*/
-                        $lineData = array($dataResultStudent[$x][0], $dataResultStudent[$x][1], $dataResultStudent[$x][2], $dataResultStudent[$x][3], $dataResultStudent[$x][4], $dataResultStudent[$x][5], $dataResultStudent[$x][6], $dataResultStudent[$x][10], $dataResultStudent[$x][11], $dataResultStudent[$x][12], $dataResultStudent[$x][13], $dataResultStudent[$x][7], $dataResultStudent[$x][8], $dataResultStudent[$x][9]);
-                        fputcsv($f, $lineData, $delimiter);
-                    /*}*/
+            $queryTerm = "SELECT * FROM `inacs_term` WHERE ID='".$_SESSION['IDTermResult']."' ";
+            $termDate = mysqli_query($con,$queryTerm);
+            if(mysqli_num_rows($termDate) == 1){
+                while ($rowTermCSV = mysqli_fetch_assoc($termDate)) {
 
+                    //$term = $rowTermCSV['Term']."/".$rowTermCSV['Year'];
+
+                    $data = array('ปีการศึกษา',$rowTermCSV['Year'],'เทอม',$rowTermCSV['Term'],' ',' ','0.5 คือ มาสาย');
+                    fputcsv($f, $data, $delimiter);
                 }
+            }
+
+            $data = array('รหัสวิชา',$numberCourseFilename,' ',' ',' ',' ','1 คือ ทันเวลา');
+            fputcsv($f, $data, $delimiter);
+
+            $data = array('รายวิชา',$nameCourseFilename);
+            fputcsv($f, $data, $delimiter);
+
+            $data = array('กลุ่มเรียน',$GroupCourseFilename);
+            fputcsv($f, $data, $delimiter);
+
+            $data = array('ประเภท',$TypeCourseFilename);
+            fputcsv($f, $data, $delimiter);
+
+            $data = array('');
+            fputcsv($f, $data, $delimiter);
+
+            if($_SESSION["TypeResult"] == "All"){
+
+                //Header 
+                $fields = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา');
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryCheckCSV = "SELECT * FROM `inacs_check` WHERE IDCourse='$IDCourse'  ";
+                        $CheckCSVData = mysqli_query($con,$queryCheckCSV);
+                        if(mysqli_num_rows($CheckCSVData) == 1){
+                            while ($rowCheckCSV = mysqli_fetch_assoc($CheckCSVData)) {
+
+                                $IDCheck = $rowCheckCSV['ID'];
+                                $queryDetailCheckCSV = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='$IDCheck'  ";
+                                $DetailCheckCSVData = mysqli_query($con,$queryDetailCheckCSV);
+                                if(mysqli_num_rows($DetailCheckCSVData) > 0){
+                                    while ($rowDetailCheckCSV = mysqli_fetch_assoc($DetailCheckCSVData)) {
+
+                                        $dataField = $rowDetailCheckCSV['DateCheck'].", ".$rowDetailCheckCSV['TimeCheck']." เช็คชื่อ กลุ่ม ".$GroupCourseFilename." ".$rowCourseCSV['Type']." ครั้งที่ ".$rowDetailCheckCSV['NumberCheck'];
+
+                                        //echo $dataField . "<br>";
+
+                                        array_push($fields,$dataField);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    fputcsv($f, $fields, $delimiter);
+                }
+
+
+
+                //Detail Student
+                $DataScoreLec = array();
+                $DataScoreLab = array();
+
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryStudentCSV = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourse'  ";
+                        $StudentCSVData = mysqli_query($con,$queryStudentCSV);
+                        if(mysqli_num_rows($StudentCSVData) > 0){
+                            while ($rowStudentCSV = mysqli_fetch_assoc($StudentCSVData)) {
+    
+                                $studentData = array($rowStudentCSV['Number'], $rowStudentCSV['Name'], $rowStudentCSV['Branch']);
+
+                                $IDStudent = $rowStudentCSV['ID'];
+                                $queryResultCSV = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudent'  ";
+                                $ResultCSVData = mysqli_query($con,$queryResultCSV);
+                                if(mysqli_num_rows($ResultCSVData) == 1){
+                                    while ($rowResultCSV = mysqli_fetch_assoc($ResultCSVData)) {
+
+                                        $IDResult = $rowResultCSV['ID'];
+                                        $queryDetailResultCSV = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult'  ";
+                                        $DetailResultCSVData = mysqli_query($con,$queryDetailResultCSV);
+                                        if(mysqli_num_rows($DetailResultCSVData) > 0){
+                                            while ($rowDetailResultCSV = mysqli_fetch_assoc($DetailResultCSVData)){
+        
+                                                array_push($studentData,$rowDetailResultCSV['ScoreResult']);
+
+                                            }
+                                        }
+
+                                    }
+                                }
+                                //fputcsv($f, $studentData, $delimiter);
+                                if($rowCourseCSV['Type'] == "Lecture"){
+                                    array_push($DataScoreLec,$studentData);
+                                }else{
+                                    array_push($DataScoreLab,$studentData);
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+                sort($DataScoreLec);
+                sort($DataScoreLab);
+                
+                
+                if(count($DataScoreLec) != 0){
+                    for($x = 0;$x < count($DataScoreLec);$x+=1){
+                        $lineData = array($DataScoreLec[$x][0],$DataScoreLec[$x][1],$DataScoreLec[$x][2]);
+                        for($y = 3;$y < count($DataScoreLec[$x]);$y+=1){
+                            array_push($lineData,$DataScoreLec[$x][$y]);
+                        }
+                        for($z = 0;$z < count($DataScoreLab);$z+=1){
+                            if($DataScoreLec[$x][0] == $DataScoreLab[$z][0]){
+                                for($y = 3;$y < count($DataScoreLab[$z]);$y+=1){
+                                    array_push($lineData,$DataScoreLab[$z][$y]);
+                                }
+                            }
+                        }
+                        fputcsv($f, $lineData, $delimiter);
+                    }
+                }else{
+                    for($x = 0;$x < count($DataScoreLab);$x+=1){
+                        $lineData = array($DataScoreLab[$x][0],$DataScoreLab[$x][1],$DataScoreLab[$x][2]);
+                        for($y = 3;$y < count($DataScoreLab[$x]);$y+=1){
+                            array_push($lineData,$DataScoreLab[$x][$y]);
+                        }
+                        fputcsv($f, $lineData, $delimiter);
+                    }
+                }
+                
+
+
+
             }else{
-                $fields = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา', 'จำนวนที่เช็ค', 'ทันเวลา', 'สาย', 'ขาด','คะแนนเข้าห้อง', 'คะแนนที่หัก', 'คะแนนพิเศษ');
+
+                //Header 
+                $fields = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา');
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  
+                AND Type='".$_SESSION["TypeResult"]."' ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryCheckCSV = "SELECT * FROM `inacs_check` WHERE IDCourse='$IDCourse'  ";
+                        $CheckCSVData = mysqli_query($con,$queryCheckCSV);
+                        if(mysqli_num_rows($CheckCSVData) == 1){
+                            while ($rowCheckCSV = mysqli_fetch_assoc($CheckCSVData)) {
+
+                                $IDCheck = $rowCheckCSV['ID'];
+                                $queryDetailCheckCSV = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='$IDCheck'  ";
+                                $DetailCheckCSVData = mysqli_query($con,$queryDetailCheckCSV);
+                                if(mysqli_num_rows($DetailCheckCSVData) > 0){
+                                    while ($rowDetailCheckCSV = mysqli_fetch_assoc($DetailCheckCSVData)) {
+
+                                        $dataField = $rowDetailCheckCSV['DateCheck'].", ".$rowDetailCheckCSV['TimeCheck']." เช็คชื่อ กลุ่ม ".$GroupCourseFilename." ".$rowCourseCSV['Type']." ครั้งที่ ".$rowDetailCheckCSV['NumberCheck'];
+
+                                        //echo $dataField . "<br>";
+
+                                        array_push($fields,$dataField);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    fputcsv($f, $fields, $delimiter);
+                }
+
+
+                //Detail Student
+                $DataScore = array();
+
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  
+                AND Type='".$_SESSION["TypeResult"]."' ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryStudentCSV = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourse'  ";
+                        $StudentCSVData = mysqli_query($con,$queryStudentCSV);
+                        if(mysqli_num_rows($StudentCSVData) > 0){
+                            while ($rowStudentCSV = mysqli_fetch_assoc($StudentCSVData)) {
+
+                                $studentData = array($rowStudentCSV['Number'], $rowStudentCSV['Name'], $rowStudentCSV['Branch']);
+
+                                $IDStudent = $rowStudentCSV['ID'];
+                                $queryResultCSV = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudent'  ";
+                                $ResultCSVData = mysqli_query($con,$queryResultCSV);
+                                if(mysqli_num_rows($ResultCSVData) == 1){
+                                    while ($rowResultCSV = mysqli_fetch_assoc($ResultCSVData)) {
+
+                                        $IDResult = $rowResultCSV['ID'];
+                                        $queryDetailResultCSV = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult'  ";
+                                        $DetailResultCSVData = mysqli_query($con,$queryDetailResultCSV);
+                                        if(mysqli_num_rows($DetailResultCSVData) > 0){
+                                            while ($rowDetailResultCSV = mysqli_fetch_assoc($DetailResultCSVData)){
+        
+                                                array_push($studentData,$rowDetailResultCSV['ScoreResult']);
+                                                
+                                            }
+                                        }
+
+                                    }
+                                }
+                                //fputcsv($f, $studentData, $delimiter);
+                                array_push($DataScore,$studentData);
+                            }
+                        }
+
+                    }
+                }
+
+                sort($DataScore);
+
+                for($x = 0;$x < count($DataScore);$x+=1){
+                    $lineData = array($DataScore[$x][0],$DataScore[$x][1],$DataScore[$x][2]);
+                    for($y = 3;$y < count($DataScore[$x]);$y+=1){
+                        array_push($lineData,$DataScore[$x][$y]);
+                    }
+                    fputcsv($f, $lineData, $delimiter);
+                }
+
+                /*$fields = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา', 'จำนวนที่เช็ค', 'ทันเวลา', 'สาย', 'ขาด','คะแนนเข้าห้อง', 'คะแนนที่หัก', 'คะแนนพิเศษ');
                 fputcsv($f, $fields, $delimiter);
 
                 for($x = 0;$x < count($dataResultStudent);$x+=1){
 
-                    /*if($dataResultStudent[$x][3] != $dataResultStudent[$x][4]+$dataResultStudent[$x][5]+ $dataResultStudent[$x][6]){
-                        echo "<script>";
-                            echo "alert(\" โปรดกดปุ่มสิ้นสุดการเช็คชื่อของรายวิชานี้\");"; 
-                            echo "window.history.back()";
-                        echo "</script>";
-                    }else{*/
+
                         $lineData = array($dataResultStudent[$x][0], $dataResultStudent[$x][1], $dataResultStudent[$x][2], $dataResultStudent[$x][3], $dataResultStudent[$x][4], $dataResultStudent[$x][5], $dataResultStudent[$x][6],$dataResultStudent[$x][7], $dataResultStudent[$x][8], $dataResultStudent[$x][9]);
                         fputcsv($f, $lineData, $delimiter);
-                    /*}*/
 
-                }
+
+                }*/
             }
             
             //fseek($f, 0);

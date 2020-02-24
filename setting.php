@@ -40,7 +40,7 @@ $_SESSION["PaginationMessage"] = 1;
 
 
 
-$queryTerm = "SELECT * FROM `inacs_term`";
+$queryTerm = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
 $termSelect = mysqli_query($con,$queryTerm);
 
 $dataTerm = array();
@@ -93,7 +93,7 @@ include('h.php');
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -152,7 +152,7 @@ include('h.php');
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -180,27 +180,58 @@ include('h.php');
                 <form name="Add" action="FSetting.php" method="post" style=" margin-bottom: 0%;">
                     <div class="columns">
                     
-                        <h3 style="margin-right:1%;"><b>ภาคเรียนล่าสุด :</b></h3>
+                        <h3 style="margin-right:1%;">ภาคเรียนล่าสุด :</h3>
                         <h3><?php echo $_SESSION["TermFirst"];?></h3>
 
                         <h2 style="margin-right:2%; margin-left:2%;"><b>|</b></h2>
 
 
                         
-                        <h3 style="margin-left:1%;"><b>ปีการศึกษา :</b></h3>
-                        <input class="input-field-v8-2" style="width: 10%; height:30px; margin-top:1%; margin-left:1%;" type="textRegis" name="Year" value="" title="ใส่ปีการศึกษาเป็น พ.ศ." autocomplete=off>
+                        <h3 style="margin-left:1%;">ปีการศึกษา :</h3>
+                        <input class="input-field-v8-2" style="width: 10%; height:30px; margin-top:1%; margin-left:1%;" type="textRegis" name="Year" value="" title="ใส่ปีการศึกษาเป็น พ.ศ." autocomplete=off onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 
-                        <h3 style="margin-left:2%; margin-right:1%;"><b>เทอม :</b></h3>
+                        <h3 style="margin-left:2%; margin-right:1%;">เทอม :</h3>
                         <input class="input-field-v8-2" style="width: 10%; height:30px; margin-top:1%;" type="textRegis" name="Term" value="" title="ใส่เทอมเป็น 1 หรือ 2 หรือ 3 (3 เป็น Summer)" autocomplete=off>
 
-                        <button class="small-v3" name="addTerm" style="margin-left: 4%; width: 16%; height: 40px;" title="คลิกเพื่อเพิ่มเทอม" onclick="document.Add.submit();">
+                        <button class="small-v3" name="addTerm" style="margin-left: 4%; width: 16%; height: 40px; background-color: #3366ff; color: white;" title="คลิกเพื่อเพิ่มเทอม" onclick="document.Add.submit();">
                         <b style="padding-top: 10%; padding-bottom: 10%; font-size: 18px;" >เพิ่มปีการศึกษา</b>
                         <!--<svg class="menu-icon iconv-2-add-box"></svg>-->
                         </button>
                     </div>
                 </form>
 
+                <hr style="border-top: 1px solid #777777a1;">
 
+                <div class="columns" style="margin-bottom:1%;">
+                    <div class="column is-3">
+                        <h3>กำหนดเกณฑ์ในการวัดการเช็คชื่อ</h3>
+                    </div>
+                </div>
+
+                <form name="Change" action="FSetting.php" method="post" style=" margin-bottom: 0%;">
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ขึ้นแถบ<b style="color:orange">สีส้ม</b>เมื่อนิสิตขาดเรียน </h4>
+
+                        <input class="input-field-v8-2" style="width: 10%; height:30px;" type="textRegis" name="LevelOrange" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="<?php echo $_SESSION["LevelOrange"];?>" title="ใส่ตัวเลขที่จะใช่ลบกับจำนวนที่เช็คเพื่อขึ้นแถบสีส้ม" autocomplete=off>
+
+                        <h4 style="margin-left:2%;">ครั้ง</h4>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:2%;">ขึ้นแถบ<b style="color:red">สีแดง</b>เมื่อนิสิตขาดเรียน </h4>
+
+                        <input class="input-field-v8-2" style="width: 10%; height:30px;" type="textRegis" name="LevelRed" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="<?php echo $_SESSION["LevelRed"];?>" title="ใส่ตัวเลขที่จะใช่ลบกับจำนวนที่เช็คเพื่อขึ้นแถบสีแดง" autocomplete=off>
+
+                        <h4 style="margin-left:2%;">ครั้ง</h4>
+                    </div>
+                    
+                    <button class="small-v3" name="SaveChange" style="margin-left: 1%; margin-top:3%; width: 25%; height: 40px; background-color: #3366ff; color: white;" title="คลิกเพื่อบันทึกการเปลี่ยนแปลงของข้อมูล" onclick="document.Change.submit();">
+                        <b style="padding-top: 10%; padding-bottom: 10%; font-size: 18px;" >บันทึกการเปลี่ยนแปลง</b>
+                        <!--<svg class="menu-icon iconv-2-add-box"></svg>-->
+                    </button>
+                </form>
 
                 </div>
             </div>

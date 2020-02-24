@@ -782,6 +782,13 @@ session_start();
                     $searchResultSQL="SELECT * FROM inacs_result WHERE IDStudent='$rowStudent[0]' ";
                     $resultResultSQL = mysqli_query($con,$searchResultSQL);
                     while($rowResult = mysqli_fetch_array($resultResultSQL)){
+
+                        $searchDetailResultSQL="SELECT * FROM inacs_detail_result WHERE IDResult='$rowResult[0]' ";
+                        $detailResultSQL = mysqli_query($con,$searchDetailResultSQL);
+                        while($rowDetailResult = mysqli_fetch_array($detailResultSQL)){
+                            mysqli_query($con,"DELETE FROM inacs_detail_result WHERE ID=$rowDetailResult[0] ");
+                        }
+
                         mysqli_query($con,"DELETE FROM inacs_result WHERE ID=$rowResult[0] ");
                     }
 
@@ -803,6 +810,13 @@ session_start();
                 $searchCheckSQL="SELECT * FROM inacs_Check WHERE IDCourse='".$_SESSION['IDDelete']."' ";
                 $resultChecktSQL = mysqli_query($con,$searchCheckSQL);
                 while($rowCheck = mysqli_fetch_array($resultChecktSQL)){
+
+                    $searchDetailCheckSQL="SELECT * FROM inacs_detail_check WHERE IDCheck='$rowCheck[0]' ";
+                    $detailCheckSQL = mysqli_query($con,$searchDetailCheckSQL);
+                    while($rowDetailCheck = mysqli_fetch_array($detailCheckSQL)){
+                        mysqli_query($con,"DELETE FROM inacs_detail_check WHERE ID=$rowDetailCheck[0] ");
+                    }
+
                     mysqli_query($con,"DELETE FROM inacs_Check WHERE ID=$rowCheck[0] ");
                 }
 

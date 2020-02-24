@@ -14,7 +14,6 @@ $_SESSION["PaginationVacation"] = 1;
 $_SESSION["IDTermCheck"] = $_SESSION["IDTermFirstCheck"];
 $_SESSION["PaginationSelectCheck"] = 1;
 
-$_SESSION["IDTermResult"] = $_SESSION["IDTermFirstResult"];
 $_SESSION["PaginationSelectResult"] = 1;
 
 $_SESSION["NumberCheckStudent"] = "";
@@ -37,7 +36,8 @@ $username = $_SESSION['Username'];
 $password = $_SESSION['Password'];
 
 
-$queryCourse = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
+$queryCourse = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+AND NameTeacher='".$_SESSION['Name']."' 
 AND Number='".$_SESSION['NumCourseInResultStudent']."' 
 AND Name='".$_SESSION['NameCourseInResultStudent']."'  ";
 $CourseData = mysqli_query($con,$queryCourse);
@@ -86,6 +86,7 @@ $dataResult = array();
 $dataCheckResult = array();
 $dataCheckResultAll = array();
 $dataPhoneNumber = array();
+$dataTypeCourse = array();
 $numberCheck = 0;
 $headerTable="";
 
@@ -114,7 +115,8 @@ if($_SESSION["TypeResult"] == "All"){
 
     for($y = 1;$y < count($dataTypeArray);$y+=1){
 
-        $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
+        $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+        AND NameTeacher='".$_SESSION['Name']."' 
         AND Number='".$_SESSION['NumCourseInResultStudent']."' 
         AND Name='".$_SESSION['NameCourseInResultStudent']."'  
         AND GroupCourse='".$_SESSION['GroupCourseInResultStudent']."'
@@ -161,10 +163,18 @@ if($_SESSION["TypeResult"] == "All"){
                                         $dataResult[$x][8] += $rowResult['ScoreDeducted'];
                                         $dataResult[$x][9] += $rowResult['ScoreExtra'];
                                         
-                                        $dataResult[$x][10] = $numberCheck;
-                                        $dataResult[$x][11] = $rowResult['NumberOnTime'];
-                                        $dataResult[$x][12] = $rowResult['NumberLate'];
-                                        $dataResult[$x][13] = $rowResult['NumberAbsent'];
+                                        if($rowCourse['Type'] == "Lecture"){
+                                            $dataResult[$x][3] = $numberCheck;
+                                            $dataResult[$x][4] = $rowResult['NumberOnTime'];
+                                            $dataResult[$x][5] = $rowResult['NumberLate'];
+                                            $dataResult[$x][6] = $rowResult['NumberAbsent'];
+                                        }else{
+                                            $dataResult[$x][10] = $numberCheck;
+                                            $dataResult[$x][11] = $rowResult['NumberOnTime'];
+                                            $dataResult[$x][12] = $rowResult['NumberLate'];
+                                            $dataResult[$x][13] = $rowResult['NumberAbsent'];
+                                        }
+                                        
 
                                         $numberCheckCal = $dataResult[$x][3] + $numberCheck;
                                         $numberOnTimeCal = $dataResult[$x][4] + $rowResult['NumberOnTime'];
@@ -183,8 +193,16 @@ if($_SESSION["TypeResult"] == "All"){
     
                                 if($checkResultStudent){
                                     array_push($dataCheckResult,$rowStudent['Number']);
-    
-                                    array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['NumberAbsent'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra'],0,0,0,0));
+                                    
+                                    array_push($dataTypeCourse,$rowCourse['Type']);
+
+                                    if($rowCourse['Type'] == "Lecture"){
+                                        array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['NumberAbsent'],$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra'],0,0,0,0));
+                                    }else{
+                                        array_push($dataResult,array($rowStudent['Number'],$rowStudent['Name'],$rowStudent['Branch'],0,0,0,0,$rowResult['ScoreRoom'],$rowResult['ScoreDeducted'],$rowResult['ScoreExtra'],$numberCheck,$rowResult['NumberOnTime'],$rowResult['NumberLate'],$rowResult['NumberAbsent']));
+                                    }
+
+                                    
 
                                     array_push($dataPhoneNumber,array($rowStudent['Number'],$rowStudent['ParentalPhoneNumber']));
     
@@ -221,7 +239,8 @@ if($_SESSION["TypeResult"] == "All"){
     $_SESSION["HeaderResultTableInResult"] = $headerTable;
 
 
-    $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE NameTeacher='".$_SESSION['Name']."' 
+    $queryCourseToResult = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+    AND NameTeacher='".$_SESSION['Name']."' 
     AND Number='".$_SESSION['NumCourseInResultStudent']."' 
     AND Name='".$_SESSION['NameCourseInResultStudent']."'  
     AND GroupCourse='".$_SESSION['GroupCourseInResultStudent']."'
@@ -291,15 +310,17 @@ for($x = 0;$x < count($dataResult);$x+=1){
     $numberPhoneResult = $dataPhoneNumber[$x][1];
 
     $RiskLevel = $numberAbsentResult+$numberAbsentResultOther+(0.5*$numberLateResult)+(0.5*$numberLateResultOther);
-    if($RiskLevel < 2){
+
+
+    if($RiskLevel < $_SESSION["LevelOrange"]){
         $tableResult  = $tableResult."<tr style=background-color:white;>";
-    }else if ($RiskLevel >= 2 && $RiskLevel < 3){
+    }else if ($RiskLevel >= $_SESSION["LevelOrange"] && $RiskLevel < $_SESSION["LevelRed"]){
         $tableResult  = $tableResult."<tr style=background-color:orange;>";
     }else{
         $tableResult  = $tableResult."<tr style=background-color:red;>";
     }
 
-    if($RiskLevel >= 3){
+    if($RiskLevel >= $_SESSION["LevelRed"]){
         $tableResult  = $tableResult."<td style=color:white;><b>$numberStudent</b></td>";  
         $tableResult  = $tableResult."<td style=color:white;><b>$nameStudent</b></td>"; 
         $tableResult  = $tableResult."<td style=color:white;><b>$numberCheckCheck</b></td>"; 
@@ -316,7 +337,7 @@ for($x = 0;$x < count($dataResult);$x+=1){
     }
 
     if($_SESSION["TypeResult"] == "All"){
-        if($RiskLevel >= 3){
+        if($RiskLevel >= $_SESSION["LevelRed"]){
             $tableResult  = $tableResult."<td style=color:white;><b>$numberCheckCheckOther</b></td>"; 
             $tableResult  = $tableResult."<td style=color:white;><b>$numberOnTimeResultOther</b></td>";
             $tableResult  = $tableResult."<td style=color:white;><b>$numberLateResultOther</b></td>";
@@ -406,7 +427,7 @@ include('h.php');
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -465,7 +486,7 @@ include('h.php');
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -590,7 +611,7 @@ include('h.php');
 
   <div class="input-textRegis">
         <div class="sizeText maginChangEmail"><b>Phone Number :</b></div>
-        <input class="is-pulled-right input-field-v2-6" type="textRegis" name="Phone" value="<?php echo $_SESSION['ParentalPhoneNumber']; ?>" autocomplete=off>
+        <input class="is-pulled-right input-field-v2-6" type="textRegis" name="Phone" onkeypress="return event.charCode >= 48 && event.charCode <= 57"  value="<?php echo $_SESSION['ParentalPhoneNumber']; ?>" autocomplete=off>
   </div>
 
   <div class="button-zone">

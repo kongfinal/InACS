@@ -17,10 +17,17 @@ session_start();
                       $_SESSION["Email"] = $row["Email"];
                       $_SESSION["Username"] = $row["Username"];
                       $_SESSION["Password"] = $row["Password"];
- 
-                      Header("Location: index.php");
 
-                     
+                      $querySetting = "SELECT * FROM `inacs_setting` WHERE NameTeacher='".$_SESSION['Name']."' ";
+                      $settingData = mysqli_query($con,$querySetting);
+                      if(mysqli_num_rows($settingData) == 1){
+                        while ($rowSetting = mysqli_fetch_assoc($settingData)) {
+                          $_SESSION["LevelOrange"] = $rowSetting['LevelOrange'];
+                          $_SESSION["LevelRed"] = $rowSetting['LevelRed'];
+                        }
+                      }  
+
+                      Header("Location: index.php");
                   }else{
                     echo "<script>";
                         echo "alert(\" username หรือ  password ไม่ถูกต้อง\");"; 

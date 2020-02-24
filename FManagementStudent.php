@@ -329,6 +329,13 @@ include('condb.php');
                 $searchResultSQL="SELECT * FROM inacs_result WHERE IDStudent='".$_SESSION['IDStudentDelete']."' ";
                 $resultResultSQL = mysqli_query($con,$searchResultSQL);
                 while($rowResult = mysqli_fetch_array($resultResultSQL)){
+
+                    $searchDetailResultSQL="SELECT * FROM inacs_detail_result WHERE IDResult='$rowResult[0]' ";
+                    $detailResultSQL = mysqli_query($con,$searchDetailResultSQL);
+                    while($rowDetailResult = mysqli_fetch_array($detailResultSQL)){
+                        mysqli_query($con,"DELETE FROM inacs_detail_result WHERE ID=$rowDetailResult[0] ");
+                    }
+                    
                     mysqli_query($con,"DELETE FROM inacs_result WHERE ID=$rowResult[0] ");
                 }
 

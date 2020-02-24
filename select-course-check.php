@@ -37,7 +37,7 @@ $username = $_SESSION['Username'];
 $password = $_SESSION['Password'];
 
 
-$queryTerm = "SELECT * FROM `inacs_term`";
+$queryTerm = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' ";
 $termSelect = mysqli_query($con,$queryTerm);
 
 $optionsTerm = "";
@@ -183,7 +183,7 @@ function CreatePagination($CourseNum){
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -242,7 +242,7 @@ function CreatePagination($CourseNum){
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -270,7 +270,7 @@ function CreatePagination($CourseNum){
                             </div>
 
                             <form name="GoCheckName" action="FCheckNameStudent.php" method="post" style="width: 14%; height: 40px; margin-bottom: 0%; margin-top: 0.45%;">
-                            <button class="small-v3" name="GoToCheckName" style="margin-right: 0.5%; width: 100%; height: 100%;" title="คลิกเพื่อไปหน้าเช็คชื่อนิสิตของรายวิชาที่เลือก"
+                            <button class="small-v3" name="GoToCheckName" style="margin-right: 0.5%; width: 100%; height: 100%; background-color: #3366ff; color: white;" title="คลิกเพื่อไปหน้าเช็คชื่อนิสิตของรายวิชาที่เลือก"
                             onclick="document.GoCheckName.submit();">
                             <b style="margin-top: 4%; margin-bottom: 4%; font-size: 18px;" >ไปหน้าเช็คชื่อ</b></button>
                             

@@ -311,6 +311,7 @@ include('condb.php');
             
                         if(mysqli_num_rows($CheckData) == 1){
                             while ($row = mysqli_fetch_assoc($CheckData)) {
+                                $_SESSION["IDCheckCourseInCheckStudent"] = $row['ID'];
                                 $_SESSION["NumberCheckCourseInCheckStudent"] = $row['NumberCheck'];
                                 $_SESSION["LastStartCheckTimeInCheckStudent"] = $row['LastStartCheckTime'];
                             }
@@ -324,6 +325,27 @@ include('condb.php');
     
                             $queryCheck = "UPDATE `inacs_check` SET LastStartCheckTime='".$_SESSION["TimeInCheckStudent"]."' WHERE IDCourse='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
                             $CheckData = mysqli_query($con,$queryCheck);
+
+
+                            //insert inacs_detail_check
+                            $queryDetailCheck = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='".$_SESSION["IDCheckCourseInCheckStudent"]."' AND NumberCheck='".$_SESSION["NumberCheckCourseInCheckStudent"]."'  ";
+                            $detailCheckData = mysqli_query($con,$queryDetailCheck);
+                            if(mysqli_num_rows($detailCheckData) == 0){
+
+                                $starttime=strtotime($_SESSION["TimeInCheckStudent"]);
+                                $endtime=strtotime("-".$LateTime." Minutes", $starttime);
+                                $timeCreate = date("H:i:s", $endtime);
+
+                                $dateCreate = date("j F Y");
+
+                                $strSQL = "INSERT INTO inacs_detail_check ";
+                                $strSQL .="(ID,IDCheck,NumberCheck,DateCheck,TimeCheck) ";
+                                $strSQL .="VALUES ";
+                                $strSQL .="(NULL,'".$_SESSION["IDCheckCourseInCheckStudent"]."','".$_SESSION["NumberCheckCourseInCheckStudent"]."','$dateCreate','$timeCreate') ";                 
+                                $objQuery = mysqli_query($con,$strSQL);
+                                
+                            }
+
                         }else{
                             $_SESSION["TimeInCheckStudent"] = $_SESSION["LastStartCheckTimeInCheckStudent"];
                         }
@@ -572,6 +594,7 @@ include('condb.php');
 
 
                             // start
+                            $IDResult = 
                             $NumberOnTime = $_SESSION["NumberOnTimeCheckStudent"];
                             $NumberLate = $_SESSION["NumberLateStudent"];
                             $numberCheck = $_SESSION["NumberCheckCourseInCheckStudent"];
@@ -588,6 +611,36 @@ include('condb.php');
                              WHERE IDStudent='".$_SESSION["IDCheckStudent"]."' ";
                             $ResultData = mysqli_query($con,$queryResult);
 
+
+
+                            //insert inacs_detail_result --> NumberOnTime,NumberLate
+                            $queryDetailCheck = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='".$_SESSION["IDCheckCourseInCheckStudent"]."' AND NumberCheck='".$_SESSION["NumberCheckCourseInCheckStudent"]."'  ";
+                            $detailCheckData = mysqli_query($con,$queryDetailCheck);
+                            if(mysqli_num_rows($detailCheckData) == 1){
+                                while ($rowDetailCheck = mysqli_fetch_assoc($detailCheckData)) {
+                                    $IDDetailCheck = $rowDetailCheck['ID'];
+                                }
+                            }
+
+
+                            if($_SESSION["StatusCheckStudent"] == "ทันเวลา"){
+                                $ScoreResult = 1;
+                            }else{
+                                $ScoreResult = 0.5;
+                            }
+
+
+                            $queryDetailResult = "SELECT * FROM `inacs_detail_result` WHERE IDResult='".$_SESSION["IDResult"]."' AND IDDetailCheck='$IDDetailCheck'  ";
+                            $detailResultData = mysqli_query($con,$queryDetailResult);
+                            if(mysqli_num_rows($detailResultData) == 0){
+
+                                $strSQL = "INSERT INTO inacs_detail_result ";
+                                $strSQL .="(ID,IDResult,IDDetailCheck,ScoreResult) ";
+                                $strSQL .="VALUES ";
+                                $strSQL .="(NULL,'".$_SESSION["IDResult"]."','$IDDetailCheck','$ScoreResult') ";                 
+                                $objQuery = mysqli_query($con,$strSQL);
+                                
+                            }//END
     
                         }
 
@@ -1020,6 +1073,7 @@ include('condb.php');
 
                                 if($NumberCheckOld != $rowResult['NumberOnTime']+$rowResult['NumberLate']+$rowResult['NumberAbsent']){
 
+
                                     $dataNumberOnTime = $rowResult['NumberOnTime'];
                                     $dataNumberLate = $rowResult['NumberLate'];
                                     $dataNumberAbsentNew = $rowResult['NumberAbsent']+1;
@@ -1036,6 +1090,32 @@ include('condb.php');
                                     $StrData = mysqli_query($con,$StrResult);
 
 
+                                    //insert inacs_detail_result --> NumberAbsent
+                                    $queryDetailCheck = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='".$_SESSION["IDCheckCourseInCheckStudent"]."' AND NumberCheck='".$_SESSION["NumberCheckCourseInCheckStudent"]."'  ";
+                                    $detailCheckData = mysqli_query($con,$queryDetailCheck);
+                                    if(mysqli_num_rows($detailCheckData) == 1){
+                                        while ($rowDetailCheck = mysqli_fetch_assoc($detailCheckData)) {
+                                            $IDDetailCheck = $rowDetailCheck['ID'];
+                                        }
+                                    }
+        
+                                    $IDResult = $rowResult['ID'];
+
+                                    $queryDetailResult = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult' AND IDDetailCheck='$IDDetailCheck'  ";
+                                    $detailResultData = mysqli_query($con,$queryDetailResult);
+                                    if(mysqli_num_rows($detailResultData) == 0){
+        
+                                        $strSQL = "INSERT INTO inacs_detail_result ";
+                                        $strSQL .="(ID,IDResult,IDDetailCheck,ScoreResult) ";
+                                        $strSQL .="VALUES ";
+                                        $strSQL .="(NULL,'$IDResult','$IDDetailCheck','0') ";                 
+                                        $objQuery = mysqli_query($con,$strSQL);
+                                        
+                                    }//END
+
+
+
+
                                     //Start Email and Message
 
                                     $queryCourse = "SELECT * FROM `inacs_course` WHERE ID='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
@@ -1049,7 +1129,7 @@ include('condb.php');
                                     }
 
                                     // หา ID Course Lec+Lab
-                                    $queryCourseLec = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lecture' ";
+                                    $queryCourseLec = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND NameTeacher='".$_SESSION["Name"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lecture' ";
                                     $CourseLecData = mysqli_query($con,$queryCourseLec);
                                     if(mysqli_num_rows($CourseLecData) == 1){
                                         while ($rowCourseLec = mysqli_fetch_assoc($CourseLecData)) {
@@ -1057,7 +1137,7 @@ include('condb.php');
                                         }
                                     }
 
-                                    $queryCourseLab = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lab' ";
+                                    $queryCourseLab = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermFirstCheck"]."' AND NameTeacher='".$_SESSION["Name"]."' AND Number='$NumberCourse' AND Name='$NameCourse' AND GroupCourse='$GroupCourse' AND Type='Lab' ";
                                     $CourseLabData = mysqli_query($con,$queryCourseLab);
                                     if(mysqli_num_rows($CourseLabData) == 1){
                                         while ($rowCourseLab = mysqli_fetch_assoc($CourseLabData)) {
@@ -1067,7 +1147,7 @@ include('condb.php');
 
 
                                     // หา ID Student Lec+Lab
-                                    $queryStudentLecGetID = "SELECT * FROM `inacs_student` WHERE IDCourse='".$IDCourseLec."' AND Number='$NumberStudentData' AND Name='$NameStudentData'";
+                                    $queryStudentLecGetID = "SELECT * FROM `inacs_student` WHERE IDCourse='".$IDCourseLec."'  AND Number='$NumberStudentData' AND Name='$NameStudentData'";
                                     $StudentLecDataGetID = mysqli_query($con,$queryStudentLecGetID);
                                     if(mysqli_num_rows($StudentLecDataGetID) == 1){
                                         while ($rowStudentLec = mysqli_fetch_assoc($StudentLecDataGetID)) {
@@ -1137,13 +1217,15 @@ include('condb.php');
 
                                     $levelScore = ($NumberLateLec*0.5)+($NumberLateLab*0.5)+$NumberAbsentNewLec+$NumberAbsentNewLab;
 
+                                    //echo $levelScore."<br>";
+                                     /*echo $queryCourseLec."<br>";
+                                    echo mysqli_num_rows($CourseLecData)."<br>";*/
 
-
-                                    if($levelScore == 2){
-                                        $subject = "นิสิตขาดเรียน 2 ครั้ง";
+                                    if($levelScore >= $_SESSION["LevelOrange"] && $levelScore < $_SESSION["LevelRed"]){
+                                        $subject = "นิสิตขาดเรียน ".$_SESSION["LevelOrange"]." ครั้งหรือมากกว่าแต่ไม่เกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "เกือบถึง";
-                                    }else if($levelScore == 3){
-                                        $subject = "นิสิตขาดเรียน 3 ครั้ง";
+                                    }else if($levelScore == $_SESSION["LevelRed"]){
+                                        $subject = "นิสิตขาดเรียน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "ถึง";
 
 
@@ -1151,8 +1233,8 @@ include('condb.php');
 
                                         $StrLabData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายถึงเกณฑ์' WHERE ID='$IDStudentLab' ");
 
-                                    }else if($levelScore > 3){
-                                        $subject = "นิสิตขาดเรียนเกิน 3 ครั้ง";
+                                    }else if($levelScore > $_SESSION["LevelRed"]){
+                                        $subject = "นิสิตขาดเรียนเกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "เกิน";
 
                                         $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLec' ");
@@ -1160,7 +1242,7 @@ include('condb.php');
                                         $StrLabData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLab' ");
                                     }
 
-                                    if((($dataNumberLate*0.5)+($dataNumberAbsentNew)) >= 2){
+                                    if($levelScore >= $_SESSION["LevelOrange"]){
                                         header('Content-Type: text/html; charset=utf-8');
  
                                         //start Email Student

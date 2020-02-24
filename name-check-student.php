@@ -68,7 +68,7 @@ include('h.php');
                     <i class="iconv-2-a"></i>
                       <div class="maginTextNavbar-dropdown">เปลี่ยนอีเมล</div>
                     </a>
-                    <a href="login.php">
+                    <a href="logout.php">
                     <i class="iconv-2-logout"></i>
                       <div class="maginTextNavbar-dropdown">ออกจากระบบ</div>
                     </a>
@@ -127,7 +127,7 @@ include('h.php');
                 </a>
             </li>
             <li>
-                <a href="login.php">
+                <a href="logout.php">
                 <svg class="menu-icon iconv-2-logout"></svg>ออกจากระบบ
                 </a>
             </li>
@@ -153,10 +153,10 @@ include('h.php');
                         <div class="set-flex" style="margin-top: 2%;">
                             <form name="Check" action="FCheckNameStudent.php" method="post" style="margin-right: 1.5%;  margin-bottom: 0%; width: 100%; height: 45px;">
                                 <input class="is-pulled-right" name="CheckName" style="text-align: center; font-size: 24px; width: 100%; height: 100%" type="textRegis" value="" 
-                                autocomplete=off autofocus>
+                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13" autocomplete=off autofocus>
                             </form>
                         <form name="SaveCheck" action="FCheckNameStudent.php" method="post" >
-                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อสิ้นสุดการเช็คชื่อครั้งนี้">
+                            <button class="small-v3" style="margin-top: 0%; width: 135px; height: 45px; background-color: #3366ff; color: white;" name="saveDataCheck" onclick="document.SaveCheck.submit();" title="คลิกเพื่อสิ้นสุดการเช็คชื่อครั้งนี้">
                                 <b style="font-size: 16px;">สิ้นสุดการเช็คชื่อ</b>
                             </button>
                         </form>
@@ -165,14 +165,14 @@ include('h.php');
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>หักคะแนน (เครื่องแต่งกาย/ลืมบัตรนิสิต) :</b></div>
 
                             <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" autocomplete=off></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
 
                             <div style="margin-top: 2%; margin-right: 17%;"></div>
 
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
 
                             <form name="SaveScoreExtra" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน" autocomplete=off></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
 
                         </div>
                         <div class="set-flex" >
