@@ -62,7 +62,7 @@ session_start();
                     }
                 }else{
                   echo "<script>";
-                      echo "alert(\" Username หรือ Current Passwoed ไม่ถูกต้อง\");"; 
+                      echo "alert(\" Username หรือ Current Password ไม่ถูกต้อง\");"; 
                       echo "window.history.back()";
                   echo "</script>";
                 }

@@ -167,6 +167,17 @@
     background-color: currentColor;
 }
 
+
+.iconv-2-export-xlsx {
+    -webkit-mask-image: url('pic/export-xlsx.png');
+
+    width: 30px;
+    height: 30px;
+
+    background-color: currentColor;
+}
+
+
 .iconv-2-add-box {
     -webkit-mask-image: url('../pic/add_box-24px.svg');
 

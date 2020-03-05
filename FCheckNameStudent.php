@@ -323,7 +323,9 @@ include('condb.php');
                             $LateTime = $_SESSION["TimeLateCourseInCheckStudent"];
                             $_SESSION["TimeInCheckStudent"] = (new DateTime())->modify("+{$LateTime} minutes")->format("H:i:s");
     
-                            $queryCheck = "UPDATE `inacs_check` SET LastStartCheckTime='".$_SESSION["TimeInCheckStudent"]."' WHERE IDCourse='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
+                            $Lastdate = date("Y/m/d");
+
+                            $queryCheck = "UPDATE `inacs_check` SET LastStartCheckTime='".$_SESSION["TimeInCheckStudent"]."', LastStartCheckDate='$Lastdate' WHERE IDCourse='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
                             $CheckData = mysqli_query($con,$queryCheck);
 
 
@@ -1049,7 +1051,7 @@ include('condb.php');
                         $NumberCheckNew = $NumberCheckOld+1;
                     }
                     $strCheck = "UPDATE `inacs_check` SET NumberCheck='$NumberCheckNew'
-                    ,LastStartCheckTime='' WHERE IDCourse='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
+                    ,LastStartCheckTime='',LastStartCheckDate='' WHERE IDCourse='".$_SESSION["IDCourseInCheckStudent"][$x]."' ";
                     $StrData = mysqli_query($con,$strCheck);
                 }
 
@@ -1071,49 +1073,95 @@ include('condb.php');
                         if(mysqli_num_rows($ResultData) == 1){
                             while ($rowResult = mysqli_fetch_assoc($ResultData)) {
 
-                                if($NumberCheckOld != $rowResult['NumberOnTime']+$rowResult['NumberLate']+$rowResult['NumberAbsent']){
+
+                                // start เช็ค คนมาสาย เพื่อตรวจเกณฑ์ความเสี่ยง
+                                $IDResult = $rowResult['ID'];
+                                $dataNumberCheckLast = 0;
+                                $dataNumberCheck = null;
+                                $dataScoreResultLast = null;
+                                $dataCheckLateBool = false;
+
+                                $queryDetailResultCheck = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult' ";
+                                $detailResultDataCheck = mysqli_query($con,$queryDetailResultCheck);
+                                if(mysqli_num_rows($detailResultDataCheck) > 0){
+                                    while ($rowDetailResultCheck = mysqli_fetch_assoc($detailResultDataCheck)) {
+
+                                        $IDDCheck = $rowDetailResultCheck['IDDetailCheck'];
+                                        $queryDetailCheckC = "SELECT * FROM `inacs_detail_check` WHERE ID='$IDDCheck' ";
+                                        $detailCheckDataC = mysqli_query($con,$queryDetailCheckC);
+                                        if(mysqli_num_rows($detailCheckDataC) == 1){
+                                            while ($rowDetailCheckC = mysqli_fetch_assoc($detailCheckDataC)) {
+                                                $dataNumberCheck = $rowDetailCheckC['NumberCheck'];
+                                                $dataScoreResult = $rowDetailResultCheck['ScoreResult'];
+                                            }
+                                        }
+
+                                        if($dataNumberCheck > $dataNumberCheckLast){
+                                            $dataNumberCheckLast = $dataNumberCheck;
+                                            $dataScoreResultLast = $dataScoreResult;
+                                        }
+
+                                    }
+                                }
+
+                                if($NumberCheckOld == $dataNumberCheckLast && $dataScoreResultLast == 0.5){
+                                    $dataCheckLateBool = true;
+                                }//END
+                                
+
+                                //echo $NumberCheckOld."/".$dataNumberCheckLast."/".$dataScoreResultLast."/".$dataCheckLateBool;
+
+                                if($NumberCheckOld != $rowResult['NumberOnTime']+$rowResult['NumberLate']+$rowResult['NumberAbsent'] || $dataCheckLateBool){
 
 
                                     $dataNumberOnTime = $rowResult['NumberOnTime'];
                                     $dataNumberLate = $rowResult['NumberLate'];
-                                    $dataNumberAbsentNew = $rowResult['NumberAbsent']+1;
+
+                                    if(!$dataCheckLateBool){
+                                        $dataNumberAbsentNew = $rowResult['NumberAbsent']+1;
+                                    }else{
+                                        $dataNumberAbsentNew = $rowResult['NumberAbsent'];
+                                    }
+                                    
 
                                     $SumNumber = $dataNumberOnTime+$dataNumberLate+$dataNumberAbsentNew;
 
                                     $scoreRoomNew = (($dataNumberOnTime+($dataNumberLate*0.5))/$SumNumber)*100;
 
-                                    $StrResult = "UPDATE `inacs_result` 
-                                    SET LastCheckTime='' 
-                                    , NumberAbsent='$dataNumberAbsentNew'
-                                    , ScoreRoom='$scoreRoomNew'
-                                    WHERE IDStudent='$IDStudentData' ";
-                                    $StrData = mysqli_query($con,$StrResult);
+                                    if(!$dataCheckLateBool){
 
-
-                                    //insert inacs_detail_result --> NumberAbsent
-                                    $queryDetailCheck = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='".$_SESSION["IDCheckCourseInCheckStudent"]."' AND NumberCheck='".$_SESSION["NumberCheckCourseInCheckStudent"]."'  ";
-                                    $detailCheckData = mysqli_query($con,$queryDetailCheck);
-                                    if(mysqli_num_rows($detailCheckData) == 1){
-                                        while ($rowDetailCheck = mysqli_fetch_assoc($detailCheckData)) {
-                                            $IDDetailCheck = $rowDetailCheck['ID'];
+                                        $StrResult = "UPDATE `inacs_result` 
+                                            SET LastCheckTime='' 
+                                            , NumberAbsent='$dataNumberAbsentNew'
+                                            , ScoreRoom='$scoreRoomNew'
+                                            WHERE IDStudent='$IDStudentData' ";
+                                        $StrData = mysqli_query($con,$StrResult);
+                                    
+                                    
+                                        //insert inacs_detail_result --> NumberAbsent
+                                        $queryDetailCheck = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='".$_SESSION["IDCheckCourseInCheckStudent"]."' AND NumberCheck='".$_SESSION["NumberCheckCourseInCheckStudent"]."'  ";
+                                        $detailCheckData = mysqli_query($con,$queryDetailCheck);
+                                        if(mysqli_num_rows($detailCheckData) == 1){
+                                            while ($rowDetailCheck = mysqli_fetch_assoc($detailCheckData)) {
+                                                $IDDetailCheck = $rowDetailCheck['ID'];
+                                            }
                                         }
-                                    }
-        
-                                    $IDResult = $rowResult['ID'];
-
-                                    $queryDetailResult = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult' AND IDDetailCheck='$IDDetailCheck'  ";
-                                    $detailResultData = mysqli_query($con,$queryDetailResult);
-                                    if(mysqli_num_rows($detailResultData) == 0){
-        
-                                        $strSQL = "INSERT INTO inacs_detail_result ";
-                                        $strSQL .="(ID,IDResult,IDDetailCheck,ScoreResult) ";
-                                        $strSQL .="VALUES ";
-                                        $strSQL .="(NULL,'$IDResult','$IDDetailCheck','0') ";                 
-                                        $objQuery = mysqli_query($con,$strSQL);
+            
                                         
-                                    }//END
 
+                                        $queryDetailResult = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult' AND IDDetailCheck='$IDDetailCheck'  ";
+                                        $detailResultData = mysqli_query($con,$queryDetailResult);
+                                        if(mysqli_num_rows($detailResultData) == 0){
+            
+                                            $strSQL = "INSERT INTO inacs_detail_result ";
+                                            $strSQL .="(ID,IDResult,IDDetailCheck,ScoreResult) ";
+                                            $strSQL .="VALUES ";
+                                            $strSQL .="(NULL,'$IDResult','$IDDetailCheck','0') ";                 
+                                            $objQuery = mysqli_query($con,$strSQL);
+                                            
+                                        }//END
 
+                                    }
 
 
                                     //Start Email and Message

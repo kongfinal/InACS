@@ -28,7 +28,7 @@ session_start();
                 echo "</script>";
             } else if (empty($_POST["corn-passwordRegis"])) {
                 echo "<script>";
-                    echo "alert(\" Cornfirm Password is required\");"; 
+                    echo "alert(\" Confirm Password is required\");"; 
                     echo "window.history.back()";
                  echo "</script>";
             }else {
@@ -43,7 +43,7 @@ session_start();
                 echo "</script>";
               }else if($passCheck !== $cornCheck){
                 echo "<script>";
-                    echo "alert(\" Password not same Cornfirm Password\");"; 
+                    echo "alert(\" Password not same Confirm Password\");"; 
                     echo "window.history.back()";
                 echo "</script>";
               }else{

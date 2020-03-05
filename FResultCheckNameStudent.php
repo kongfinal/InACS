@@ -417,5 +417,427 @@ include('condb.php');
             fpassthru($f);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        if(isset($_POST['exportEX'])){
+
+            include ("lib/PHPExcel-1.8/Classes/PHPExcel.php");
+
+            $numberCourseFilename = $_SESSION['NumCourseInResultStudent'];
+            $nameCourseFilename = $_SESSION['NameCourseInResultStudent'];
+            $GroupCourseFilename = $_SESSION['GroupCourseInResultStudent'];
+            $TypeCourseFilename = $_SESSION['TypeResult'];
+
+            $filename = $numberCourseFilename . "_" . $GroupCourseFilename . "_" . $TypeCourseFilename .".xlsx";
+            
+
+            $dataResultStudent = $_SESSION["ResultStudentData"];
+
+            $excel = new PHPExcel();
+            $excel->setActiveSheetIndex(0);
+
+            $excel->getActiveSheet()->getDefaultColumnDimension()
+            ->setWidth("24");
+
+            $dateCreateCSV = date("j F Y").", ".date("H:i:s")." น.";
+            $excel->getActiveSheet()->setCellValue('A1', 'วัน-เวลาที่โหลดรายงาน');
+            $excel->getActiveSheet()->setCellValue('B1', $dateCreateCSV);
+            $excel->getActiveSheet()->setCellValue('D1', 'หมายเหตุ');
+            $excel->getActiveSheet()->setCellValue('E1', '0 คือ ขาดเรียน');
+
+            $excel->getActiveSheet()->setCellValue('A2', 'ปีการศึกษา');
+            $excel->getActiveSheet()->setCellValue('E2', '0.5 คือ มาสาย');
+
+            $queryTerm = "SELECT * FROM `inacs_term` WHERE ID='".$_SESSION['IDTermResult']."' ";
+            $termDate = mysqli_query($con,$queryTerm);
+            if(mysqli_num_rows($termDate) == 1){
+                while ($rowTermCSV = mysqli_fetch_assoc($termDate)) {
+
+                    $term = $rowTermCSV['Term']."/".$rowTermCSV['Year'];
+                    $excel->getActiveSheet()->setCellValue('B2', $term);
+                    //$data = array('ปีการศึกษา',$rowTermCSV['Year'],'เทอม',$rowTermCSV['Term'],' ',' ','0.5 คือ มาสาย');
+                    
+                }
+            }
+
+            $excel->getActiveSheet()->setCellValue('A3', 'รหัสวิชา');
+            $excel->getActiveSheet()->setCellValue('B3', $numberCourseFilename);
+            $excel->getActiveSheet()->setCellValue('E3', '1 คือ ทันเวลา');
+
+            $excel->getActiveSheet()->setCellValue('A4', 'รายวิชา');
+            $excel->getActiveSheet()->setCellValue('B4', $nameCourseFilename);
+
+
+            $excel->getActiveSheet()->setCellValue('A5', 'กลุ่มเรียน');
+            $excel->getActiveSheet()->setCellValue('B5', $GroupCourseFilename);
+
+            $excel->getActiveSheet()->setCellValue('A6', 'ประเภท');
+            $excel->getActiveSheet()->setCellValue('B6', $TypeCourseFilename);
+
+
+
+
+
+
+
+
+
+
+            if($_SESSION["TypeResult"] == "All"){
+
+                //Header 
+                $fields1 = array('', '', '');
+                $fields2 = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา');
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryCheckCSV = "SELECT * FROM `inacs_check` WHERE IDCourse='$IDCourse'  ";
+                        $CheckCSVData = mysqli_query($con,$queryCheckCSV);
+                        if(mysqli_num_rows($CheckCSVData) == 1){
+                            while ($rowCheckCSV = mysqli_fetch_assoc($CheckCSVData)) {
+
+                                $IDCheck = $rowCheckCSV['ID'];
+                                $queryDetailCheckCSV = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='$IDCheck'  ";
+                                $DetailCheckCSVData = mysqli_query($con,$queryDetailCheckCSV);
+                                if(mysqli_num_rows($DetailCheckCSVData) > 0){
+                                    while ($rowDetailCheckCSV = mysqli_fetch_assoc($DetailCheckCSVData)) {
+
+                                        $dataField1 = $rowDetailCheckCSV['DateCheck'].", ".$rowDetailCheckCSV['TimeCheck'];
+
+                                        $dataField2 = " เช็คชื่อ กลุ่ม ".$GroupCourseFilename." ".$rowCourseCSV['Type']." ครั้งที่ ".$rowDetailCheckCSV['NumberCheck'];
+
+                                        //echo $dataField . "<br>";
+
+                                        array_push($fields1,$dataField1);
+                                        array_push($fields2,$dataField2);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+
+
+                    $excel->getActiveSheet()->fromArray($fields1, NULL, 'A7');
+                    $excel->getActiveSheet()->fromArray($fields2, NULL, 'A8');
+                    $Char = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+
+                    if(count($fields1) > 26){
+                        $CountArray = count($fields1);
+                        for($c = 0;$CountArray < 27; $c+=1){
+                            $CountArray-=26;
+                            $CountFirst = $c;     
+                        }
+                        $Charlast = $Char[$CountFirst].$Char[$CountArray-1];
+                    }else{
+                        $Charlast = $Char[count($fields1)-1];
+                    }
+        
+                    $excel->getActiveSheet()
+                        ->getStyle('A7:'.$Charlast.'7')
+                        ->getFill()
+                        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()
+                        ->setARGB('5CE0BC');
+                    $excel->getActiveSheet()
+                        ->getStyle('A8:'.$Charlast.'8')
+                        ->getFill()
+                        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()
+                        ->setARGB('5CE0BC');
+                    
+                }
+
+
+
+                //Detail Student
+                $DataScoreLec = array();
+                $DataScoreLab = array();
+
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryStudentCSV = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourse'  ";
+                        $StudentCSVData = mysqli_query($con,$queryStudentCSV);
+                        if(mysqli_num_rows($StudentCSVData) > 0){
+                            while ($rowStudentCSV = mysqli_fetch_assoc($StudentCSVData)) {
+    
+                                $studentData = array($rowStudentCSV['Number'], $rowStudentCSV['Name'], $rowStudentCSV['Branch']);
+
+                                $IDStudent = $rowStudentCSV['ID'];
+                                $queryResultCSV = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudent'  ";
+                                $ResultCSVData = mysqli_query($con,$queryResultCSV);
+                                if(mysqli_num_rows($ResultCSVData) == 1){
+                                    while ($rowResultCSV = mysqli_fetch_assoc($ResultCSVData)) {
+
+                                        $IDResult = $rowResultCSV['ID'];
+                                        $queryDetailResultCSV = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult'  ";
+                                        $DetailResultCSVData = mysqli_query($con,$queryDetailResultCSV);
+                                        if(mysqli_num_rows($DetailResultCSVData) > 0){
+                                            while ($rowDetailResultCSV = mysqli_fetch_assoc($DetailResultCSVData)){
+        
+                                                array_push($studentData,$rowDetailResultCSV['ScoreResult']);
+
+                                            }
+                                        }
+
+                                    }
+                                }
+                                //fputcsv($f, $studentData, $delimiter);
+                                if($rowCourseCSV['Type'] == "Lecture"){
+                                    array_push($DataScoreLec,$studentData);
+                                }else{
+                                    array_push($DataScoreLab,$studentData);
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+
+                sort($DataScoreLec);
+                sort($DataScoreLab);
+                $numberData = 9;
+                $Char = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+                
+                if(count($DataScoreLec) != 0){
+                    for($x = 0;$x < count($DataScoreLec);$x+=1){
+                        $lineData = array($DataScoreLec[$x][0],$DataScoreLec[$x][1],$DataScoreLec[$x][2]);
+                        for($y = 3;$y < count($DataScoreLec[$x]);$y+=1){
+                            array_push($lineData,$DataScoreLec[$x][$y]);
+                        }
+                        for($z = 0;$z < count($DataScoreLab);$z+=1){
+                            if($DataScoreLec[$x][0] == $DataScoreLab[$z][0]){
+                                for($y = 3;$y < count($DataScoreLab[$z]);$y+=1){
+                                    array_push($lineData,$DataScoreLab[$z][$y]);
+                                }
+                            }
+                        }
+
+                        $excel->getActiveSheet()->fromArray($lineData, NULL, 'A'.$numberData);
+                        if(fmod($x,2) == 1){
+                
+                            $excel->getActiveSheet()
+                                ->getStyle('A'.$numberData.':'.$Charlast.$numberData)
+                                ->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                                ->getStartColor()
+                                ->setARGB('d0cfcf');
+                        }
+                        $numberData+=1;
+
+                    }
+                }else{
+                    for($x = 0;$x < count($DataScoreLab);$x+=1){
+                        $lineData = array($DataScoreLab[$x][0],$DataScoreLab[$x][1],$DataScoreLab[$x][2]);
+                        for($y = 3;$y < count($DataScoreLab[$x]);$y+=1){
+                            array_push($lineData,$DataScoreLab[$x][$y]);
+                        }
+                        $excel->getActiveSheet()->fromArray($lineData, NULL, 'A'.$numberData);
+                        if(fmod($x,2) == 1){
+                
+                            $excel->getActiveSheet()
+                                ->getStyle('A'.$numberData.':'.$Charlast.$numberData)
+                                ->getFill()
+                                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                                ->getStartColor()
+                                ->setARGB('d0cfcf');
+                        }
+                        $numberData+=1;
+                    }
+                }
+                
+
+
+
+            }else{
+
+                //Header 
+                $fields1 = array('', '', '');
+                $fields2 = array('รหัสนิสิต', 'ชื่อนิสิต', 'สาขา');
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  
+                AND Type='".$_SESSION["TypeResult"]."' ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryCheckCSV = "SELECT * FROM `inacs_check` WHERE IDCourse='$IDCourse'  ";
+                        $CheckCSVData = mysqli_query($con,$queryCheckCSV);
+                        if(mysqli_num_rows($CheckCSVData) == 1){
+                            while ($rowCheckCSV = mysqli_fetch_assoc($CheckCSVData)) {
+
+                                $IDCheck = $rowCheckCSV['ID'];
+                                $queryDetailCheckCSV = "SELECT * FROM `inacs_detail_check` WHERE IDCheck='$IDCheck'  ";
+                                $DetailCheckCSVData = mysqli_query($con,$queryDetailCheckCSV);
+                                if(mysqli_num_rows($DetailCheckCSVData) > 0){
+                                    while ($rowDetailCheckCSV = mysqli_fetch_assoc($DetailCheckCSVData)) {
+
+                                        $dataField1 = $rowDetailCheckCSV['DateCheck'].", ".$rowDetailCheckCSV['TimeCheck'];
+
+                                        $dataField2 = " เช็คชื่อ กลุ่ม ".$GroupCourseFilename." ".$rowCourseCSV['Type']." ครั้งที่ ".$rowDetailCheckCSV['NumberCheck'];
+
+                                        //echo $dataField . "<br>";
+
+                                        array_push($fields1,$dataField1);
+                                        array_push($fields2,$dataField2);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    $excel->getActiveSheet()->fromArray($fields1, NULL, 'A7');
+                    $excel->getActiveSheet()->fromArray($fields2, NULL, 'A8');
+                    $Char = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+
+                    if(count($fields1) > 26){
+                        $CountArray = count($fields1);
+                        for($c = 0;$CountArray < 27; $c+=1){
+                            $CountArray-=26;
+                            $CountFirst = $c;     
+                        }
+                        $Charlast = $Char[$CountFirst].$Char[$CountArray-1];
+                    }else{
+                        $Charlast = $Char[count($fields1)-1];
+                    }
+        
+                    $excel->getActiveSheet()
+                        ->getStyle('A7:'.$Charlast.'7')
+                        ->getFill()
+                        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()
+                        ->setARGB('5CE0BC');
+                    $excel->getActiveSheet()
+                        ->getStyle('A8:'.$Charlast.'8')
+                        ->getFill()
+                        ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()
+                        ->setARGB('5CE0BC');
+                }
+
+
+                //Detail Student
+                $DataScore = array();
+
+                $queryCourseCSV = "SELECT * FROM `inacs_course` WHERE IDTerm='".$_SESSION["IDTermResult"]."' 
+                AND NameTeacher='".$_SESSION['Name']."' 
+                AND Number='$numberCourseFilename' 
+                AND GroupCourse='$GroupCourseFilename'  
+                AND Type='".$_SESSION["TypeResult"]."' ";
+                $CourseCSVData = mysqli_query($con,$queryCourseCSV);
+                if(mysqli_num_rows($CourseCSVData) > 0){
+                    while ($rowCourseCSV = mysqli_fetch_assoc($CourseCSVData)) {
+
+                        $IDCourse = $rowCourseCSV['ID'];
+                        $queryStudentCSV = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourse'  ";
+                        $StudentCSVData = mysqli_query($con,$queryStudentCSV);
+                        if(mysqli_num_rows($StudentCSVData) > 0){
+                            while ($rowStudentCSV = mysqli_fetch_assoc($StudentCSVData)) {
+
+                                $studentData = array($rowStudentCSV['Number'], $rowStudentCSV['Name'], $rowStudentCSV['Branch']);
+
+                                $IDStudent = $rowStudentCSV['ID'];
+                                $queryResultCSV = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudent'  ";
+                                $ResultCSVData = mysqli_query($con,$queryResultCSV);
+                                if(mysqli_num_rows($ResultCSVData) == 1){
+                                    while ($rowResultCSV = mysqli_fetch_assoc($ResultCSVData)) {
+
+                                        $IDResult = $rowResultCSV['ID'];
+                                        $queryDetailResultCSV = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResult'  ";
+                                        $DetailResultCSVData = mysqli_query($con,$queryDetailResultCSV);
+                                        if(mysqli_num_rows($DetailResultCSVData) > 0){
+                                            while ($rowDetailResultCSV = mysqli_fetch_assoc($DetailResultCSVData)){
+        
+                                                array_push($studentData,$rowDetailResultCSV['ScoreResult']);
+                                                
+                                            }
+                                        }
+
+                                    }
+                                }
+                                //fputcsv($f, $studentData, $delimiter);
+                                array_push($DataScore,$studentData);
+                            }
+                        }
+
+                    }
+                }
+
+                sort($DataScore);
+                $numberData = 9;
+                for($x = 0;$x < count($DataScore);$x+=1){
+                    $lineData = array($DataScore[$x][0],$DataScore[$x][1],$DataScore[$x][2]);
+                    for($y = 3;$y < count($DataScore[$x]);$y+=1){
+                        array_push($lineData,$DataScore[$x][$y]);
+                    }
+                    $excel->getActiveSheet()->fromArray($lineData, NULL, 'A'.$numberData);
+                    if(fmod($x,2) == 1){
+                
+                        $excel->getActiveSheet()
+                            ->getStyle('A'.$numberData.':'.$Charlast.$numberData)
+                            ->getFill()
+                            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('d0cfcf');
+                    }
+                    $numberData+=1;
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+            //$testArray = array('testcelltext1', 'testcelltext2', 'testcelltext3');
+            //$excel->getActiveSheet()->fromArray($testArray, NULL, 'A7');
+
+
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename='.$filename.'');
+            header('Cache-Control: max-age=0');
+            header('Cache-Control: max-age=1');
+            
+            $objWriter = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+            $objWriter->save('php://output');
+            exit;
+            
+        }
+
 ?>
         

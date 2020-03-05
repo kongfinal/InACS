@@ -311,9 +311,9 @@ session_start();
                                                         }
                         
                                                         $strSQL = "INSERT INTO inacs_check ";
-                                                        $strSQL .="(ID,IDCourse,NumberCheck,LastStartCheckTime) ";
+                                                        $strSQL .="(ID,IDCourse,NumberCheck,LastStartCheckTime,	LastStartCheckDate) ";
                                                         $strSQL .="VALUES ";
-                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','1','' ) ";                 
+                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','1','','' ) ";                 
                                                         $objQuery = mysqli_query($con,$strSQL);
                         
                                                         if($objQuery){
@@ -550,9 +550,9 @@ session_start();
                                                         }
                         
                                                         $strSQL = "INSERT INTO inacs_check ";
-                                                        $strSQL .="(ID,IDCourse,NumberCheck,LastStartCheckTime) ";
+                                                        $strSQL .="(ID,IDCourse,NumberCheck,LastStartCheckTime,	LastStartCheckDate) ";
                                                         $strSQL .="VALUES ";
-                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','1','' ) ";                 
+                                                        $strSQL .="(NULL,'".$_SESSION["IDCourseToCreateCheck"]."','1','','' ) ";                 
                                                         $objQuery = mysqli_query($con,$strSQL);
                         
                                                         if($objQuery){

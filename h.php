@@ -24,5 +24,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css" rel="stylesheet">
 
+    <!-- Graph -->
+    <!--
+    <link rel="stylesheet" href="lib/charts4php-free-latest/lib/js/chartphp.css">
+    <script src="lib/charts4php-free-latest/lib/js/jquery.min.js"></script>
+    <script src="lib/charts4php-free-latest/lib/js/chartphp.js"></script>
+    -->
+
+
+    
   </head>
   <body>

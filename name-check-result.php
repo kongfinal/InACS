@@ -401,6 +401,15 @@ include('h.php');
   box-sizing: border-box;
 }
 
+.iconv-2-export-xlsx {
+    -webkit-mask-image: url('pic/export-xlsx.png');
+
+    width: 30px;
+    height: 30px;
+
+    background-color: currentColor;
+}
+
 </style>
 
 
@@ -542,8 +551,8 @@ include('h.php');
                         </table>
 
                         <form name="exportResult" action="FResultCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
-                        <button class="small-v3" style="margin-top: 2%; margin-left: 86%;" name="export" title="คลิกเพื่อเอ็กพอร์ตข้อมูลผลการเช็คชื่อออกมาเป็น CSV">
-                        <svg class="iconv-2-export-csv" style="margin-top: 1%;"></svg>
+                        <button class="small-v3" style="margin-top: 2%; margin-left: 86%;" name="exportEX" title="คลิกเพื่อเอ็กพอร์ตข้อมูลผลการเช็คชื่อออกมาเป็น Excel">
+                        <svg class="iconv-2-export-xlsx" style="margin-top: 3%;"></svg>
                         </button>
                         </form>
 

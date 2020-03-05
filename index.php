@@ -246,13 +246,12 @@ if(mysqli_num_rows($termRiskData) > 0){
 
 sort($dataCourseRisk);
 $optionsCouresRisk = "";
+$optionsCouresRisk  = $optionsCouresRisk."<option value=All selected>All</option>";
 for($x = 0;$x < count($dataCourseRisk);$x+=1){
 
     $dataRisk = $dataCourseRisk[$x][1]."/".$dataCourseRisk[$x][0]." ".$dataCourseRisk[$x][2]." ".$dataCourseRisk[$x][3]." กลุ่ม ".$dataCourseRisk[$x][4]." ประเภท ".$dataCourseRisk[$x][5] ;
 
     $dataRiskValue = $dataCourseRisk[$x][1]."/".$dataCourseRisk[$x][0]."/".$dataCourseRisk[$x][2]."/".$dataCourseRisk[$x][4]."/".$dataCourseRisk[$x][5] ;
-
-    $optionsCouresRisk  = $optionsCouresRisk."<option value=All selected>All</option>";
 
     if($_SESSION["DataRiskCheck"] == $dataRiskValue){
         $optionsCouresRisk  = $optionsCouresRisk."<option value=$dataRiskValue selected>$dataRisk</option>";
@@ -267,11 +266,179 @@ $_SESSION["SelectCourseRisk"] = $optionsCouresRisk;
 
 
 //สร้างกราฟ
-//include("lib/");
+/*
+include("lib/charts4php-free-latest/lib/inc/chartphp_dist.php");
 
 
+$p = new chartphp();
 
 
+$p->data = array(
+    array(
+    array("Jan",48.25),
+    array("Feb",238.75),
+    array("Mar",95.50),
+    array("Apr",300.50),
+    array("May",286.80),
+    array("Jun",400)),
+    array(
+    array("Jan",300.25),
+    array("Feb",225.75),
+    array("Mar",44.50),
+    array("Apr",259.50),
+    array("May",250.80),
+    array("Jun",300))
+    );
+
+$p->chart_type = "line";
+
+
+$p->title = "Line Chart";
+$p->xlabel = "Months";
+$p->ylabel = "Sales";
+$p->series_label = array("2014","2015");
+
+$out = $p->render('c1');
+*/
+
+if($_SESSION["DataRiskCheck"] == "All"){
+
+    $dataOnTime = array();
+    $dataLateTime = array();
+    $dataAbsentTime = array();
+
+    for($x = 0;$x < count($dataCourseRisk);$x+=1){
+
+        $termChart = $dataCourseRisk[$x][1];
+        $yearChart = $dataCourseRisk[$x][0];
+
+        $numberCourseChart = $dataCourseRisk[$x][2];
+        $groupCourseChart = $dataCourseRisk[$x][4];
+        $typeCourseChart = $dataCourseRisk[$x][5];
+
+        $dataRiskChart = $dataCourseRisk[$x][1]."/".$dataCourseRisk[$x][0]." ".$dataCourseRisk[$x][2]." ".$dataCourseRisk[$x][5];
+        
+        //echo $termChart." ".$yearChart." ".$numberCourseChart." ".$groupCourseChart." ".$typeCourseChart." ";
+
+        $queryTermChart = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' AND Term='$termChart'  AND Year='$yearChart' ";
+        $termDataChart = mysqli_query($con,$queryTermChart);
+        if(mysqli_num_rows($termDataChart) == 1){
+            while ($rowTermChart = mysqli_fetch_assoc($termDataChart)) {
+                $IDTermChart = $rowTermChart['ID'];
+            }
+        }
+
+        $queryCourseChart = "SELECT * FROM `inacs_course` WHERE IDTerm='$IDTermChart' AND NameTeacher='".$_SESSION["Name"]."' AND Number='$numberCourseChart' AND GroupCourse='$groupCourseChart' AND Type='$typeCourseChart' ";
+        $courseDataChart = mysqli_query($con,$queryCourseChart);
+        if(mysqli_num_rows($courseDataChart) == 1){
+            while ($rowCourseChart = mysqli_fetch_assoc($courseDataChart)) {
+                $IDCourseChart = $rowCourseChart['ID'];
+            }
+        }
+    
+        $queryStudentChart = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourseChart' AND Number='".$_SESSION["NumStudentRiskCheck"]."' ";
+        $studentDataChart = mysqli_query($con,$queryStudentChart);
+        if(mysqli_num_rows($studentDataChart) == 1){
+            while ($rowStudentChart = mysqli_fetch_assoc($studentDataChart)) {
+                $IDStudentChart = $rowStudentChart['ID'];
+            }
+        }
+
+        $queryResultChart = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudentChart' ";
+        $resultDataChart = mysqli_query($con,$queryResultChart);
+        if(mysqli_num_rows($resultDataChart) == 1){
+            while ($rowResultChart = mysqli_fetch_assoc($resultDataChart)) {
+                
+                array_push($dataOnTime,array("y" => $rowResultChart['NumberOnTime'] , "label" => $dataRiskChart));
+
+                array_push($dataLateTime,array("y" => $rowResultChart['NumberLate'] , "label" => $dataRiskChart));
+
+                array_push($dataAbsentTime,array("y" => $rowResultChart['NumberAbsent'] , "label" => $dataRiskChart));
+
+            }
+        }
+
+    }
+
+
+}else{
+
+    $DataArray = explode("/", $_SESSION["DataRiskCheck"]);
+
+    $termChart = $DataArray[0];
+    $yearChart = $DataArray[1];
+
+    $numberCourseChart = $DataArray[2];
+    $groupCourseChart = $DataArray[3];
+    $typeCourseChart = $DataArray[4];
+
+    $queryTermChart = "SELECT * FROM `inacs_term` WHERE NameTeacher='".$_SESSION['Name']."' AND Term='$termChart'  AND Year='$yearChart' ";
+    $termDataChart = mysqli_query($con,$queryTermChart);
+    if(mysqli_num_rows($termDataChart) == 1){
+        while ($rowTermChart = mysqli_fetch_assoc($termDataChart)) {
+            $IDTermChart = $rowTermChart['ID'];
+        }
+    }
+
+    $queryCourseChart = "SELECT * FROM `inacs_course` WHERE IDTerm='$IDTermChart' AND NameTeacher='".$_SESSION["Name"]."' AND Number='$numberCourseChart' AND GroupCourse='$groupCourseChart' AND Type='$typeCourseChart' ";
+    $courseDataChart = mysqli_query($con,$queryCourseChart);
+    if(mysqli_num_rows($courseDataChart) == 1){
+        while ($rowCourseChart = mysqli_fetch_assoc($courseDataChart)) {
+            $IDCourseChart = $rowCourseChart['ID'];
+        }
+    }
+
+    $queryStudentChart = "SELECT * FROM `inacs_student` WHERE IDCourse='$IDCourseChart' AND Number='".$_SESSION["NumStudentRiskCheck"]."' ";
+    $studentDataChart = mysqli_query($con,$queryStudentChart);
+    if(mysqli_num_rows($studentDataChart) == 1){
+        while ($rowStudentChart = mysqli_fetch_assoc($studentDataChart)) {
+            $IDStudentChart = $rowStudentChart['ID'];
+        }
+    }
+
+    $queryResultChart = "SELECT * FROM `inacs_result` WHERE IDStudent='$IDStudentChart' ";
+    $resultDataChart = mysqli_query($con,$queryResultChart);
+    if(mysqli_num_rows($resultDataChart) == 1){
+        while ($rowResultChart = mysqli_fetch_assoc($resultDataChart)) {
+            $IDResultChart = $rowResultChart['ID'];
+        }
+    }
+
+    $dataPoints = array();
+
+    $queryDetailResultChart = "SELECT * FROM `inacs_detail_result` WHERE IDResult='$IDResultChart' ";
+    $detailResultDataChart = mysqli_query($con,$queryDetailResultChart);
+    if(mysqli_num_rows($detailResultDataChart) > 0){
+        while ($rowDetailResultChart = mysqli_fetch_assoc($detailResultDataChart)) {
+
+            $IDDetailCheck = $rowDetailResultChart['IDDetailCheck'];
+            $queryDetailCheckChart = "SELECT * FROM `inacs_detail_check` WHERE ID='$IDDetailCheck' ";
+            $detailCheckDataChart = mysqli_query($con,$queryDetailCheckChart);
+            if(mysqli_num_rows($detailCheckDataChart) == 1){
+                while ($rowDetailCheckChart = mysqli_fetch_assoc($detailCheckDataChart)) {
+
+                    array_push($dataPoints,array("y" => $rowDetailResultChart['ScoreResult'] , "label" => $rowDetailCheckChart['NumberCheck']));
+
+                }
+            }
+
+        }
+    }
+
+}
+
+
+/*$dataPoints = array(
+	array("y" => 25, "label" => "Sunday"),
+	array("y" => 15, "label" => "Monday"),
+	array("y" => 25, "label" => "Tuesday"),
+	array("y" => 5, "label" => "Wednesday"),
+	array("y" => 10, "label" => "Thursday"),
+	array("y" => 0, "label" => "Friday"),
+	array("y" => 20, "label" => "Saturday")
+);*/
+
+$checkCreateChart = $_SESSION["DataRiskCheck"];
 
 ?>
 <?php
@@ -282,6 +449,128 @@ include('h.php');
 
 
 </style>
+
+<script>
+
+    window.onload = function() {
+ 
+    var dataOnTime = <?php echo json_encode($dataOnTime, JSON_NUMERIC_CHECK); ?>;
+    var dataLateTime = <?php echo json_encode($dataLateTime, JSON_NUMERIC_CHECK); ?>;
+    var dataAbsentTime = <?php echo json_encode($dataAbsentTime, JSON_NUMERIC_CHECK); ?>;
+    
+    var dataPoints = <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>;
+
+    if("<?php echo $checkCreateChart ?>" === "All"){
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "light2",
+            title: {
+               // text: "กราฟข้อมูลการเช็คชื่อของนิสิตกลุ่มเสี่ยง"
+            },
+            subtitles: [{
+                //text: "1 เท่ากับมาทันเวลา      0.5 เท่ากับ มาสาย     0 เท่ากับ ขาดเรียน",
+                //fontSize: 18
+            }],
+            axisX:{
+                title: "รายวิชาที่เรียน"
+            },
+            axisY:{
+                title: "จำนวนครั้ง",
+                includeZero: false
+            },
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor:"pointer",
+                verticalAlign: "top",
+                fontSize: 22,
+                fontColor: "dimGrey",
+                itemclick : toggleDataSeries
+            },
+            data: [
+                {
+                    type: "line",
+                    name: "มาเรียนทันเวลา",
+                    yValueFormatString: "#,##0.0#",
+                    showInLegend: true,
+                    legendText: "{name} ",
+                    dataPoints: dataOnTime
+                },
+                {
+                    type: "line",
+                    name: "มาเรียนสาย",
+                    yValueFormatString: "#,##0.0#",
+                    showInLegend: true,
+                    legendText: "{name} ",
+                    dataPoints: dataLateTime
+                },
+                {
+                    type: "line",
+                    name: "ไม่มาเรียน",
+                    yValueFormatString: "#,##0.0#",
+                    showInLegend: true,
+                    legendText: "{name} ",
+                    dataPoints: dataAbsentTime
+                }
+            ]
+        });
+
+    }else{
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "light2",
+            title: {
+              //  text: "กราฟข้อมูลการเช็คชื่อของนิสิตกลุ่มเสี่ยง"
+            },
+            subtitles: [{
+                text: "1 เท่ากับ ทันเวลา      0.5 เท่ากับ มาสาย     0 เท่ากับ ขาดเรียน",
+                fontSize: 18
+            }],
+            axisX:{
+                title: "ครั้งที่เช็คชื่อนิสิต"
+            },
+            axisY:{
+                title: "สถานะการเข้าห้อง",
+                includeZero: false
+            },
+            legend: {
+                cursor:"pointer",
+                verticalAlign: "top",
+                fontSize: 22,
+                fontColor: "dimGrey",
+                //itemclick : toggleDataSeries
+            },
+            data: [
+                {
+                type: "line",
+                //name: "มาเรียนทันเวลา",
+                yValueFormatString: "#,##0.0#",
+                //showInLegend: true,
+                //legendText: "{name} ",
+                dataPoints: dataPoints
+                }
+            ]
+        });
+    }
+    
+    chart.render();
+
+    function toggleDataSeries(e) {
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+}
+
+
+
+
+</script>
+
 <body>
 
 <?php
@@ -490,14 +779,17 @@ include('h.php');
 
                         <div class="set-flex">
                             <div class="div-graph">
-                                <br><br><br><br><br><br>
+                                <!--<br><br><br><br><br><br>-->
+                                <?php //echo $out; ?>
+                                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
                             </div>
 
-                            <div class="magin-clicle">
+                            <!--<div class="magin-clicle">
                                 <span class="dot dot-color-1"></span><b>&nbsp&nbspมาเรียนทันเวลา</b><br>
                                 <span class="dot dot-color-2"></span><b>&nbsp&nbspมาเรียนสาย</b><br>
                                 <span class="dot dot-color-3"></span><span ><b>&nbsp&nbspขาดเรียน</b></span>
-                            </div>
+                            </div>-->
                         </div>
                         
                     </div>

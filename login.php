@@ -132,7 +132,7 @@ include('h.php');
   </div>
 
   <div class="input-textRegis">
-        <div class="sizeText maginConPass"><b>Cornfirm Password :</b></div>
+        <div class="sizeText maginConPass"><b>Confirm Password : </b></div>
         <input class="is-pulled-right input-field-v1"  type="password" name="corn-passwordRegis" value=""autocomplete=off >
   </div>
 
