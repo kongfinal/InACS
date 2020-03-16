@@ -55,7 +55,7 @@ include('h.php');
 
     <span class="psw"><a href="#" onclick="document.getElementById('ChangePassForm').style.display='block'">Forgot password?</a></span>
 
-    <button type="login" onClick="document.location.href='checklogin.php'"><b>Login</b></button>
+    <button type="login" name="Login" onClick="document.location.href='checklogin.php'"><b>Login</b></button>
     </form>
     <button onclick="document.getElementById('RegisterForm').style.display='block'" type="register" ><b>Register</b></button>
 

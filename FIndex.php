@@ -53,14 +53,14 @@ include('condb.php');
         }
 
 
-        if(isset($_POST['Students'])){
-            $_SESSION["NumStudentRiskCheck"] = $_POST['Students'];
+        if(isset($_POST['selectStudents'])){
+            $_SESSION["NumStudentRiskCheck"] = $_POST['selectStudents'];
             $_SESSION["DataRiskCheck"] = "All";
             Header("Location: index.php");
         }
 
-        if(isset($_POST['Courses'])){
-            $_SESSION["DataRiskCheck"] = $_POST['Courses'];
+        if(isset($_POST['selectCourses'])){
+            $_SESSION["DataRiskCheck"] = $_POST['selectCourses'];
             Header("Location: index.php");
         }
 

@@ -4,8 +4,8 @@ session_start();
 include('condb.php');
         $term = $_SESSION["IDTerm"];
 
-        if(isset($_POST['terms'])){
-            $_SESSION["IDTermCheck"] = $_POST['terms'];
+        if(isset($_POST['selectTerms'])){
+            $_SESSION["IDTermCheck"] = $_POST['selectTerms'];
             $_SESSION["PaginationSelectCheck"] = 1;
             Header("Location: select-course-check.php");
         }
@@ -933,13 +933,13 @@ include('condb.php');
 
 */
 
-        if(isset($_POST['scoreDeducted'])){ 
-            if(empty($_POST['scoreDeducted'])){
+        if(isset($_POST['addScoreDeducted'])){ 
+            if(empty($_POST['addScoreDeducted'])){
                 echo "<script>";
                     echo "alert(\" โปรดใส่คะแนนที่หัก\");"; 
                     echo "window.history.back()";
                 echo "</script>";
-            }else if (!filter_var($_POST['scoreDeducted'], FILTER_VALIDATE_INT)) {
+            }else if (!filter_var($_POST['addScoreDeducted'], FILTER_VALIDATE_INT)) {
                 echo "<script>";
                     echo "alert(\" โปรดใส่คะแนนที่หักเป็นจำนวนเต็ม\");"; 
                     echo "window.history.back()";
@@ -960,10 +960,12 @@ include('condb.php');
     
                             if(mysqli_num_rows($ResultData) == 1){
                                 while ($rowResult = mysqli_fetch_assoc($ResultData)) {
-                                    $scoreDeductedNew = $rowResult['ScoreDeducted']+$_POST['scoreDeducted'];
+                                    $scoreDeductedNew = $rowResult['ScoreDeducted']+$_POST['addScoreDeducted'];
                                 }
                                 $strResult = "UPDATE `inacs_result` SET ScoreDeducted='$scoreDeductedNew' WHERE IDStudent='$IDStudent' ";
                                 $StrData = mysqli_query($con,$strResult);
+
+                                $_SESSION["ScoreDeductedCheckColor"] = true;
                                 
                                 $_SESSION["ScoreDeductedCheckStudentAll"] = $scoreDeductedNew;
 
@@ -983,13 +985,13 @@ include('condb.php');
 
 
 
-        if(isset($_POST['scoreExtra'])){ 
-            if(empty($_POST['scoreExtra'])){
+        if(isset($_POST['addScoreExtra'])){ 
+            if(empty($_POST['addScoreExtra'])){
                 echo "<script>";
                     echo "alert(\" โปรดใส่คะแนนที่เพิ่มพิเศษ\");"; 
                     echo "window.history.back()";
                 echo "</script>";
-            }else if (!filter_var($_POST['scoreExtra'], FILTER_VALIDATE_INT)) {
+            }else if (!filter_var($_POST['addScoreExtra'], FILTER_VALIDATE_INT)) {
                 echo "<script>";
                     echo "alert(\" โปรดใส่คะแนนที่เพิ่มพิเศษเป็นจำนวนเต็ม\");"; 
                     echo "window.history.back()";
@@ -1010,7 +1012,7 @@ include('condb.php');
     
                             if(mysqli_num_rows($ResultData) == 1){
                                 while ($rowResult = mysqli_fetch_assoc($ResultData)) {
-                                    $scoreExtraNew = $rowResult['ScoreExtra']+$_POST['scoreExtra'];
+                                    $scoreExtraNew = $rowResult['ScoreExtra']+$_POST['addScoreExtra'];
                                 }
                                 $strResult = "UPDATE `inacs_result` SET ScoreExtra='$scoreExtraNew' WHERE IDStudent='$IDStudent' ";
                                 $StrData = mysqli_query($con,$strResult);
@@ -1272,10 +1274,34 @@ include('condb.php');
                                     if($levelScore >= $_SESSION["LevelOrange"] && $levelScore < $_SESSION["LevelRed"]){
                                         $subject = "นิสิตขาดเรียน ".$_SESSION["LevelOrange"]." ครั้งหรือมากกว่าแต่ไม่เกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "เกือบถึง";
+
+                                        if($_SESSION["StatusEmailTeacherOne"] == "checked"){
+                                            $CheckSendEmailTeacher = true;
+                                        }else{
+                                            $CheckSendEmailTeacher = false;
+                                        }
+
+                                        if($_SESSION["StatusEmailStudentOne"] == "checked"){
+                                            $CheckSendEmailStudent = true;
+                                        }else{
+                                            $CheckSendEmailStudent = false;
+                                        }
+
                                     }else if($levelScore == $_SESSION["LevelRed"]){
                                         $subject = "นิสิตขาดเรียน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "ถึง";
 
+                                        if($_SESSION["StatusEmailTeacherTwo"] == "checked"){
+                                            $CheckSendEmailTeacher = true;
+                                        }else{
+                                            $CheckSendEmailTeacher = false;
+                                        }
+
+                                        if($_SESSION["StatusEmailStudentTwo"] == "checked"){
+                                            $CheckSendEmailStudent = true;
+                                        }else{
+                                            $CheckSendEmailStudent = false;
+                                        }
 
                                         $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายถึงเกณฑ์' WHERE ID='$IDStudentLec' ");
 
@@ -1284,6 +1310,18 @@ include('condb.php');
                                     }else if($levelScore > $_SESSION["LevelRed"]){
                                         $subject = "นิสิตขาดเรียนเกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                         $level = "เกิน";
+
+                                        if($_SESSION["StatusEmailTeacherThree"] == "checked"){
+                                            $CheckSendEmailTeacher = true;
+                                        }else{
+                                            $CheckSendEmailTeacher = false;
+                                        }
+
+                                        if($_SESSION["StatusEmailStudentThree"] == "checked"){
+                                            $CheckSendEmailStudent = true;
+                                        }else{
+                                            $CheckSendEmailStudent = false;
+                                        }
 
                                         $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLec' ");
 
@@ -1371,6 +1409,7 @@ include('condb.php');
                                         $mail_Teacher->SMTPSecure = 'tls';
                                         $mail_Teacher->SMTPAuth = true;
 
+                                        
                                         $email_receiver_teacher = $_SESSION['Email'];
                             
     
@@ -1446,15 +1485,21 @@ include('condb.php');
                                         ";
 
 
-                                        //  ถ้ามี email ผู้รับ
+                                        
+                                        //  ถ้ามี email ผู้รับ 
+                                        //  ตั้งค่าการส่งอีเมล อาจารย์+นิสิต
                                         if($email_receiver_student){
-                                            $mail_Student->msgHTML($email_content_Student);
-                                            $mail_Student->send();
+                                            if($CheckSendEmailStudent){
+                                                $mail_Student->msgHTML($email_content_Student);
+                                                $mail_Student->send();
+                                            }
                                         }
 
                                         if($email_receiver_teacher){
-                                            $mail_Teacher->msgHTML($email_content_Teacher);
-                                            $mail_Teacher->send();
+                                            if($CheckSendEmailTeacher){
+                                                $mail_Teacher->msgHTML($email_content_Teacher);
+                                                $mail_Teacher->send();
+                                            }
                                         }
                                         //End Email
 

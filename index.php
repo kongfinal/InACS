@@ -31,6 +31,8 @@ $_SESSION["NumberAbsentCheckStudent"] = "";
 $_SESSION["NumberLateStudent"] = "";
 $_SESSION["ScoreDeductedCheckStudent"] = "";
 
+$_SESSION["ScoreDeductedCheckColor"] = false;
+
 $_SESSION["NumberAbsentCheckStudentAll"] = "";
 $_SESSION["NumberLateStudentAll"] = "";
 $_SESSION["ScoreDeductedCheckStudentAll"] = "";
@@ -761,7 +763,7 @@ include('h.php');
                             <h4 style="margin-top: 1.6%;">รหัสนิสิต :&nbsp</h4>
                             <div class="select-margin-v1 select-input" style="width:12%;">
                             <form name="changeStudent" action="FIndex.php" method="post" style="margin-bottom: 0%;">
-                                    <select name="Students" onchange="document.changeStudent.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรหัสนิสิต">
+                                    <select name="selectStudents" onchange="document.changeStudent.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรหัสนิสิต">
                                         <?php echo $_SESSION["SelectStudentRisk"]; ?> 
                                     </select>
                             </form>
@@ -769,7 +771,7 @@ include('h.php');
                             <h4 style="margin-top: 1.6%; margin-left: 3%;">รายวิชา :&nbsp</h4>
                             <div class="select-margin-v1 select-input" style="width:54%;">
                             <form name="changeCourse" action="FIndex.php" method="post" style="margin-bottom: 0%;">
-                                    <select name="Courses" onchange="document.changeCourse.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรายวิชา">
+                                    <select name="selectCourses" onchange="document.changeCourse.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกรายวิชา">
                                         <?php echo $_SESSION["SelectCourseRisk"]; ?> 
                                     </select>
                             </form>

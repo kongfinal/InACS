@@ -2,8 +2,8 @@
 session_start();
         $term = $_SESSION["IDTerm"];
 
-        if(isset($_POST['terms'])){
-            $_SESSION["IDTerm"] = $_POST['terms'];
+        if(isset($_POST['selectTerms'])){
+            $_SESSION["IDTerm"] = $_POST['selectTerms'];
             $_SESSION["Pagination"] = 1;
             Header("Location: course-management.php");
         }
@@ -47,15 +47,15 @@ session_start();
             Header("Location: course-management.php");
         }
 
-        if(isset($_POST['Pagination'])){ 
-            if($_POST['Pagination'] == "«"){
+        if(isset($_POST['setPagination'])){ 
+            if($_POST['setPagination'] == "«"){
                 $_SESSION["Pagination"]-=1;
                 Header("Location: course-management.php");
-            }else if($_POST['Pagination'] == "»"){
+            }else if($_POST['setPagination'] == "»"){
                 $_SESSION["Pagination"]+=1;
                 Header("Location: course-management.php");
             }else{
-                $_SESSION["Pagination"] = intval($_POST['Pagination']);
+                $_SESSION["Pagination"] = intval($_POST['setPagination']);
                 Header("Location: course-management.php");
             }
         }

@@ -1,7 +1,7 @@
 
 <?php require($_SERVER['DOCUMENT_ROOT']."/BUU checking system/lib/phpmailer/PHPMailerAutoload.php");?><?php 
 session_start();
-        if(isset($_POST['username'])){
+        if(isset($_POST['Login'])){
                   include("condb.php");
                   $username = $_POST['username'];
                   $password = $_POST['password'];
@@ -25,6 +25,13 @@ session_start();
                         while ($rowSetting = mysqli_fetch_assoc($settingData)) {
                           $_SESSION["LevelOrange"] = $rowSetting['LevelOrange'];
                           $_SESSION["LevelRed"] = $rowSetting['LevelRed'];
+
+                          $_SESSION["StatusEmailTeacherOne"] = $rowSetting['EmailTeacherOne'];
+                          $_SESSION["StatusEmailTeacherTwo"] = $rowSetting['EmailTeacherTwo'];
+                          $_SESSION["StatusEmailTeacherThree"] = $rowSetting['EmailTeacherThree'];
+                          $_SESSION["StatusEmailStudentOne"] = $rowSetting['EmailStudentOne'];
+                          $_SESSION["StatusEmailStudentTwo"] = $rowSetting['EmailStudentTwo'];
+                          $_SESSION["StatusEmailStudentThree"] = $rowSetting['EmailStudentThree'];
                         }
                       }  
 
@@ -326,10 +333,34 @@ session_start();
                                         if($levelScore >= $_SESSION["LevelOrange"] && $levelScore < $_SESSION["LevelRed"]){
                                           $subject = "นิสิตขาดเรียน ".$_SESSION["LevelOrange"]." ครั้งหรือมากกว่าแต่ไม่เกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                           $level = "เกือบถึง";
+
+                                          if($_SESSION["StatusEmailTeacherOne"] == "checked"){
+                                                $CheckSendEmailTeacher = true;
+                                          }else{
+                                                $CheckSendEmailTeacher = false;
+                                          }
+
+                                          if($_SESSION["StatusEmailStudentOne"] == "checked"){
+                                                $CheckSendEmailStudent = true;
+                                          }else{
+                                                $CheckSendEmailStudent = false;
+                                          }
+
                                         }else if($levelScore == $_SESSION["LevelRed"]){
                                           $subject = "นิสิตขาดเรียน ".$_SESSION["LevelRed"]." ครั้ง";
                                           $level = "ถึง";
   
+                                          if($_SESSION["StatusEmailTeacherTwo"] == "checked"){
+                                                $CheckSendEmailTeacher = true;
+                                          }else{
+                                                $CheckSendEmailTeacher = false;
+                                          }
+
+                                          if($_SESSION["StatusEmailStudentTwo"] == "checked"){
+                                                $CheckSendEmailStudent = true;
+                                          }else{
+                                                $CheckSendEmailStudent = false;
+                                          }
   
                                           $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายถึงเกณฑ์' WHERE ID='$IDStudentLec' ");
   
@@ -338,6 +369,18 @@ session_start();
                                         }else if($levelScore > $_SESSION["LevelRed"]){
                                           $subject = "นิสิตขาดเรียนเกิน ".$_SESSION["LevelRed"]." ครั้ง";
                                           $level = "เกิน";
+
+                                          if($_SESSION["StatusEmailTeacherThree"] == "checked"){
+                                                $CheckSendEmailTeacher = true;
+                                          }else{
+                                                $CheckSendEmailTeacher = false;
+                                          }
+
+                                          if($_SESSION["StatusEmailStudentThree"] == "checked"){
+                                                $CheckSendEmailStudent = true;
+                                          }else{
+                                                $CheckSendEmailStudent = false;
+                                          }
   
                                           $StrLecData = mysqli_query($con,"UPDATE `inacs_student` SET Status='ขาดเรียนและมาสายเกินเกณฑ์' WHERE ID='$IDStudentLec' ");
   
@@ -500,16 +543,21 @@ session_start();
                                           ";
   
   
-                                          //  ถ้ามี email ผู้รับ
-                                          if($email_receiver_student){
-                                              $mail_Student->msgHTML($email_content_Student);
-                                              $mail_Student->send();
-                                          }
-  
-                                          if($email_receiver_teacher){
-                                              $mail_Teacher->msgHTML($email_content_Teacher);
-                                              $mail_Teacher->send();
-                                          }
+                                        //  ถ้ามี email ผู้รับ
+                                        //  ตั้งค่าการส่งอีเมล อาจารย์+นิสิต
+                                        if($email_receiver_student){
+                                            if($CheckSendEmailStudent){
+                                                $mail_Student->msgHTML($email_content_Student);
+                                                $mail_Student->send();
+                                            }
+                                        }
+
+                                        if($email_receiver_teacher){
+                                            if($CheckSendEmailTeacher){
+                                                $mail_Teacher->msgHTML($email_content_Teacher);
+                                                $mail_Teacher->send();
+                                            }
+                                        }
                                           //End Email
   
                                           //Start Message

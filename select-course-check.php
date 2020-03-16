@@ -263,7 +263,7 @@ function CreatePagination($CourseNum){
                             <div style="margin-top: 1.5%; font-size: 18px;">ภาคเรียน :&nbsp</div>
                             <div class="select-margin-v1 select-input " style="width:13%; margin-right: 64%;">
                             <form name="changeTerm" action="FCheckNameStudent.php" method="post" style="margin-bottom: 0%;">
-                                    <select name="terms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกภาคเรียน">
+                                    <select name="selectTerms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; " title="คลิกเพื่อเลือกภาคเรียน">
                                         <?php echo $optionsTerm;?>
                                     </select>
                             </form>

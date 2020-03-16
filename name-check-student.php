@@ -22,6 +22,23 @@ $username = $_SESSION['Username'];
 $password = $_SESSION['Password'];
 
 
+if($_SESSION["ScoreDeductedCheckColor"]){
+    $_SESSION["StyleScoreDeducted"] = "style='font-size:18px; margin-top: 2%; margin-right: 3.6%; color: red;'";
+    $_SESSION["StyleValueScoreDeducted"] = "style='font-size: 18px; margin-top: 1%; color: red;'";
+    $_SESSION["ScoreDeductedCheckColor"] = false;
+}else{
+    $_SESSION["StyleScoreDeducted"] = "style='font-size:18px; margin-top: 2%; margin-right: 3.6%;'";
+    $_SESSION["StyleValueScoreDeducted"] = "style='font-size: 18px; margin-top: 1%;'";
+}
+
+
+if($_SESSION["StatusCheckStudent"] == "มาสาย"){
+    $_SESSION["StyleStatus"] = "style='font-size: 18px; margin-top: 2%; margin-right: 13.9%; color: red;'";
+    $_SESSION["StyleValueStatus"] = "style='font-size: 18px; margin-top: 1%; color: red;'";
+}else{
+    $_SESSION["StyleStatus"] = "style='font-size: 18px; margin-top: 2%; margin-right: 13.9%;'";
+    $_SESSION["StyleValueStatus"] = "style='font-size: 18px; margin-top: 1%;'";
+}
 
 
 ?>
@@ -165,14 +182,14 @@ include('h.php');
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>หักคะแนน (เครื่องแต่งกาย/ลืมบัตรนิสิต) :</b></div>
 
                             <form name="SaveScoreDeducted" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; margin-right: 6%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="addScoreDeducted" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกหัก เช่น หักคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องหักคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
 
                             <div style="margin-top: 2%; margin-right: 17%;"></div>
 
                             <div style="font-size: 16px; margin-top: 2%; margin-right: 1%;"><b>คะแนนเพิ่มพิเศษ :</b></div>
 
                             <form name="SaveScoreExtra" action="FCheckNameStudent.php" method="post" style="margin-top: 1.5%; width: 15%; height: 35px;" >
-                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="scoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
+                            <input class="is-pulled-right input-field-v8-2" type="textRegis" name="addScoreExtra" value="" style="width: 100%; height: 100%" title="สามารถใส่คะแนนเป็นจำนวนติดลบเมื่อต้องการยกเลิกคะแนนที่ถูกเพิ่ม เช่น เพิ่มคะแนนไป 5 ยกเลิกได้โดยใส่ -5 ในช่องเพิ่มคะแนน" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 13 || event.charCode == 45" autocomplete=off></form>
 
                         </div>
                         <div class="set-flex" >
@@ -194,8 +211,9 @@ include('h.php');
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 13.9%;"><b>สถานะ :</b></div>
-                            <div class="div-check" style="font-size: 18px; margin-top: 1%;">
+                            <div class ="maginLeft-check-2" <?php echo $_SESSION["StyleStatus"]; ?>
+                            ><b>สถานะ :</b></div>
+                            <div class="div-check" <?php echo $_SESSION["StyleValueStatus"]; ?>>
                                <b><?php echo $_SESSION["StatusCheckStudent"]; ?></b>
                             </div>
                         </div>
@@ -212,8 +230,9 @@ include('h.php');
                             </div>
                         </div>
                         <div class="set-flex" >
-                            <div class ="maginLeft-check-2" style="font-size: 18px; margin-top: 2%; margin-right: 3.6%; "><b>จำนวนคะแนนที่หัก :</b></div>
-                            <div class="div-check" style="font-size: 18px; margin-top: 1%;">
+                            <div class ="maginLeft-check-2" <?php echo $_SESSION["StyleScoreDeducted"]; ?>>
+                            <b>จำนวนคะแนนที่หัก :</b></div>
+                            <div class="div-check" <?php echo $_SESSION["StyleValueScoreDeducted"]; ?>>
                                 <b><?php echo $_SESSION["ScoreDeductedCheckStudentAll"]; ?></b>
                             </div>
                         </div>

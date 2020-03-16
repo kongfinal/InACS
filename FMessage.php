@@ -73,9 +73,9 @@ include('condb.php');
         }
 
 
-        if(isset($_POST['starred'])){
+        if(isset($_POST['setStarred'])){
             
-            $IDMessage = $_POST['starred'];
+            $IDMessage = $_POST['setStarred'];
 
             $queryMessage = "SELECT * FROM `inacs_message` WHERE ID='$IDMessage'";
             $MessageData = mysqli_query($con,$queryMessage);
@@ -102,9 +102,9 @@ include('condb.php');
         }
 
 
-        if(isset($_POST['trash'])){
+        if(isset($_POST['setTrash'])){
             
-            $IDMessage = $_POST['trash'];
+            $IDMessage = $_POST['setTrash'];
 
             $queryMessage = "SELECT * FROM `inacs_message` WHERE ID='$IDMessage'";
             $MessageData = mysqli_query($con,$queryMessage);

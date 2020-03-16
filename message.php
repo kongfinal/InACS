@@ -105,15 +105,15 @@ if(count($dataMessageArray) > 0){
     $tableMessage  = $tableMessage."<td>$rowName</td>";
     
     if($rowStatus == "star"){
-      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=starred class=material-icons style=color:#4CAF50;  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=setStarred class=material-icons style=color:#4CAF50;  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
     }else{
-      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=starred class=material-icons  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=setStarred class=material-icons  title=คลิกเพื่อติดดาวให้ข้อความนี้ value=$rowID>star</button></td>";
     }
 
     if($rowStatus == "delete"){
-      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=trash class=material-icons style=color:#4CAF50; title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=setTrash class=material-icons style=color:#4CAF50; title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ value=$rowID>delete</button></td>";
     }else{
-      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=trash class=material-icons title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ  value=$rowID>delete</button></td>";
+      $tableMessage  = $tableMessage."<td style=text-align:center;><button name=setTrash class=material-icons title=คลิกเพื่อให้ข้อความนี้ลงถังขยะ  value=$rowID>delete</button></td>";
     }
 
     $tableMessage  = $tableMessage."</tr>";

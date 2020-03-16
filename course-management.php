@@ -138,25 +138,25 @@ function CreatePagination($CourseNum){
 
     $lastPage = 0;
     if($_SESSION["Pagination"] == 1){
-        $Pagination = $Pagination."<input type=submit name=Pagination value=&laquo; disabled></input>";
+        $Pagination = $Pagination."<input type=submit name=setPagination value=&laquo; disabled></input>";
     }else{
-        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อย้อนกลับไปตารางก่อนหน้า value=&laquo; ></input>";
+        $Pagination = $Pagination."<input type=submit name=setPagination title=คลิกเพื่อย้อนกลับไปตารางก่อนหน้า value=&laquo; ></input>";
     }
     
     for ($x = 0; $x*5 < $CourseNum;) {
         $x+=1;
         if($_SESSION["Pagination"] == $x){
-            $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x class=active value=$x ></input>";
+            $Pagination = $Pagination."<input type=submit name=setPagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x class=active value=$x ></input>";
         }else{
-            $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x  value=$x ></input>";
+            $Pagination = $Pagination."<input type=submit name=setPagination title=คลิกเพื่อไปตารางหน้า&nbsp;$x  value=$x ></input>";
         }
         $lastPage = $x;
     }
 
     if($_SESSION["Pagination"] == $lastPage || ($_SESSION["Pagination"] == 1 && $lastPage == 0)){
-        $Pagination = $Pagination."<input type=submit name=Pagination value=&raquo; disabled></input>";
+        $Pagination = $Pagination."<input type=submit name=setPagination value=&raquo; disabled></input>";
     }else{
-        $Pagination = $Pagination."<input type=submit name=Pagination title=คลิกเพื่อไปตารางถัดไป value=&raquo; ></input>";
+        $Pagination = $Pagination."<input type=submit name=setPagination title=คลิกเพื่อไปตารางถัดไป value=&raquo; ></input>";
     }
     
     return $_SESSION["PaginationCourseTable"] = $Pagination;
@@ -386,7 +386,7 @@ function CreateEditFormDay(){
                             <div style="margin-top: 1.9%; font-size: 18px;">ภาคเรียน :&nbsp</div>
                             <div class="select-margin-v1 select-input " style="width:13%; margin-right: 65.8%; margin-top: 1.6%;" title="คลิกเพื่อเลือกภาคเรียน">
                                 <form name="changeTerm" action="FManagementCourse.php" method="post" style="margin-bottom: 0%;">
-                                    <select name="terms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; ">
+                                    <select name="selectTerms" onchange="document.changeTerm.submit();" style="width:100%; height: auto; padding: 5px 2px; ">
                                         <?php echo $optionsTerm;?>
                                     </select>
                                 </form>
@@ -510,7 +510,7 @@ function CreateEditFormDay(){
 
   <div class="input-textCourse">
         <div class="sizeText maginTypeCourse"><b>ประเภท (Lecture/Lab) :</b></div>
-        <input id="CheckLec" type="checkbox" class="myinput large" checked="checked"style="margin-top:2.5%;" name="CheckBoxType[]" value="Lecture" onclick="if (document.getElementById('CheckLec').checked == true) return document.getElementById('CategoryLec').style.display = 'block'; else return document.getElementById('CategoryLec').style.display = 'none';"/>
+        <input id="CheckLec" type="checkbox" class="myinput large" checked="checked" style="margin-top:2.5%;" name="CheckBoxType[]" value="Lecture" onclick="if (document.getElementById('CheckLec').checked == true) return document.getElementById('CategoryLec').style.display = 'block'; else return document.getElementById('CategoryLec').style.display = 'none';"/>
         <div style="margin-top:2.5%; margin-right:10%; margin-left:2%;"><b>Lecture</b></div>
         <input id="CheckLab" type="checkbox" class="myinput large" style="margin-top:2.5%;" name="CheckBoxType[]" value="Lab" onclick="if (document.getElementById('CheckLab').checked == true) return document.getElementById('CategoryLab').style.display = 'block'; else return document.getElementById('CategoryLab').style.display = 'none';"/>
         <div style="margin-top:2.5%; margin-left:2%;"><b>Lab</b></div>

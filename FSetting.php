@@ -64,22 +64,22 @@ include('condb.php');
         if(isset($_POST['SaveChange']) ){
             if(empty($_POST['LevelOrange'])){
                 echo "<script>";
-                    echo "alert(\" โปรดใส่ตัวเลขที่จะใช่ลบกับจำนวนที่เช็คเพื่อขึ้นแถบสีส้ม\");";
+                    echo "alert(\" โปรดใส่จำนวนครั้งที่ขาดเรียนเพื่อขึ้นแถบสีส้ม\");";
                     echo "window.history.back()";
                 echo "</script>";
             }else if(empty($_POST['LevelRed'])){
                 echo "<script>";
-                    echo "alert(\" โปรดใส่ตัวเลขที่จะใช่ลบกับจำนวนที่เช็คเพื่อขึ้นแถบสีแดง\");";
+                    echo "alert(\" โปรดใส่จำนวนครั้งที่ขาดเรียนเพื่อขึ้นแถบสีแดง\");";
                     echo "window.history.back()";
                 echo "</script>";
             }else if (!filter_var($_POST['LevelOrange'], FILTER_VALIDATE_INT)) {
                 echo "<script>";
-                    echo "alert(\" โปรดใส่ข้อมูลที่ใช้ลบให้ขึ้นแถบสีส้มเป็นจำนวนเต็มอย่างเดียว\");";
+                    echo "alert(\" โปรดใส่จำนวนครั้งที่ขาดเรียนเพื่อให้ขึ้นแถบสีส้มเป็นจำนวนเต็มอย่างเดียว\");";
                     echo "window.history.back()";
                 echo "</script>";
             }else if (!filter_var($_POST['LevelRed'], FILTER_VALIDATE_INT)) {
                 echo "<script>";
-                    echo "alert(\" โปรดใส่ข้อมูลที่ใช้ลบให้ขึ้นแถบสีแดงเป็นจำนวนเต็มอย่างเดียว\");";
+                    echo "alert(\" โปรดใส่จำนวนครั้งที่ขาดเรียนเพื่อให้ขึ้นแถบสีแดงเป็นจำนวนเต็มอย่างเดียว\");";
                     echo "window.history.back()";
                 echo "</script>";
             }else{
@@ -87,13 +87,33 @@ include('condb.php');
                 $LevelOrange = $_POST['LevelOrange'];
                 $LevelRed = $_POST['LevelRed'];
 
+                $StatusEmailTeacherOne = $_POST['EmailTeacherOne'];
+                $StatusEmailTeacherTwo = $_POST['EmailTeacherTwo'];
+                $StatusEmailTeacherThree = $_POST['EmailTeacherThree'];
+                $StatusEmailStudentOne = $_POST['EmailStudentOne'];
+                $StatusEmailStudentTwo = $_POST['EmailStudentTwo'];
+                $StatusEmailStudentThree = $_POST['EmailStudentThree'];
+
+                /*echo $StatusEmailTeacherOne."<br>";
+                echo $StatusEmailTeacherTwo."<br>";
+                echo $StatusEmailTeacherThree."<br>";
+                echo $StatusEmailStudentOne."<br>";
+                echo $StatusEmailStudentTwo."<br>";
+                echo $StatusEmailStudentThree."<br>";*/
+
                 if($LevelOrange >= $LevelRed){
                     echo "<script>";
-                        echo "alert(\" จำนวนที่ใช้ลบเพื่อขึ้นแถบสีส้มมากกว่าหรือเท่ากับจำนวนที่ใช้้ลบเพื่อขึ้นแถบสีแดง \");";
+                        echo "alert(\" จำนวนครั้งที่ขาดเรียนเพื่อขึ้นแถบสีส้มมากกว่าหรือเท่ากับจำนวนครั้งที่ขาดเรียนเพื่อขึ้นแถบสีแดง \");";
                         echo "window.history.back()";
                     echo "</script>";
                 }else{
-                    $strQuery = "UPDATE `inacs_setting` SET LevelOrange='$LevelOrange' , LevelRed='$LevelRed'
+                    $strQuery = "UPDATE `inacs_setting` SET LevelOrange='$LevelOrange' , LevelRed='$LevelRed' 
+                    ,EmailTeacherOne='$StatusEmailTeacherOne'
+                    ,EmailTeacherTwo='$StatusEmailTeacherTwo'
+                    ,EmailTeacherThree='$StatusEmailTeacherThree'
+                    ,EmailStudentOne='$StatusEmailStudentOne'
+                    ,EmailStudentTwo='$StatusEmailStudentTwo'
+                    ,EmailStudentThree='$StatusEmailStudentThree'
                     WHERE NameTeacher='".$_SESSION['Name']."' ";
                     $strData = mysqli_query($con,$strQuery);
 
@@ -101,6 +121,13 @@ include('condb.php');
 
                         $_SESSION["LevelOrange"] = $LevelOrange;
                         $_SESSION["LevelRed"] = $LevelRed;
+
+                        $_SESSION["StatusEmailTeacherOne"] = $StatusEmailTeacherOne;
+                        $_SESSION["StatusEmailTeacherTwo"] = $StatusEmailTeacherTwo;
+                        $_SESSION["StatusEmailTeacherThree"] = $StatusEmailTeacherThree;
+                        $_SESSION["StatusEmailStudentOne"] = $StatusEmailStudentOne;
+                        $_SESSION["StatusEmailStudentTwo"] = $StatusEmailStudentTwo;
+                        $_SESSION["StatusEmailStudentThree"] = $StatusEmailStudentThree;
 
                         echo "<script>";
                             echo "alert(\" Save Change Complete \");";

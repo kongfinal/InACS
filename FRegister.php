@@ -68,11 +68,22 @@ session_start();
 
 
                         $strSQLSetting = "INSERT INTO inacs_setting ";
-                        $strSQLSetting .="(ID,NameTeacher,LevelOrange,LevelRed) ";
+                        $strSQLSetting .="(ID,NameTeacher,LevelOrange,LevelRed,EmailTeacherOne,EmailTeacherTwo,EmailTeacherThree,EmailStudentOne,EmailStudentTwo,EmailStudentThree) ";
                         $strSQLSetting .="VALUES ";
-                        $strSQLSetting .="(NULL,'".$_SESSION["Name"]."','2','3') ";
+                        $strSQLSetting .="(NULL,'".$_SESSION["Name"]."','2','3','checked','checked','checked','checked','checked','checked') ";
                         $objQuerySetting = mysqli_query($con,$strSQLSetting);
                         if($objQuerySetting){
+
+                            $_SESSION["LevelOrange"] = 2;
+                            $_SESSION["LevelRed"] = 3;
+
+                            $_SESSION["StatusEmailTeacherOne"] = "checked";
+                            $_SESSION["StatusEmailTeacherTwo"] = "checked";
+                            $_SESSION["StatusEmailTeacherThree"] = "checked";
+                            $_SESSION["StatusEmailStudentOne"] = "checked";
+                            $_SESSION["StatusEmailStudentTwo"] = "checked";
+                            $_SESSION["StatusEmailStudentThree"] = "checked";
+
                             Header("Location: index.php");
                         }
 

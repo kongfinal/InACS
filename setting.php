@@ -64,6 +64,22 @@ include('h.php');
 ?>
 <style>
 
+.myinput.large {
+  height: 26px;
+  width: 26px;
+}
+
+.myinput.large[type="checkbox"]:before {
+  width: 24px;
+  height: 24px;
+}
+
+.myinput.large[type="checkbox"]:after {
+  top: -24px;
+  width: 20px;
+  height: 20px;
+}
+
 </style>
 <body>
 
@@ -203,8 +219,8 @@ include('h.php');
                 <hr style="border-top: 1px solid #777777a1;">
 
                 <div class="columns" style="margin-bottom:1%;">
-                    <div class="column is-3">
-                        <h3>กำหนดเกณฑ์ในการวัดการเช็คชื่อ</h3>
+                    <div class="column is-4">
+                        <h3>กำหนดเกณฑ์ในการตรวจสอบผลการเช็คชื่อ</h3>
                     </div>
                 </div>
 
@@ -225,6 +241,67 @@ include('h.php');
                         <input class="input-field-v8-2" style="width: 10%; height:30px;" type="textRegis" name="LevelRed" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="<?php echo $_SESSION["LevelRed"];?>" title="ใส่ตัวเลขที่จะใช่ลบกับจำนวนที่เช็คเพื่อขึ้นแถบสีแดง" autocomplete=off>
 
                         <h4 style="margin-left:2%;">ครั้ง</h4>
+                    </div>
+
+                    <br>
+                    <div class="columns" style="margin-bottom:1%;">
+                        <div class="column is-3">
+                            <h3>กำหนดการส่งอีเมลของอาจารย์</h3>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้อาจารย์เมื่อนิสิตขาดเรียน <b style="color:orange"><?php echo $_SESSION["LevelOrange"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailTeacherOne" type="checkbox" class="myinput large" 
+                        style="margin-left: 2.9%;" name="EmailTeacherOne" value="checked" <?php echo $_SESSION["StatusEmailTeacherOne"];?> onclick=""/>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้อาจารย์เมื่อนิสิตขาดเรียน <b style="color:red"><?php echo $_SESSION["LevelRed"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailTeacherTwo" type="checkbox" class="myinput large" 
+                        style="margin-left: 2.9%;" name="EmailTeacherTwo" value="checked" <?php echo $_SESSION["StatusEmailTeacherTwo"];?> onclick=""/>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้อาจารย์เมื่อนิสิตขาดเรียนเกิน <b style="color:red"><?php echo $_SESSION["LevelRed"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailTeacherThree" type="checkbox" class="myinput large"   
+                        style="" name="EmailTeacherThree" value="checked" <?php echo $_SESSION["StatusEmailTeacherThree"];?> onclick=""/>
+                    </div>
+
+                    <br>
+                    <div class="columns" style="margin-bottom:1%;">
+                        <div class="column is-3">
+                            <h3>กำหนดการส่งอีเมลของนิสิต</h3>
+                        </div>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้นิสิตเมื่อนิสิตขาดเรียน <b style="color:orange"><?php echo $_SESSION["LevelOrange"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailStudentOne" type="checkbox" class="myinput large" 
+                        style="margin-left: 5.4%;" name="EmailStudentOne" value="checked" <?php echo $_SESSION["StatusEmailStudentOne"];?> onclick=""/>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้นิสิตเมื่อนิสิตขาดเรียน <b style="color:red"><?php echo $_SESSION["LevelRed"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailStudentTwo" type="checkbox" class="myinput large" 
+                        style="margin-left: 5.4%;" name="EmailStudentTwo" value="checked" <?php echo $_SESSION["StatusEmailStudentTwo"];?> onclick=""/>
+                    </div>
+
+                    <div class="columns">
+   
+                        <h4 style="margin-left: 1%; margin-right:3%;">ส่งอีเมลให้นิสิตเมื่อนิสิตขาดเรียนเกิน <b style="color:red"><?php echo $_SESSION["LevelRed"];?></b> ครั้ง</h4>
+
+                        <input id="CheckEmailStudentThree" type="checkbox" class="myinput large"   style="margin-left: 2.5%;" name="EmailStudentThree" value="checked" <?php echo $_SESSION["StatusEmailStudentThree"];?> onclick=""/>
                     </div>
                     
                     <button class="small-v3" name="SaveChange" style="margin-left: 1%; margin-top:3%; width: 25%; height: 40px; background-color: #3366ff; color: white;" title="คลิกเพื่อบันทึกการเปลี่ยนแปลงของข้อมูล" onclick="document.Change.submit();">
